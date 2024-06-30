@@ -1,0 +1,219 @@
+
+.sidebar-logo {
+    font-size: 24px;
+    text-align: center;
+    margin-left: 20px;
+  }
+  
+  .sidebar-logo span {
+    font-size: 14px;
+    color: #ccc;
+  }
+  .sidebar-add-source:before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 47%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    opacity: 0;
+    transition: width 0.3s, height 0.3s, opacity 0.3s;
+  }
+
+  .sidebar-add-source:hover:before {
+    width: 40px;
+    height: 40px;
+    opacity: 1;
+  }
+
+  
+  .sidebar {
+    width: 262px;
+    background-color: #333;
+    /* padding: 20px; */
+    margin-right: 2px;
+    background-color: var(--navbar-base-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+  }
+  .sidebar-header{
+    padding: 20px 0px;
+    width: 220px;
+    color: var(--menu-font-color);
+    display: flex;
+    margin-bottom: 36px;
+    align-items: center;
+  }
+  .bar-sidebar{
+    padding: 10px;
+    position: relative;
+    cursor: pointer;
+  }
+  .bar-sidebar:before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 47%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    opacity: 0;
+    transition: width 0.3s, height 0.3s, opacity 0.3s;
+  }
+
+  .bar-sidebar:hover:before {
+    width: 40px;
+    height: 40px;
+    opacity: 1;
+  }
+  .sidebar-add-source{
+    position: relative;
+    cursor: pointer;
+  }
+  .sidebar-add-source i {
+    font-size: 1.4rem;
+  }
+  .sidebar-icon-source i{
+    padding: 5px;
+    margin-left: 5px;
+  }
+  
+
+  .source-item{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 10px;
+    width: 242px;
+  }
+  .source-item-option{
+    width: 48px;
+    height: 48px;
+    padding: 15px 16px;
+    position: relative;
+    display: inline-block;
+  }
+  
+  .source-icon-option{
+    display: none !important;
+  }
+  .source-item:hover .source-icon{
+    display: none !important;
+  }
+  .source-item:hover .source-icon-option{
+    display: block !important;
+  }
+  .source-item:hover{
+    background-color: var(--menu-hover-color);
+  }
+  
+  .source-drop-menu {
+    display: none;
+    position: absolute;
+    z-index: 1;
+    background-color: var(--dropdown-option-hover);
+    min-width: 120px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    padding: 8px 0;
+    border-radius: 10px;
+    width: 120px;
+  }
+  
+  .source-drop-menu a {
+    color: rgba(255, 255, 255, 0.637);
+    padding: 8px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .source-drop-menu a:hover {
+    background-color: var(--menu-hover-color);
+    color: rgba(255, 255, 255, 0.938);
+  
+  }
+  
+  .source-item-option:hover .source-drop-menu {
+    display: block;
+  }
+  
+  
+  .source-item-name{
+    width: 156px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .scroll-source-area{
+    box-sizing: content-box;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-left: 16px;
+  }
+  .source-item-checkbox{
+    margin-left: 9px;
+  }
+  
+  
+ 
+    .section-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between !important;
+      width: 220px;
+  
+    }
+    
+    .source-options {
+      width: 220px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin: 16px 0;
+      font-size: 0.9rem;
+    }
+    .source-options > span{
+      color: var(--menu-font-color);
+    }
+  
+    .add-source {
+      background-color: #444;
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+    }
+    .sidebar-shortcut{
+        justify-content: center;
+        width: 64px;
+        margin: 0;
+    }
+    .sidebar.sidebar-shortcut{
+        justify-content: flex-start;
+        
+    }
+    .source-item.sidebar-shortcut {
+        background-color: transparent;
+      }
+      
+      .source-item.sidebar-shortcut:hover {
+        background-color: transparent;
+      }
+      
+      .source-item.sidebar-shortcut .source-icon {
+        display: block !important;
+      }
+      
+      .source-item.sidebar-shortcut .source-icon-option {
+        display: none !important;
+      }

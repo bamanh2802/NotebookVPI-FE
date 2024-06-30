@@ -1,0 +1,317 @@
+@import url(../color.css);
+*{
+  box-sizing: border-box;
+  font-size: (--base-font-size);
+}
+body {
+    background-color: #1a1a1a;
+    color: white;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+
+  .icon, .profile {
+    margin-left: 20px;
+    font-size: 18px;
+  }
+  
+  .profile {
+    background-color: purple;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+  }
+  
+  .main-content {
+    display: flex;
+    flex: 1;
+  }
+ 
+
+  input[type="checkbox"].custom-checkbox {
+    display: none;
+}
+
+input[type="checkbox"].custom-checkbox + label {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 2px;
+    border: 2px solid #BFBFBF; /* Grey border color */
+    background-color: #333333; /* Dark background color */
+    cursor: pointer;
+    position: relative;
+}
+
+input[type="checkbox"].custom-checkbox + label:after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: -1px;
+    width: 6px;
+    height: 12px;
+    border: solid black;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+input[type="checkbox"].custom-checkbox:checked + label {
+    background-color: #6699FF; /* Blue background color */
+    border-color: #6699FF; /* Match border color with background */
+}
+
+input[type="checkbox"].custom-checkbox:checked + label:after {
+    opacity: 1;
+}
+
+
+  .notebook-view {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .notebook-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 65px;
+    padding: 10px 20px;
+    background-color: var(--navbar-base-color);
+  }
+  .notebook-header h1 {
+    font-size: 1.25rem;
+    font-weight: 300;
+  }
+  .notebook-header-change-name{
+    font-size: 1.25rem;
+    font-weight: 300;
+    background-color: var(--navbar-base-color);
+    color: #ffffff;
+  }
+  
+  .notebook-icons {
+    display: flex;
+    align-items: center;
+  }
+  
+  .notebook-content {
+    position: relative;
+    width: 100%;
+    height: calc(100% - 65px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.336), transparent);
+    border-radius: 10px;
+  }
+
+  
+  .note-placeholder {
+    color: #aaa;
+  }
+
+.notebook-content-header{
+  display: flex;
+  padding: 24px;
+  padding-top: 8px;
+  padding-bottom: 16px;
+  width: 100%;
+}
+.notebook-header-add-note,
+.notebook-header-tickall, 
+.notebook-header-delete-note,
+.notebook-header-untickall
+{
+  user-select: none;
+  line-height: 24px;
+  text-align: center;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+.notebook-header-tickall,
+.notebook-header-delete-note,
+.notebook-header-untickall{
+  margin-left: 24px;
+}
+.notebook-header-tickall:hover{
+  background-color: var(--menu-hover-color);
+}
+.notebook-header-add-note:hover{
+  background-color: var(--menu-hover-color);
+}
+.notebook-header-delete-note:hover{
+  background-color: var(--menu-hover-color);
+}
+.notebook-header-untickall:hover{
+  background-color: var(--menu-hover-color);
+}
+
+.notebook-header-delete-note,
+.notebook-header-untickall{
+  display: none;
+}
+
+
+.text-note-input {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .3), 0 4px 8px 3px rgba(0, 0, 0, .15);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.5);
+  border-radius: 8px;
+  background-color: var(--notebook-item-background);
+  color: #ffffff;
+  width: 45%;
+  height: 40%;
+  z-index: 9999999;
+  animation: grow-in 0.2s ease-out forwards;
+}
+
+@keyframes grow-in {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+.text-editor-main{
+  height: 260px;
+}
+
+.ql-container.ql-snow .ql-editor::placeholder {
+  color: #888;
+  font-style: italic;
+}
+
+.ql-container.ql-snow {
+  fill: #ffffff !important;
+  color: #e8e8e8 !important;
+  border: none !important;
+}
+
+.ql-toolbar.ql-snow {
+  border: none !important;
+}
+
+.text-editor-main .ql-editor {
+  padding: 10px; 
+  min-height: 200px; 
+}
+
+.text-editor-main .ql-toolbar {
+  background-color: var(--note-editer-header);
+  color: #e8e8e8 !important;
+
+}
+.text-editor-header{
+  border-radius: 8px 8px 0px 0px;
+  padding-top: 12px;
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--note-editer-header);
+  width: 100%;
+}
+.text-editor-header-content{
+  color: #e8e8e8;
+  padding: 4px 16px;
+
+}
+.note-header-name{
+  padding: 2px;
+  color: #e8e8e8;
+  font-size: 1.25rem;
+  background-color: var(--note-editer-header);
+  border: none;
+}
+.text-editor-header-exit{
+  font-size: 1.25rem;
+  color: #6699FF;
+  margin-right: 8px;
+  height: 48px;
+  text-align: center;
+  line-height: 48px;
+  width: 48px;
+  border-radius: 24px;
+  cursor: pointer;
+}
+.text-editor-header-exit:hover{
+  background-color: #5879bb59;
+}
+.text-note-input .ql-toolbar .ql-stroke {
+  stroke: #ffffff; 
+}
+
+.text-note-input .ql-toolbar .ql-fill {
+  fill: #ffffff;
+}
+
+.text-note-input .ql-toolbar .ql-bold .ql-stroke {
+  stroke: #ffffff; 
+}
+
+.text-note-input .ql-toolbar .ql-italic .ql-stroke {
+  stroke: #ffffff;
+}
+.text-note-input .ql-toolbar .ql-font .ql-picker-label,
+.text-note-input .ql-toolbar .ql-font .ql-picker-item {
+  color: #ffffff;
+}
+
+.text-note-input .ql-toolbar .ql-header .ql-picker-label,
+.text-note-input .ql-toolbar .ql-header .ql-picker-item {
+  color: #ffffff;
+}
+
+.text-note-input .ql-toolbar .ql-size .ql-picker-label,
+.text-note-input .ql-toolbar .ql-size .ql-picker-item {
+  color: #ffffff;
+}
+
+.text-note-input .ql-toolbar .ql-picker-label,
+.text-note-input .ql-toolbar .ql-picker-item {
+  color: #ffffff; 
+}
+
+.active{
+  display: block !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
