@@ -6,6 +6,7 @@ const initialState = {
   isChatOpen: true,
   isOpenSidebar: true,
   notebooks: {},
+  successBotChat : null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -46,6 +47,12 @@ const reducer = (state = initialState, action) => {
             index === messageIndex ? { ...msg, content: newContent, loading: false } : msg
           ),
         },
+      };
+    case 'SET_SUCCESS_BOT_CHAT':
+      return {
+        ...state,
+        messageIndex,
+        content
       };
     default:
       return state;

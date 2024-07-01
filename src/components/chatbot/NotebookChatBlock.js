@@ -42,6 +42,15 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
       },
     })
   }
+  const successBotChat = (messageIndex, newContent) => {
+    dispatch({
+      type: 'SET_SUCCESS_BOT_CHAT',
+      payload: {
+        messageIndex: messageIndex,
+        content: newContent
+      }
+    })
+  }
 
   const toggleChat = () => {
     dispatch({ type: 'TOGGLE_CHAT' });
@@ -60,13 +69,6 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
     fetchQuestion();
   }, [notebookId]);
 
-  useEffect(() => {
-    console.log(messageIndex)
-    if(messageIndex > 0 && messageIndex % 2 == 0) {
-      // updateBotMessage(notebookId, messageIndex, newBotMessage)
-      console.log(newBotMessage)
-    }
-  }, [conversations])
 
   const handleInputChange = (e) => {
     setChatInput(e.target.value);
@@ -75,7 +77,10 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if(chatInput) {
+      const initChat = 'Loading...'
       addUserMessage(notebookId, chatInput)
+      addBotMessage(notebookId, initChat)
+
       setChatInput('')
       if(isChatOpen) {
         toggleChat()
@@ -91,8 +96,8 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
 
         const data = await response.json();
         setNewBotMessage(data.reply)
-        addBotMessage(notebookId, data.reply)
-
+        successBotChat(conversations.length + 2, data.reply)
+        
         
       } catch (error) {
         console.error('Error submitting chat:', error);
@@ -100,6 +105,11 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
     }
     
   }; 
+  useEffect(() => {
+    console.log(conversations)
+    console.log(newBotMessage)
+  }, [conversations.length])
+
 
   return (
     <div className="notebook-chat-block allow-suggest">

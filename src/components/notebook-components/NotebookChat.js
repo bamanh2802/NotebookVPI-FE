@@ -16,6 +16,7 @@ function NotebookChat({ notebookId }) {
     const [isChatFullyOpened, setIsChatFullyOpened] = useState(false);
     const dispatch = useDispatch();
     const conversations = useSelector(state => state.notebooks[notebookId] || []);
+    const [isLoadingBotMessage, setIsBotLoadingMessage] = useState(false)
     const chatContainerRef = useRef(null); // Ref để trỏ tới phần tử chứa tin nhắn
     const lastMessageRef = useRef(null); // Ref để trỏ tới tin nhắn cuối cùng
 
@@ -32,6 +33,16 @@ function NotebookChat({ notebookId }) {
             setIsClosedClassActive(false);
         }, 1000);
     }, [isChatOpen]);
+    // console.log(conversations.length)
+    useEffect(() => {
+        if(conversations.length != 0 && conversations.length % 2 == 1) {
+            setIsBotLoadingMessage(true)
+            // console.log('true')
+        } else {
+            setIsBotLoadingMessage(false)
+        }
+        // console.log(conversations)
+    }, [conversations.length])
 
     useEffect(() => {
         const fetchChatHistory = async () => {
@@ -102,11 +113,23 @@ function NotebookChat({ notebookId }) {
                             className={`chat-message ${message.type === 'user' ? 'user-message' : 'assistant-message'}`}
                             ref={index === conversations.length - 1 ? lastMessageRef : null}
                         >
-                            {message.type === 'user' ? (
-                                <div className="user-message-content">{message.content}</div>
-                            ) : (
-                                <AssistantMessage message={message.content} />
-                            )}
+                                {message.type === 'user' ? (
+                                    <>
+                                    <div className="user-message-content">{message.content}</div>
+                                    {/* {isLoadingBotMessage ? (
+                                        <div className="chat-loading">
+                                        <div className="dot"></div>
+                                        <div className="dot"></div>
+                                        <div className="dot"></div>
+                                    </div>
+                                    ) : null} */}
+                                    </>
+                                    
+                                ) : (
+                                        <AssistantMessage message={message.content} />
+                                    )
+
+                                }
                         </div>
                     ))}
                 </div>
