@@ -4,6 +4,7 @@ import { createStore } from 'redux';
 const initialState = {
   data: null,
   isChatOpen: true,
+  isTutorialOpen: false,
   isOpenSidebar: true,
   notebooks: {},
   successBotChat : null,
@@ -15,6 +16,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, data: action.payload };
     case 'TOGGLE_CHAT':
       return { ...state, isChatOpen: !state.isChatOpen };
+    case 'TOGGLE_TUTORIAL':
+      return { ...state, isTutorialOpen: !state.isTutorialOpen };
     case 'TOGGLE_SIDEBAR':
       return { ...state, isOpenSidebar: !state.isOpenSidebar };
     case 'ADD_USER_MESSAGE':
@@ -38,12 +41,12 @@ const reducer = (state = initialState, action) => {
         },
       };
     case 'UPDATE_BOT_MESSAGE':
-      const { notebookIdUpdate, messageIndex, newContent } = action.payload;
+      const { notebookId, messageIndex, newContent } = action.payload;
       return {
         ...state,
         notebooks: {
           ...state.notebooks,
-          [notebookIdUpdate]: state.notebooks[notebookIdUpdate].map((msg, index) =>
+          [notebookId]: state.notebooks[notebookId].map((msg, index) =>
             index === messageIndex ? { ...msg, content: newContent, loading: false } : msg
           ),
         },
@@ -51,8 +54,7 @@ const reducer = (state = initialState, action) => {
     case 'SET_SUCCESS_BOT_CHAT':
       return {
         ...state,
-        messageIndex,
-        content
+        successBotChat: action.payload
       };
     default:
       return state;

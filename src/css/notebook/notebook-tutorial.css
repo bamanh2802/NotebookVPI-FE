@@ -1,0 +1,128 @@
+@keyframes slideUpFadeIn {
+    0% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    }
+
+    @keyframes slideDownFadeOut {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+}
+
+.notebook-tutorial {
+    color: #cddce6;
+    background-color: #252525;
+    width: 90%;
+    max-width: 1130px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: absolute;
+    z-index: 1;
+    border-radius: 32px 32px 0 0;
+    bottom: 100px; /* Ensure the initial position */
+    display: none;
+    font-size: 0.95rem;
+}
+
+.notebook-tutorial-opened {
+    display: block;
+    animation: slideUpFadeIn 0.5s ease-out forwards;
+}
+
+.notebook-tutorial-closed {
+    animation: slideDownFadeOut 0.5s ease-out forwards;
+}
+  
+
+
+  .notebook-tutorial-header {
+    margin-bottom: 30px;
+  }
+
+  .notebook-tutorial-card{
+    box-sizing: border-box;
+    padding: 8px;
+    width: 128px;
+    max-width: 128px;
+    height: 116px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 12px;
+    transition: background-color 0.3s;
+    background-color: #3b3f47;
+    border-radius: 8px;
+    justify-content: space-between;
+  }
+  .notebook-tutorial-card > i {
+    padding: .5rem;
+    padding-inline: .25rem 1rem;
+    padding-block: .25rem 2.25rem;
+    font-size: 1.25rem;
+  }
+  .notebook-tutorial-card > span {
+    text-align: left;
+    font-weight: 600;
+  }
+  
+  .notebook-tutorial-cards, .notebook-tutorial-questions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  
+  .notebook-tutorial-card:hover, .notebook-tutorial-question:hover {
+    background-color: #3c3c3c;
+  }
+  
+  .notebook-tutorial-footer{
+    display: flex;
+    width: 100%;
+  }
+  
+  .notebook-tutorial-summary {
+    margin-bottom: 30px;
+    width: 45%;
+    padding: 24px;
+  }
+  .notebook-tutorial-section{
+    width: 55%;
+    padding: 24px;
+
+  }
+  
+  .notebook-tutorial-summary p {
+    line-height: 1.5;
+  }
+  
+  .notebook-tutorial-questions {
+    max-width: 100%;
+  }
+  .notebook-tutorial-question{
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    background-color: #3b3f47;
+    border-radius: 8px;
+  }
+  .notebook-tutorial-question > span {
+    margin-bottom: 16px;
+  }
+  .notebook-tutorial-question > i {
+    padding-right: 12px;
+  }

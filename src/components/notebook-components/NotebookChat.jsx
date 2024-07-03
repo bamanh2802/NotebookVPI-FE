@@ -31,7 +31,7 @@ function NotebookChat({ notebookId }) {
 
         setTimeout(() => {
             setIsClosedClassActive(false);
-        }, 1000);
+        }, 500);
     }, [isChatOpen]);
     // console.log(conversations.length)
     useEffect(() => {
@@ -114,19 +114,11 @@ function NotebookChat({ notebookId }) {
                             ref={index === conversations.length - 1 ? lastMessageRef : null}
                         >
                                 {message.type === 'user' ? (
-                                    <>
                                     <div className="user-message-content">{message.content}</div>
-                                    {/* {isLoadingBotMessage ? (
-                                        <div className="chat-loading">
-                                        <div className="dot"></div>
-                                        <div className="dot"></div>
-                                        <div className="dot"></div>
-                                    </div>
-                                    ) : null} */}
-                                    </>
+
                                     
                                 ) : (
-                                        <AssistantMessage message={message.content} />
+                                        <AssistantMessage message={message.content} isLoading={message.loading} />
                                     )
 
                                 }

@@ -4,7 +4,7 @@
   z-index: 3;
   width: 90%;
   max-width: 1130px;
-  height: 162px;
+  height: 166px;
   background-color: var(--navbar-base-color);
   border-radius: 20px 20px 0 0;
   padding: 8px;
@@ -13,7 +13,10 @@
   opacity: 0;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .3), 0 1px 3px 1px rgba(0, 0, 0, .15);
 }
+.notebook-chat-block-hide-header{
+  height: 116px !important;
 
+}
 
 .notebook-chat-block > div {
   opacity: 0;
@@ -238,14 +241,14 @@ input[type="text"]:focus {
   .notebook-user-message {
     width: 90% !important;
     max-width: 1130px !important;
-    height: calc(100vh - 227px); /* 100vh - (62px + 162px) */
+    height: calc(100vh - 227px); 
     margin: auto;
     padding: 24px;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-    scrollbar-width: none; /* For Firefox */
-    -ms-overflow-style: none; /* For Internet Explorer and Edge */
+    scrollbar-width: none;
+    -ms-overflow-style: none; 
     position: absolute;
     left: 50%;
     bottom: 162px;
@@ -253,13 +256,10 @@ input[type="text"]:focus {
   }
   
   .notebook-user-message::-webkit-scrollbar {
-    display: none; /* For Chrome, Safari, and Opera */
+    display: none; 
   }
-  .notebook-message{
-    /* width: 100%; */
-  }
+
   .user-message{
-    height: 85px;
     padding: 0px 0px 20px 32px;
     display: flex;
     justify-content: flex-end;
@@ -350,6 +350,7 @@ input[type="text"]:focus {
 }
 
 .notebook-chat-suggest{
+  cursor: pointer;
   height: 32px;
   line-height: 32px;
   background-color: var(--note-suggest-background);
@@ -471,5 +472,8 @@ input[type="text"]:focus {
   }
 }
 
-
+.notebook-chat-suggest-disabled {
+  pointer-events: none;
+  opacity: 0.5; 
+}
 

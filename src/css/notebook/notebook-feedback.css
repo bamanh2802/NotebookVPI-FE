@@ -1,0 +1,89 @@
+
+.notebook-feedback-modal {
+    background-color: #2c2c2c;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+  
+  .notebook-feedback-header h2 {
+    font-size: 18px;
+    margin: 0 0 10px 0;
+  }
+  
+  .notebook-feedback-header span {
+    font-weight: normal;
+    color: #aaa;
+  }
+  
+  .notebook-feedback-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .notebook-feedback-option {
+    background-color: #3c3c3c;
+    border: 1px solid #555;
+    border-radius: 20px;
+    padding: 10px 15px;
+    color: #fff;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s;
+  }
+  
+  .notebook-feedback-option:hover {
+    background-color: #555;
+  }
+  
+  .notebook-feedback-option.active {
+    background-color: #4a4a4a;
+    border-color: #1a73e8;
+  }
+  
+  .notebook-feedback-input input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #555;
+    background-color: #3c3c3c;
+    color: #fff;
+    margin-bottom: 20px;
+    outline: none;
+  }
+  
+  .notebook-feedback-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  .cancel-button,
+  .submit-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+  }
+  
+  .cancel-button {
+    background-color: #555;
+    color: #fff;
+  }
+  
+  .submit-button {
+    background-color: #1a73e8;
+    color: #fff;
+  }
+  
+  .cancel-button:hover {
+    background-color: #666;
+  }
+  
+  .submit-button:hover {
+    background-color: #0c5ab9;
+  }

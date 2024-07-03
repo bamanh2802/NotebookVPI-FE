@@ -46,7 +46,7 @@ function HomePage(props) {
           <div className="logo">NotebookPVI</div>
           <div className="icons">
             <span className="icon">🌙</span>
-            <span className="profile">M</span>
+            {/* <span className="profile">M</span> */}
           </div>
         </div>
         <div className="content-container">

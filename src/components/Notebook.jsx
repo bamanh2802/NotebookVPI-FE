@@ -13,8 +13,6 @@ import NotebookView from './notebook-components/NotebookView';
 function Notebook() {
   const { id } = useParams();
 
-
-  // Định nghĩa và xử lý logic của component
   return (
     <div className="main-content">
       <NotebookSidebar notebookId={id} />

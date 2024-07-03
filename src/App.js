@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import HomePage from './components/home/HomePage';
 import Notebook from './components/Notebook';
+import LoginForm from './components/home/LoginForm';
 import { Provider } from 'react-redux';
 import store from './redux/Store';
 function App() {
