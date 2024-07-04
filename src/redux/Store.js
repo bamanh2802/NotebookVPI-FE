@@ -6,6 +6,7 @@ const initialState = {
   isChatOpen: true,
   isTutorialOpen: false,
   isOpenSidebar: true,
+  isOpenSource: false,
   notebooks: {},
   successBotChat : null,
 };
@@ -20,6 +21,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, isTutorialOpen: !state.isTutorialOpen };
     case 'TOGGLE_SIDEBAR':
       return { ...state, isOpenSidebar: !state.isOpenSidebar };
+    case 'TOGGLE_SOURCE':
+      return { ...state, isOpenSource: !state.isOpenSource };
     case 'ADD_USER_MESSAGE':
       const { notebookIdUser, userMessage } = action.payload;
       const newUserMessage = { type: 'user', content: userMessage };

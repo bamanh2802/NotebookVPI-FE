@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
+import NotebookSource from './NotebookSource';
 
 
 import '../../css/notebook/notebook.css'
@@ -12,9 +13,11 @@ function NotebookSidebar({ notebookId }) {
     const [allSources, setAllSources] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
     const [countSource, setCountSource] = useState(0);
+    const [sourceSelector, setSouceSelector] = useState()
 
     const dispatch = useDispatch();
     const isOpenSidebar = useSelector((state) => state.isOpenSidebar);
+    const isOpenSource = useSelector((state) => state.isOpenSource)
 
     const data = { 
         notebookId: notebookId,
@@ -24,6 +27,21 @@ function NotebookSidebar({ notebookId }) {
     useEffect(() => {
         dispatch({ type: 'UPDATE_DATA', payload: data });
     }, [dispatch, data]);
+
+
+    const handleToggleSidebar = () => {
+        dispatch({ type: 'TOGGLE_SIDEBAR' })
+    }
+
+    const handleToggleSource = () => {
+        dispatch({ type: 'TOGGLE_SOURCE'})
+    }
+
+    const handleOpenSource = (source) => {
+        handleToggleSource();
+        setSouceSelector(source)
+    }
+
 
     useEffect(() => {
         async function fetchAllSources() {
@@ -49,10 +67,7 @@ function NotebookSidebar({ notebookId }) {
 
     };
 
-    const handleToggleSidebar = () => {
-        dispatch({ type: 'TOGGLE_SIDEBAR' })
-    }
-
+    
     const handleSourceSelect = (sourceId) => {
         setAllSources(prevSources => prevSources.map(source => (
             source.sourceId === sourceId
@@ -65,6 +80,10 @@ function NotebookSidebar({ notebookId }) {
     };
     
     return (
+       <>
+       {isOpenSource ? (
+            <NotebookSource source={sourceSelector}/>
+       ) : (
         <div className={`sidebar ${isOpenSidebar ? '' : 'sidebar-shortcut'}`}>
             <div className={`sidebar-header ${isOpenSidebar ? '' : 'sidebar-shortcut'}`}>
                 <span className="bar-sidebar" onClick={handleToggleSidebar}>
@@ -115,7 +134,7 @@ function NotebookSidebar({ notebookId }) {
                                 </a>
                             </div>
                         </div>
-                        <div className={`source-item-name  ${isOpenSidebar ? '' : 'not-active'}`}>{source.name}</div>
+                        <div className={`source-item-name ${isOpenSidebar ? '' : 'not-active'}`}  onClick={() => {handleOpenSource(source)}}>{source.name}</div>
                         <div className={`source-item-checkbox ${isOpenSidebar ? '' : 'not-active'}`}>
                             <input
                                 type="checkbox"
@@ -130,6 +149,8 @@ function NotebookSidebar({ notebookId }) {
                 ))}
             </div>
         </div>
+       )}
+       </>
     )
 }
 
