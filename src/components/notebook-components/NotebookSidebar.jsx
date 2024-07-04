@@ -34,6 +34,7 @@ function NotebookSidebar({ notebookId }) {
     }
 
     const handleToggleSource = () => {
+        console.log(isOpenSidebar)
         dispatch({ type: 'TOGGLE_SOURCE'})
     }
 

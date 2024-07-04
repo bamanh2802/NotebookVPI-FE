@@ -267,6 +267,7 @@ input[type="text"]:focus {
   }
 
   .user-message-content{
+    font-size: 0.9rem;
     line-height: 25px;
     background-color: var(--navbar-base-color);
     padding: 20px;
@@ -310,6 +311,7 @@ input[type="text"]:focus {
     color: #ececec8e;
   }
   .to-user-message-content{
+    font-size: 0.9rem;
     margin-top: 8px;
   }
   .not-active{

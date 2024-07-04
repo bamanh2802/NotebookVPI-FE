@@ -1,21 +1,20 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import '../../css/homepage/homepage.css';
 import '../../css/color.css';
 
-
-
 function HomePage(props) {
-  const [notebooks, setNotebooks] = useState([])
+  const [notebooks, setNotebooks] = useState([]);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const isChatOpen = useSelector((state) => state.isChatOpen);
+  const isOpenSource = useSelector((state) => state.isOpenSource);
+  const isTutorialOpen = useSelector((state) => state.isTutorialOpen)
 
   useEffect(() => {
     async function fetchNotebooks() {
@@ -31,13 +30,50 @@ function HomePage(props) {
   }, []);
 
 
-
   const handleNotebookClick = (id) => {
     navigate(`/notebook/${id}`);
-    if(!isChatOpen){
+    if (!isChatOpen) {
       dispatch({ type: 'TOGGLE_CHAT' });
     }
+    if (isOpenSource) {
+      dispatch({ type: 'TOGGLE_SOURCE' });
+    }
+    if (isTutorialOpen){
+      dispatch({ type: 'TOGGLE_TUTORIAL' })
+    }
   };
+
+  useEffect(() => {
+    const handleMouseEvent = (event) => {
+      console.log(event.button);
+      if(event.button === 4) {
+        if (!isChatOpen) {
+          dispatch({ type: 'TOGGLE_CHAT' });
+        }
+        if (isOpenSource) {
+          dispatch({ type: 'TOGGLE_SOURCE' });
+        }
+        if (isTutorialOpen){
+          dispatch({ type: 'TOGGLE_TUTORIAL' })
+        }
+      }
+    };
+
+    const mouseEvents = [
+      'mousedown',
+    ];
+
+    mouseEvents.forEach((eventType) => {
+      document.addEventListener(eventType, handleMouseEvent);
+    });
+
+    // Cleanup function để gỡ bỏ bộ lắng nghe sự kiện khi component unmount
+    return () => {
+      mouseEvents.forEach((eventType) => {
+        document.removeEventListener(eventType, handleMouseEvent);
+      });
+    };
+  }, []);
 
   return (
     <div>
