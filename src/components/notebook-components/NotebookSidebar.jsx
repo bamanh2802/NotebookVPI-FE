@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
@@ -18,6 +18,19 @@ function NotebookSidebar({ notebookId }) {
     const dispatch = useDispatch();
     const isOpenSidebar = useSelector((state) => state.isOpenSidebar);
     const isOpenSource = useSelector((state) => state.isOpenSource)
+
+    const fileInputRef = useRef(null);
+
+        const handleClick = () => {
+            fileInputRef.current.click();
+        };
+
+        const handleFileChange = (event) => {
+            const file = event.target.files[0];
+            if (file) {
+            console.log('Selected file:', file);
+            }
+        };
 
     const data = { 
         notebookId: notebookId,
@@ -90,16 +103,23 @@ function NotebookSidebar({ notebookId }) {
                 <span className="bar-sidebar" onClick={handleToggleSidebar}>
                     <i className="fa-solid fa-bars" />
                 </span>
-                <div className={`sidebar-logo  ${isOpenSidebar ? '' : 'not-active'}`}>NotebookPVI </div>
+                <div className={`sidebar-logo  ${isOpenSidebar ? '' : 'not-active'}`}>NotebookVPI </div>
             </div>
             <div className={`section-title  ${isOpenSidebar ? '' : 'not-active'}`}>
                 <span className="sidebar-icon-source">
                     Nguồn
                     <i className="fa-regular fa-circle-user" />
                 </span>
-                <div className="sidebar-add-source">
+                <div className="sidebar-add-source" onClick={handleClick}>
                     <i className="fa-regular fa-square-plus" />
                 </div>
+                <input
+                    type="file"
+                    ref={fileInputRef}
+                    style={{ display: 'none' }}
+                    accept=".pdf, .doc, .docx, .txt"
+                    onChange={handleFileChange}
+                />
             </div>
             <div className={`source-options ${isOpenSidebar ? '' : 'not-active'}`}>
                 <span>Chọn tất cả các nguồn</span>

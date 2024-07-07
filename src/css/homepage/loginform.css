@@ -84,3 +84,31 @@
     color: red;
     margin-bottom: 15px;
   }
+
+  .line-split-login{
+    width: 50%;
+    height: 1px;
+    background-color: #cccccc60;
+    margin: 16px auto;
+  }
+  .button-login-microsoft{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 48px;
+    background-color: #7da0dd00;
+  }
+  .button-login-microsoft img{
+    height: 32px;
+    width: 32px;
+    margin-right: 24px;
+  }
+
+  .forgot-password-button{
+    color: #cccccca8;
+    cursor: pointer;
+  }
+  .forgot-password-button:hover{
+    color: #ccc;
+  }

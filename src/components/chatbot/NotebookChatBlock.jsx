@@ -242,7 +242,7 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
         </div>
       </div>
       <div className="notebook-chat-footer">
-        Notebook PVI - Version 1.
+        Notebook VPI - Version 1.
       </div>
     </div>
   </>

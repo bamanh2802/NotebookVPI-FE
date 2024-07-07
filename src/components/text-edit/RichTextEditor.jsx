@@ -1,16 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import ReactQuill from 'react-quill';
+import '../text-edit/text-editor.css'
 import 'react-quill/dist/quill.snow.css'; // Import CSS cho React Quill
+
+const CHARACTER_LIMIT = 2000;
 
 function RichTextEditor({ noteId, name, content, setSelectedNoteId }) {
   const [editorContent, setEditorContent] = useState(content);
-  const [editorName, setEditorName] = useState(name)
+  const [editorName, setEditorName] = useState(name);
   const [isNotActive, setIsNotActive] = useState(false); // New state variable
-
+  const [characterCount, setCharacterCount] = useState(content.length);
 
   const handleChangeContent = (value) => {
-    setEditorContent(value);
-    //Gọi api sửa content
+    if (value.length <= CHARACTER_LIMIT) {
+      setEditorContent(value);
+      setCharacterCount(value.length);
+      // Gọi api sửa content
+    }
   };
 
   const handleNameChange = (event) => {
@@ -18,9 +24,8 @@ function RichTextEditor({ noteId, name, content, setSelectedNoteId }) {
     // Gọi api sửa tên
   };
 
-
   const handleExitClick = () => {
-    setIsNotActive(!isNotActive); // Toggle the not-active class
+    setIsNotActive(!isNotActive); 
     setSelectedNoteId(null);
   };
 
@@ -28,7 +33,7 @@ function RichTextEditor({ noteId, name, content, setSelectedNoteId }) {
     <div className={`rich-text-editor text-note-input ${isNotActive ? 'not-active' : ''}`}>
       <div className='text-editor-header'>
         <div className='text-editor-header-content'>
-        <input
+          <input
             type="text"
             className='note-header-name'
             value={editorName}
@@ -47,10 +52,10 @@ function RichTextEditor({ noteId, name, content, setSelectedNoteId }) {
         placeholder=""
         modules={{
           toolbar: [
-            [{ 'header': '1'}, {'header': '2'}],
-            [{size: []}],
+            [{ 'header': '1' }, { 'header': '2' }],
+            [{ size: [] }],
             ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-            [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
             ['clean']
           ],
         }}
@@ -60,7 +65,9 @@ function RichTextEditor({ noteId, name, content, setSelectedNoteId }) {
           'list', 'bullet', 'indent'
         ]}
       />
-
+      <div className='character-count'>
+        {characterCount}/{CHARACTER_LIMIT} 
+      </div>
     </div>
   );
 }

@@ -1,0 +1,8 @@
+.character-count{
+    position: absolute;
+    top: 65px;
+    right: 10px;
+    height: 40px;
+    line-height: 40px;
+    color: #ccc;
+}
