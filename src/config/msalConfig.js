@@ -13,3 +13,12 @@ const msalConfig = {
 };
 
 export const msalInstance = new PublicClientApplication(msalConfig);
+
+export const initializeMsalInstance = async () => {
+  try {
+    await msalInstance.initialize();
+    await msalInstance.handleRedirectPromise();
+  } catch (error) {
+    console.error('Error initializing MSAL instance:', error);
+  }
+};

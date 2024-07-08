@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../css/homepage/loginform.css';
 import axios from 'axios';
-import { msalInstance } from '../../config/msalConfig'
+import { msalInstance, initializeMsalInstance } from '../../config/msalConfig';
 import { InteractionType } from '@azure/msal-browser';
 
 const LoginForm = () => {
@@ -25,6 +25,10 @@ const LoginForm = () => {
       setError(error.response?.data?.message || 'Login failed');
     }
   };
+
+  useEffect(() => {
+    initializeMsalInstance();
+  }, []);
 
   const handleMicrosoftLogin = async () => {
     try {
@@ -81,7 +85,7 @@ const LoginForm = () => {
           <button className='button-login-microsoft' type="button" onClick={handleMicrosoftLogin}>
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjR8068a50hnJwYx1pzj6iG5VsKAcFz4732w&s" alt="" />
             Sign in with Microsoft
-            </button>
+          </button>
         </form>
       </div>
     </div>

@@ -14,21 +14,6 @@ body {
     height: 100vh;
   }
   
-
-  .icon, .profile {
-    margin-left: 20px;
-    font-size: 18px;
-  }
-  
-  .profile {
-    background-color: purple;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-  }
   
   .main-content {
     display: flex;
@@ -292,4 +277,68 @@ input[type="checkbox"].custom-checkbox:checked + label:after {
 
 .active{
   display: block !important;
+}
+
+
+.user-icon{
+  position: relative;
+}
+.user-profile{
+  padding: 12px;
+  border-radius: 20px;
+  z-index: 10;
+  position: absolute;
+  width: 400px;
+  left: -400px;
+  background-color: var(--menu-hover-color);
+  color: var(--menu-font-color);
+}
+.user-header{
+  display: flex;
+  height: 100px;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.user-img{
+  width: 50px;
+  height: 50px;
+  background: url('../../img/logo.png') no-repeat center center;
+  background-size: contain;
+  border-radius: 25px;
+}
+
+.user-info{
+  width: 70%;
+}
+.user-name{
+  font-size: 1.25rem;
+}
+.user-line{
+  width: 60%;
+  height: 1px;
+  background-color: #ccc;
+  margin: auto;
+}
+
+.user-settings, .user-feedback, .user-logout{
+  height: 64px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  cursor: pointer;
+  border-radius: 16px;
+}
+.user-settings:hover, 
+.user-feedback:hover,
+.user-logout:hover{
+  background-color: #3d3d3d;
+  color: white;
+}
+.user-settings i, .user-feedback i, .user-logout i {
+  padding: 0 16px;
+}
+.user-main{
+  margin-top: 8px;
 }

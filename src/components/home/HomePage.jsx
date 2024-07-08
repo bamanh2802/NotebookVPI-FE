@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { fetchAllNotebooks, deleteNotebook, updateNotebook } from '../../service/homePageApi'
 
 import '../../css/homepage/homepage.css';
 import '../../css/color.css';
@@ -19,8 +20,7 @@ function HomePage(props) {
   useEffect(() => {
     async function fetchNotebooks() {
       try {
-        const response = await fetch('http://localhost:3000/get-all-notebook');
-        const data = await response.json();
+        const data = await fetchAllNotebooks();
         setNotebooks(data);
       } catch (error) {
         console.error('Error fetching notebooks:', error);

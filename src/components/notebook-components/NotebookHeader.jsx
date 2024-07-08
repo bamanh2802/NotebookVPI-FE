@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import '../../css/notebook/notebook.css';
 import '../../css/notebook/notebook-chat.css';
 import '../../css/notebook/notebook-item.css';
+import UserProfile from '../user-profile/UserProfile';
 
 function NotebookHeader({ notebookId }) {
     const [notebookInfo, setNotebookInfo] = useState({});
@@ -67,9 +68,11 @@ function NotebookHeader({ notebookId }) {
           <h1 onClick={handleNameChange}>{notebookInfo.name}</h1>
         )}
         <div className="notebook-icons">
-          <span className="icon">🌙</span>
-          <button className="share-button">Chia sẻ</button>
-          <span className="profile">M</span>
+          {/* <span className="icon">🌙</span> */}
+          <span className='user-icon'>
+            <i class="fa-regular fa-user"></i>
+            <UserProfile />
+            </span>
         </div>
       </div>
     );
