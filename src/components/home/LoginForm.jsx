@@ -1,30 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../css/homepage/loginform.css';
 import axios from 'axios';
 import { msalInstance, initializeMsalInstance } from '../../config/msalConfig';
 import { InteractionType } from '@azure/msal-browser';
+import { loginForm } from '../../service/LoginForm';
+
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [userId, setUserId] = useState();
+  const [session, setSession] = useState({})
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if(localStorage.getItem("session")) {
+      // navigate('/')
+    }
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
-      const response = await axios.post('http://localhost:3000/api/login', {
-        username: username,
-        password: password,
-      });
+      const data = await loginForm(username, password);
+      console.log(data)
+      setSession(data.data)
+      setError("")
+      if(data && data.status === 200) {
+        localStorage.setItem("session", JSON.stringify(data))
+        console.log(data)
+        // setUserId(data.user.user_id)
+        navigate('/')
+      }
 
-      console.log(response.data);
     } catch (error) {
-      // Handle error
-      console.error('Login error:', error.response);
-      setError(error.response?.data?.message || 'Login failed');
+      console.error('Error logging in:', error);
+      // Hiển thị thông báo lỗi cho người dùng ở đây
+      setError("Wrong Username or Password")
     }
   };
+  console.log(session)
 
   useEffect(() => {
     initializeMsalInstance();

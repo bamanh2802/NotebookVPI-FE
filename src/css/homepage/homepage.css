@@ -191,4 +191,225 @@
     .plus {
       font-size: 30px;
     }
+    .notebook-option-dropdown {
+      padding: 8px 12px;
+      width: 200px;
+      bottom: -48px;
+      left: 0;
+      position: absolute;
+      background-color: var(--dropdown-option-hover);
+      border-radius: 12px;
+    }
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s forwards;
+}
+
+.fade-out {
+  animation: fadeOut 0.3s forwards;
+}
+
+    
+  .notebook-option-item{
+    width: 100%;
+    padding: 12px 24px;
+    padding-left: 12px;
+    border-radius: 8px;
+  }
+  .notebook-option-item:hover{
+    background-color: #484848;
+  }
+  #loading-screen {
+    position: fixed;
+    top: 65px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease-in-out;
+  }
+
+  #loading-spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    animation: spin 2s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .loading-container {
+    position: relative;
+    display: inline-block;
+  }
   
+  .loading-logo {
+    width: 100px; /* Điều chỉnh kích thước của logo */
+    height: 100px;
+  }
+  
+  .spinner {
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    width: 120px; /* Điều chỉnh kích thước của spinner */
+    height: 120px;
+    margin: -60px; /* Điều chỉnh để căn giữa spinner */
+    border: 12px solid rgba(0, 0, 0, 0.1);
+    border-top: 12px solid #3498db; /* Màu của đường line */
+    border-radius: 50%;
+    animation: spin 2s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+
+.notebook-delete-block,
+.notebook-change-block{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #1a1a1a69;
+}
+.notebook-avatar > img{
+  height: 120px;
+  width: 120px;
+}
+.notebook-delete,.notebook-change{
+  color: #979da3;
+  padding: 16px;
+  font-size: 1.25rem;
+  min-width: 295px;
+  height: 148px;
+  background-color: #202124;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 20px 20px 10px 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+.notebook-change{
+  height: 340px;
+}
+.notebook-delete-name{
+  padding: 20px 24px;
+
+}
+.notebook-delete-footer,
+.notebook-change-footer{
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+}
+.notebook-delete-cancel,
+.notebook-change-cancel{
+  background: none;
+  color: #86aff0;
+  width: 64px;
+  margin-right: 6px;
+}
+.notebook-delete-confirm,
+.notebook-change-confirm{
+  color: #86aff0;
+  background: none;
+  width: 64px;
+}
+
+.notebook-change-main{
+  padding: 24px 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+.input-container{
+  
+}
+.notebook-change-input{
+  color: #979da3;
+  margin-top: 24px;
+  font-weight: 500;
+  font-size: 1.05rem;
+  background: none;
+  border: solid 1px #ccc;
+  padding: 16px;
+  border-radius: 6px;
+}
+.notebook-change-main input:focus{
+  border: solid 2px #46acdb !important;
+}
+.input-container {
+  position: relative;
+  margin-top: 24px;
+  width: 90%;
+}
+
+.notebook-label {
+  position: absolute;
+  top: 30%;
+  left: 16px;
+  transform: translateY(-50%);
+  background-color: #202124;
+  padding: 0 4px;
+  transition: 0.3s;
+  color: #979da3;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.notebook-change-input {
+  color: #979da3;
+  width: 100%;
+  background: none;
+  border: solid 1px #ccc;
+  padding: 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 1.05rem;
+  transition: 0.3s;
+}
+
+.notebook-change-input:focus, .notebook-change-input:not(:placeholder-shown) {
+  border-color: #888;
+}
+
+.notebook-change-input:focus + .notebook-label, .notebook-change-input:not(:placeholder-shown) + .notebook-label {
+  top: 5px;
+  transform: translateY(-100%) translateY(8px);
+  font-size: 0.85rem;
+  color: #ccc;
+}
