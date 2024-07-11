@@ -24,7 +24,6 @@ const UserDetail = ({isOpenUserDetail, closeUserDetail}) => {
         try {
           const data = await getUserById(userId)
           setUserInfo(data.data.user)
-          console.log(data)
         } catch (error) {
             console.log('Error get user: ', error)
         }
@@ -32,7 +31,6 @@ const UserDetail = ({isOpenUserDetail, closeUserDetail}) => {
   
     useEffect(() => {
         handleGetUserById()
-        console.log(userInfo)
     },[userId])
   
 

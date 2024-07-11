@@ -67,14 +67,11 @@ function NotebookMain({ notebookId }) {
 
   const handleDeleteNote = async () => {
     const checkedNotes = notes.filter((note) => note.isChecked);
-    console.log(checkedNotes);
     try {
-        // Sử dụng Promise.all để thực hiện các yêu cầu xóa đồng thời
         const deletePromises = checkedNotes.map((note) => 
             deleteNoteByNotebookId(notebookId, note.note_id)
         );
         await Promise.all(deletePromises);
-        console.log('All notes deleted successfully');
     } catch (error) {
         console.error('Error deleting notes:', error);
     }

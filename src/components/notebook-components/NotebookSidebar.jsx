@@ -141,7 +141,6 @@ function NotebookSidebar({ notebookId }) {
     const handleFileChanges = async (event) => {
         const selectedFiles = Array.from(event.target.files);
         setFileNames(selectedFiles.map(file => file.name));
-        console.log(selectedFiles.map(file => file.name))
         setIsLoading(true);
         setIsOpenUploadFile(false);
     
