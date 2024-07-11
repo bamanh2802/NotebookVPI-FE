@@ -10,7 +10,7 @@ import NotebookTutorial from './NotebookTutorial';
 
 function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
   const [suggestQuestion, setSuggestQuestion] = useState([]);
-  const [chatInput, setChatInput] = useState(null);
+  const [chatInput, setChatInput] = useState('');
   const [newBotMessage, setNewBotMessage] = useState()
   const [classNotebookTutorial, setClassNotebookTutorial] = useState('notebook-tutorial-closed');
   const isChatOpen = useSelector((state) => state.isChatOpen);

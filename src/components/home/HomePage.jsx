@@ -2,20 +2,29 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAllNotebooks, createNotebook, deleteNotebook, updateNotebook } from '../../service/homePageApi';
+import { fetchAllNotebooks, createNotebook, deleteNotebook, updateNotebook, Logout } from '../../service/homePageApi';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
+import UserDetail from '../user-profile/UserDetail';
+
 
 import '../../css/homepage/homepage.css';
 import '../../css/color.css';
 import '../../css/homepage/loadingpage.css'
 
+import UserProfile from '../user-profile/UserProfile'
+
 function HomePage() {
   const [notebooks, setNotebooks] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedNotebookId, setSelectedNotebookId] = useState(null);
-  const [selectedNotebookName, setSelectedNotebookName] = useState(null);
+  const [selectedNotebookName, setSelectedNotebookName] = useState('');
   const [dropdownClass, setDropdownClass] = useState('');
   const [isOpenChangeMenu, setIsOpenChangeMenu] = useState(false)
   const [isOpenDeleteMenu, setIsOpenDeleteMenu] = useState(false)
+  const [isOpenUserMenu, setIsOpenUserMenu] = useState(false);
+  const [notebookCreateLoading, setNotebookCreateLoading] = useState(false)
+  const [isOpenUserDetail, setIsOpenUserDetail] = useState(false)
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -25,6 +34,7 @@ function HomePage() {
   const isTutorialOpen = useSelector((state) => state.isTutorialOpen);
   
   const [isLoadingNotebook, setIsLoadingNotebook] = useState(false);
+  const userName = localStorage.getItem("username")
 
   const toggleDropdown = (event, notebookId, notebookName) => {
     event.stopPropagation();
@@ -42,10 +52,11 @@ function HomePage() {
     }
   };
 
-  const handleEdit = (notebookId) => {
-    console.log('Edit notebook', notebookId);
-    // toggleDropdown();
-  };
+  const handleToggleUserMenu = () => {
+    setIsOpenUserMenu(!isOpenUserMenu)
+  }
+
+
 
   const handleOpenDeleteMenu = (notebookId) => {
     setIsOpenDeleteMenu(true)
@@ -87,15 +98,16 @@ function HomePage() {
     try {
       const data = await createNotebook();
       console.log(data);
+      setNotebookCreateLoading(true)
+      setTimeout(() => {
+        navigate(`/notebook/${data.data.notebook_id}`); 
+      }, 1000)
     } catch (error) {
       console.error('Error create notebooks:', error);
     }
-    fetchNotebooks()
-
   };
 
   const handleChangeName = async () => {
-    console.log(selectedNotebookId, selectedNotebookName)
     try {
       const data = await updateNotebook(selectedNotebookId, selectedNotebookName);
     } catch (error) {
@@ -106,6 +118,7 @@ function HomePage() {
     setIsOpenChangeMenu(false)
 
   }
+
 
   useEffect(() => {
       fetchNotebooks();
@@ -134,6 +147,9 @@ function HomePage() {
   };
 
   const handleClickOutside = () => {
+    if(isOpenUserMenu){
+      setIsOpenUserMenu(false)
+    }
     if (isDropdownOpen) {
       setDropdownClass('fade-out');
       setTimeout(() => {
@@ -177,7 +193,15 @@ function HomePage() {
         <div className="header">
           <div className="logo">NotebookVPI</div>
           <div className="icons">
-            <span className="icon">🌙</span>
+            <div className="notebook-icons">
+              <span className='user-icon' onClick={handleToggleUserMenu}>
+                {/* <span className={`user-profile-username ${!isOpenUserMenu ? 'show' : ''}`}>{userName}</span> */}
+                <i className="fa-regular fa-user"></i>
+                  <div className={`user-profile-block ${isOpenUserMenu ? 'show' : ''}`} onClick={(event) => {event.stopPropagation()}} > 
+                    <UserProfile setIsOpenUserDetail={setIsOpenUserDetail}/>
+                  </div>
+                </span>
+          </div>
           </div>
         </div>
 
@@ -187,7 +211,13 @@ function HomePage() {
                 <h2 className="content-title">Sổ tay</h2>
                 <div className="notebook-grid">
                   <div className="notebook new" onClick={handleCreateNotebook}>
-                    <div className="plus">+</div>
+                    <div className="plus">
+                    {notebookCreateLoading ? (
+                      <FontAwesomeIcon icon={faCircleNotch} spin size="xl" style={{color: "#4d8eff",}} />
+                    ) : (
+                        <i className="fa-solid fa-plus"></i>
+                      )}
+                      </div>
                     <div className="label">Sổ tay mới</div>
                   </div>
                   {notebooks.map((notebook) => (
@@ -239,10 +269,9 @@ function HomePage() {
               </div>
 
               
-              {isOpenDeleteMenu && (
-                <div className='notebook-delete-block' onClick={handleCloseDeleteMenu}>
+                <div className={`notebook-delete-block ${isOpenDeleteMenu ? 'show' : ''}`} onClick={handleCloseDeleteMenu}>
                 <div className='notebook-delete' onClick={(event) => {event.stopPropagation()}}>
-                  <div className='notebook-delete-name'>Xóa Unititled notebook?</div>
+                  <div className='notebook-delete-name'>Xóa {selectedNotebookName}</div>
                   <div className='notebook-delete-footer'>
                     <button className='notebook-delete-cancel' onClick={handleCloseDeleteMenu}>Hủy</button>
                     <button className='notebook-delete-confirm' onClick={handleDelete}>Xóa</button>
@@ -250,19 +279,17 @@ function HomePage() {
 
                 </div>
               </div>
-              )}
 
 
 
 
               
-              {isOpenChangeMenu && (
-                <div className='notebook-change-block' onClick={handleCloseChangeMenu}>
+                <div className={`notebook-change-block ${isOpenChangeMenu ? 'show' : ''}`} onClick={handleCloseChangeMenu}>
                 <div className='notebook-change' onClick={(event) => {event.stopPropagation()}}>
                   <div className='notebook-change-main'> 
                     <div className='notebook-avatar'> <img src="https://cdn-icons-png.flaticon.com/512/330/330705.png" alt="" /></div>
                     <div className='input-container'>
-                      <label for="notebook-title" class="notebook-label" htmlFor="">Tiêu đề của sổ tay</label>
+                      <label htmlFor="notebook-title" className="notebook-label">Tiêu đề của sổ tay</label>
                       <input 
                         className='notebook-change-input' 
                         value={selectedNotebookName} 
@@ -276,7 +303,6 @@ function HomePage() {
                   </div>
                 </div>
               </div>
-              )}
 
 
 
@@ -318,6 +344,12 @@ function HomePage() {
       
        
       </div>
+        <div>
+          <UserDetail 
+            isOpenUserDetail={isOpenUserDetail ? 'show': ''}
+            closeUserDetail={setIsOpenUserDetail}
+          />
+        </div>
     </div>
     
   );

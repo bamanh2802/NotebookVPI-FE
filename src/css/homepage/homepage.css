@@ -112,6 +112,7 @@
       height: 40%;
       display: flex;
       color: var(--icon-color);
+      /* position: relative; */
     }
     .notebook-icon {
       width: 30px;
@@ -124,19 +125,24 @@
       width: 100%;
       height: 100%;
       object-fit: cover; 
+      z-index: 0 !important; 
   }
     .notebook-option {
       padding: 10px;
       margin-left: auto;
       margin-right: 10px;
+      /* position: absolute; */
       position: relative;
+      right: 5px;
+      z-index: 5;
+
     }
   
     .notebook-option:before {
       content: "";
       position: absolute;
       left: 50%;
-      top: 20px;
+      top: 18px;
       transform: translate(-50%, -50%);
       width: 0;
       height: 0;
@@ -189,7 +195,15 @@
     }
     
     .plus {
-      font-size: 30px;
+      font-size: 2.5rem;
+      margin-bottom: 24px;
+      min-height: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .label{
+      font-size: 1.5rem;
     }
     .notebook-option-dropdown {
       padding: 8px 12px;
@@ -236,60 +250,7 @@
   .notebook-option-item:hover{
     background-color: #484848;
   }
-  #loading-screen {
-    position: fixed;
-    top: 65px;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    transition: opacity 0.5s ease-in-out;
-  }
 
-  #loading-spinner {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #3498db;
-    border-radius: 50%;
-    width: 100px;
-    height: 100px;
-    animation: spin 2s linear infinite;
-  }
-
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  .loading-container {
-    position: relative;
-    display: inline-block;
-  }
-  
-  .loading-logo {
-    width: 100px; /* Điều chỉnh kích thước của logo */
-    height: 100px;
-  }
-  
-  .spinner {
-    position: absolute;
-    top: 100px;
-    left: 50%;
-    width: 120px; /* Điều chỉnh kích thước của spinner */
-    height: 120px;
-    margin: -60px; /* Điều chỉnh để căn giữa spinner */
-    border: 12px solid rgba(0, 0, 0, 0.1);
-    border-top: 12px solid #3498db; /* Màu của đường line */
-    border-radius: 50%;
-    animation: spin 2s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
 
 .notebook-delete-block,
 .notebook-change-block{
@@ -302,6 +263,15 @@
   justify-content: center;
   align-items: center;
   background-color: #1a1a1a69;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.notebook-delete-block.show,
+.notebook-change-block.show {
+  opacity: 1;
+  visibility: visible;
 }
 .notebook-avatar > img{
   height: 120px;
@@ -320,6 +290,8 @@
   align-items: center;
   border-radius: 20px 20px 10px 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  transform: scale(0.9);
 }
 .notebook-change{
   height: 340px;
@@ -327,6 +299,10 @@
 .notebook-delete-name{
   padding: 20px 24px;
 
+}
+.notebook-delete-block.show .notebook-delete,
+.notebook-change-block.show .notebook-change {
+  transform: scale(1);
 }
 .notebook-delete-footer,
 .notebook-change-footer{
@@ -412,4 +388,17 @@
   transform: translateY(-100%) translateY(8px);
   font-size: 0.85rem;
   color: #ccc;
+}
+
+
+.user-icon{
+  padding: 12px 24px;
+  cursor: pointer;
+}
+.user-icon > span{
+  padding-right: 16px;
+}
+.user-profile-block{
+  position: relative;
+  z-index: 10;
 }

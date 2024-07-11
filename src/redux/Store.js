@@ -9,6 +9,9 @@ const initialState = {
   isOpenSource: false,
   notebooks: {},
   successBotChat : null,
+  userInfo: {
+    userId: ''
+  },
 };
 
 const reducer = (state = initialState, action) => {
@@ -58,6 +61,14 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         successBotChat: action.payload
+      };
+    case 'UPDATE_USER_INFO':
+      return {
+        ...state,
+        userInfo: {
+          ...state.userInfo,
+          ...action.payload,
+        },
       };
     default:
       return state;

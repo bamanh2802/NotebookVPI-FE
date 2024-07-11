@@ -2,8 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import NotebookSource from './NotebookSource';
-
+import NotebookSource  from './NotebookSource';
+import axios from 'axios';
+import { fetchSourceNotebook } from '../../service/notebookPage';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 
 import '../../css/notebook/notebook.css'
 import '../../css/notebook/notebook-chat.css'
@@ -11,9 +14,15 @@ import '../../css/notebook/notebook-item.css'
 
 function NotebookSidebar({ notebookId }) {
     const [allSources, setAllSources] = useState([]);
-    const [selectAll, setSelectAll] = useState(false);
+    const [selectAll, setSelectAll] = useState(true); // Set selectAll to true by default
     const [countSource, setCountSource] = useState(0);
     const [sourceSelector, setSouceSelector] = useState()
+    const [isOpenUploadFile, setIsOpenUploadFile] = useState(false);
+    const [fileNames, setFileNames] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [sourceListSelector, setSourceListSelector] = useState([])
+    const [uploadStatus, setUploadStatus] = useState({});
+
 
     const dispatch = useDispatch();
     const isOpenSidebar = useSelector((state) => state.isOpenSidebar);
@@ -21,16 +30,14 @@ function NotebookSidebar({ notebookId }) {
 
     const fileInputRef = useRef(null);
 
-        const handleClick = () => {
-            fileInputRef.current.click();
-        };
+    const handleOpenUploadFile = () => {
+        setIsOpenUploadFile(true)
+    };
+    const handleCloseUploadFile = () => {
+        setIsOpenUploadFile(false)
 
-        const handleFileChange = (event) => {
-            const file = event.target.files[0];
-            if (file) {
-            console.log('Selected file:', file);
-            }
-        };
+    }
+
 
     const data = { 
         notebookId: notebookId,
@@ -41,13 +48,17 @@ function NotebookSidebar({ notebookId }) {
         dispatch({ type: 'UPDATE_DATA', payload: data });
     }, [dispatch, data]);
 
+    useEffect(() => {
+        if(allSources.length === countSource){
+        }
+    }, [countSource])
+
 
     const handleToggleSidebar = () => {
         dispatch({ type: 'TOGGLE_SIDEBAR' })
     }
 
     const handleToggleSource = () => {
-        console.log(isOpenSidebar)
         dispatch({ type: 'TOGGLE_SOURCE'})
     }
 
@@ -56,130 +67,267 @@ function NotebookSidebar({ notebookId }) {
         setSouceSelector(source)
     }
 
+    const fetchAllSources = async () => {
+        try {
+            const data = await fetchSourceNotebook(notebookId)
+            if(data.length === 0) {
+                setIsOpenUploadFile(true)
+            }
+            const dataSort = data.sort((a, b) => new Date(a.uploaded_at) - new Date(b.uploaded_at))
+            setAllSources(dataSort.map(source => ({ ...source, isSelected: true }))); 
+            setSourceListSelector(dataSort)
+            setCountSource(dataSort.length)
+        } catch (error) {
+            console.log('Get source Error: ', error)
+        }
+        
+    }
+
+    const fetchAllSourcesAgain = async () => {
+        try {
+          const data = await fetchSourceNotebook(notebookId);
+      
+          if (data.length === 0) {
+            setIsOpenUploadFile(true);
+          }
+      
+          const dataSort = data.sort((a, b) => new Date(a.uploaded_at) - new Date(b.uploaded_at));
+      
+          const updatedSources = dataSort.map(source => {
+            const found = sourceListSelector.find(s => s.file_id === source.file_id);
+            return {
+              ...source,
+              isSelected: found ? found.isSelected : true, // Giữ trạng thái của các tệp đã có, các tệp mới sẽ được chọn mặc định
+            };
+          });
+      
+          setAllSources(updatedSources);
+          setSourceListSelector(updatedSources);
+          setCountSource(updatedSources.length);
+        } catch (error) {
+          console.log('Get source Error: ', error);
+        }
+      };
+    
 
     useEffect(() => {
-        async function fetchAllSources() {
-            try {
-                const response = await fetch(`http://localhost:3000/get-all-sources/${notebookId}`);
-                const data = await response.json();
-                setAllSources(data.map(source => ({ ...source, isSelected: false })));
-            } catch (error) {
-                console.error('Error fetching notebooks:', error);
-            }
-        }
-        fetchAllSources();
+        fetchAllSources()
+        
     }, [notebookId]);
 
     const handleSelectAll = () => {
         setSelectAll(!selectAll);
         setAllSources(prevSources => prevSources.map(source => ({ ...source, isSelected: !selectAll })));
-        if(!selectAll){
-            setCountSource(allSources.length)
-        } else {
-            setCountSource(0)
-        }
-
+        setCountSource(selectAll ? 0 : allSources.length);
     };
 
-    
     const handleSourceSelect = (sourceId) => {
-        setAllSources(prevSources => prevSources.map(source => (
-            source.sourceId === sourceId
-                ? { ...source, isSelected: !source.isSelected }
-                : source
-        )));
-        const selectedSources = allSources.map(source => source.sourceId === sourceId ? { ...source, isSelected: !source.isSelected } : source).filter(source => source.isSelected);
-        setCountSource(selectedSources.length)
-        setSelectAll(selectedSources.length === allSources.length);
+        setAllSources(prevSources => {
+            const newSources = prevSources.map(source => (
+                source.file_id === sourceId
+                    ? { ...source, isSelected: !source.isSelected }
+                    : source
+            ));
+            
+            const selectedSources = newSources.filter(source => source.isSelected);
+            setCountSource(selectedSources.length);
+            setSelectAll(selectedSources.length === newSources.length);
+            setSourceListSelector(selectedSources)
+            return newSources;
+        });
     };
+
+
+    const handleFileChanges = async (event) => {
+        const selectedFiles = Array.from(event.target.files);
+        setFileNames(selectedFiles.map(file => file.name));
+        console.log(selectedFiles.map(file => file.name))
+        setIsLoading(true);
+        setIsOpenUploadFile(false);
     
+        for (const file of selectedFiles) {
+          const formData = new FormData();
+          formData.append('file', file);
+    
+          try {
+            const response = await axios.post(`http://127.0.0.1:8000/notebooks/${notebookId}/files/upload`, formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              },
+              withCredentials: true
+            });
+    
+            if (response.status === 200) {
+              setUploadStatus(prevStatus => ({
+                ...prevStatus,
+                [file.name]: 'completed'
+              }));
+              fetchAllSourcesAgain();
+            } else {
+              setUploadStatus(prevStatus => ({
+                ...prevStatus,
+                [file.name]: 'failed'
+              }));
+              alert(`Failed to upload file: ${file.name}`);
+            }
+          } catch (error) {
+            console.error(`Error uploading file: ${file.name}`, error);
+            setUploadStatus(prevStatus => ({
+              ...prevStatus,
+              [file.name]: 'failed'
+            }));
+            alert(`Error uploading file: ${file.name}`);
+          }
+        }
+    
+        setIsLoading(false);
+      };
+    //   const handleFileChanges = async (event) => {
+    //     const selectedFile = event.target.files;
+    //     setFileNames(selectedFile); 
+    //     setIsLoading(true);
+    //     setIsOpenUploadFile(false)
+    //         const formData = new FormData();
+    //         formData.append('file', selectedFile);
+        
+    //         try {
+    //             const response = await axios.post(`http://127.0.0.1:8000/notebooks/${notebookId}/files/upload`, formData, {
+    //               headers: {
+    //                 'Content-Type': 'multipart/form-data'
+    //               },
+    //             withCredentials: true
+    //             });
+          
+    //             if (response.status === 200) {
+    //                 fetchAllSourcesAgain()
+    //             } else {
+    //               alert('Failed to upload file');
+    //             }
+    //           } catch (error) {
+    //             console.error('Error uploading file:', error);
+    //             alert('Error uploading file');
+    //           } finally {
+    //             setIsLoading(false);  // Kết thúc trạng thái tải lên
+    //           }
+    //       };
+
     return (
        <>
        {isOpenSource ? (
             <NotebookSource source={sourceSelector}/>
-       ) : (
-        <div className={`sidebar ${isOpenSidebar ? '' : 'sidebar-shortcut'}`}>
-            <div className={`sidebar-header ${isOpenSidebar ? '' : 'sidebar-shortcut'}`}>
-                <span className="bar-sidebar" onClick={handleToggleSidebar}>
-                    <i className="fa-solid fa-bars" />
-                </span>
-                <div className={`sidebar-logo  ${isOpenSidebar ? '' : 'not-active'}`}>NotebookVPI </div>
-            </div>
-            <div className={`section-title  ${isOpenSidebar ? '' : 'not-active'}`}>
-                <span className="sidebar-icon-source">
-                    Nguồn
-                    <i className="fa-regular fa-circle-user" />
-                </span>
-                <div className="sidebar-add-source" onClick={handleClick}>
-                    <i className="fa-regular fa-square-plus" />
+        ) : (
+            <div className={`sidebar ${isOpenSidebar ? '' : 'sidebar-shortcut'}`}>
+                <div className={`sidebar-header ${isOpenSidebar ? '' : 'sidebar-shortcut'}`}>
+                    <span className="bar-sidebar" onClick={handleToggleSidebar}>
+                        <i className="fa-solid fa-bars" />
+                    </span>
+                    <div className={`sidebar-logo  ${isOpenSidebar ? '' : 'not-active'}`}>NotebookVPI </div>
                 </div>
-                <input
-                    type="file"
-                    ref={fileInputRef}
-                    style={{ display: 'none' }}
-                    accept=".pdf, .doc, .docx, .txt"
-                    onChange={handleFileChange}
-                />
-            </div>
-            <div className={`source-options ${isOpenSidebar ? '' : 'not-active'}`}>
-                <span>Chọn tất cả các nguồn</span>
-                <input
-                    type="checkbox"
-                    id="customCheckbox"
-                    className="custom-checkbox"
-                    checked={selectAll}
-                    onChange={handleSelectAll}
-                />
-                <label htmlFor="customCheckbox" />
-            </div>
-            <div className={`scroll-source-area ${isOpenSidebar ? '' : 'sidebar-shortcut'}`}>
-                {allSources.map((source) => (
-                    <div className={`source-item ${isOpenSidebar ? '' : 'sidebar-shortcut'}`} key={source.sourceId}>
-                        <div className="source-item-option ">
-                            <i className="fa-solid fa-ellipsis-vertical source-icon-option" />
-                            {source.type === 'pdf' ? (
-                                <i className="fa-regular fa-file-pdf source-icon" />
-                            ) : source.type === 'drive' ? (
-                                <i className="fa-brands fa-google-drive source-icon"></i>
-                            ) : source.type === 'doc' ? (
-                                <i className="fa-regular fa-file-word source-icon"></i>
-                            ) : (
-                                <i className="fa-regular fa-file source-icon"></i>
-                            )}
-                            <div className={`source-drop-menu  ${isOpenSidebar ? '' : 'not-active'}`}>
-                                <a href="" className="source-drop-item">
-                                    Xóa nguồn
-                                </a>
-                                <a href="" className="source-drop-item">
-                                    Sửa tên nguồn
-                                </a>
+                <div className={`section-title  ${isOpenSidebar ? '' : 'not-active'}`}>
+                    <span className="sidebar-icon-source">
+                        Nguồn
+                        <i className="fa-regular fa-circle-user" />
+                    </span>
+                    <div className="sidebar-add-source" onClick={handleOpenUploadFile}>
+                        <i className="fa-regular fa-square-plus" />
+                    </div>
+                    
+                </div>
+                <div className={`source-options ${isOpenSidebar ? '' : 'not-active'}`}>
+                    <span>Chọn tất cả các nguồn</span>
+                    <input
+                        type="checkbox"
+                        id="customCheckbox"
+                        className="custom-checkbox"
+                        checked={selectAll}
+                        onChange={handleSelectAll}
+                    />
+                    <label htmlFor="customCheckbox" />
+                </div>
+                <div className={`scroll-source-area ${isOpenSidebar ? '' : 'sidebar-shortcut'}`}>
+                    {allSources.map((source) => (
+                        <div className={`source-item ${isOpenSidebar ? '' : 'sidebar-shortcut'}`} key={source.sourceId}>
+                            <div className="source-item-option ">
+                                <i className="fa-solid fa-ellipsis-vertical source-icon-option" />
+                                {
+                                    (() => {
+                                        const fileExtension = source.file_name.split('.').pop().toLowerCase();
+                                        switch (fileExtension) {
+                                        case 'pdf':
+                                            return <i className="fa-regular fa-file-pdf source-icon" style={{color: "red",}}/>;
+                                        case 'doc':
+                                        case 'docx':
+                                            return <i className="fa-regular fa-file-word source-icon"></i>;
+                                        case 'drive':
+                                            return <i className="fa-brands fa-google-drive source-icon"></i>;
+                                        default:
+                                            return <i className="fa-regular fa-file source-icon"></i>;
+                                        }
+                                    })()
+                                    }
+                                <div className={`source-drop-menu  ${isOpenSidebar ? '' : 'not-active'}`}>
+                                    <a href="" className="source-drop-item">
+                                        Xóa nguồn
+                                    </a>
+                                    <a href="" className="source-drop-item">
+                                        Sửa tên nguồn
+                                    </a>
+                                </div>
+                            </div>
+                            <div className={`source-item-name ${isOpenSidebar ? '' : 'not-active'}`}  onClick={() => {handleOpenSource(source)}}>{source.file_name}</div>
+                            <div className={`source-item-checkbox ${isOpenSidebar ? '' : 'not-active'}`}>
+                                <input
+                                    type="checkbox"
+                                    id={source.file_id}
+                                    className="custom-checkbox"
+                                    checked={source.isSelected}
+                                    onChange={() => handleSourceSelect(source.file_id)}
+                                />
+                                <label htmlFor={source.file_id} />
                             </div>
                         </div>
-                        <div className={`source-item-name ${isOpenSidebar ? '' : 'not-active'}`}  onClick={() => {handleOpenSource(source)}}>{source.name}</div>
+                    ))}
+                    {isLoading && (
+                        <div className={`source-item ${isOpenSidebar ? '' : 'sidebar-shortcut'}`}>
+                        <div className="source-item-option ">
+                            <i class="fa-regular fa-file" style={{color: "#6699ff",}}></i>
+                            
+                        </div>
+                        <div className={`source-item-name ${isOpenSidebar ? '' : 'not-active'}`}>{fileNames}</div>
                         <div className={`source-item-checkbox ${isOpenSidebar ? '' : 'not-active'}`}>
-                            <input
-                                type="checkbox"
-                                id={source.sourceId}
-                                className="custom-checkbox"
-                                checked={source.isSelected}
-                                onChange={() => handleSourceSelect(source.sourceId)}
-                            />
-                            <label htmlFor={source.sourceId} />
+                        <FontAwesomeIcon icon={faSpinner} spin spinReverse style={{color: "#6699ff",}} />
                         </div>
                     </div>
-                ))}
+                    )}
+                </div>
             </div>
-        </div>
-       )}
+            )}
+           
+            
+                <div className={`file-upload ${isOpenUploadFile ? 'show' : ''}`} onClick={handleCloseUploadFile}>
+                    <div className={`file-upload-container ${isOpenUploadFile ? 'show' : ''}`} onClick={(event) => {event.stopPropagation()}}>
+                        <div className='file-upload-title'>Tải thư mục lên</div>
+                        <label htmlFor="file-upload" className="file-upload-label">
+                            <i className="fa fa-cloud-upload" /> Choose a PDF & Docs
+                        </label>
+                        <input
+                            type="file"
+                            id="file-upload"
+                            className="file-upload-input"
+                            accept=".pdf,.doc,.docx"
+                            onChange={handleFileChanges}
+                            multiple
+                        />
+                    </div>
+                </div>
+            
+
        </>
     )
 }
 
-
 export function getCountSource(){
 
 }
-
-
 
 export default NotebookSidebar;

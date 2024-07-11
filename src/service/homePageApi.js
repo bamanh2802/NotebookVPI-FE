@@ -51,3 +51,14 @@ export async function updateNotebook(notebookId, updatedName) {
   });
   return response;
 } 
+
+export async function Logout() {
+  const response = await axios.post(`${API_URL}/logout`, {}, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    withCredentials: true
+
+  });
+  return response;
+} 

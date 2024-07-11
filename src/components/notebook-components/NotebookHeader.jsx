@@ -5,25 +5,33 @@ import '../../css/notebook/notebook.css';
 import '../../css/notebook/notebook-chat.css';
 import '../../css/notebook/notebook-item.css';
 import UserProfile from '../user-profile/UserProfile';
+import { fetchNotebookById } from '../../service/notebookPage';
+import UserDetail from '../user-profile/UserDetail';
 
 function NotebookHeader({ notebookId }) {
     const [notebookInfo, setNotebookInfo] = useState({});
     const [editingName, setEditingName] = useState(false);
     const [newName, setNewName] = useState('');
-  
-    useEffect(() => {
-      async function fetchNotebookInfo() {
-        try {
-          const response = await fetch(`http://localhost:3000/get-all-info-by-id/${notebookId}`);
-          const data = await response.json();
-          setNotebookInfo(data);
-          setNewName(data.name);
-        } catch (error) {
-          console.error('Error fetching notebook info:', error);
-        }
+    const [isOpenUserMenu, setIsOpenUserMenu] = useState(false);
+    const [noteBook, setNotebook] = useState({})
+    const [isOpenUserDetail, setIsOpenUserDetail] = useState(false)
+
+    const handleToggleUserMenu = () => {
+      setIsOpenUserMenu(!isOpenUserMenu)
+    }
+
+    const fetchNotebooks = async () => {
+      try {
+        const data = await fetchNotebookById(notebookId);
+        setNotebook(data);
+        
+      } catch (error) {
+        console.error('Error fetching notebooks:', error);
       }
-      fetchNotebookInfo();
-    }, [notebookId]);
+    }
+    useEffect(() => {
+      fetchNotebooks()
+    }, []);
   
     const handleNameChange = () => {
       setEditingName(true);
@@ -54,7 +62,8 @@ function NotebookHeader({ notebookId }) {
     };
   
     return (
-      <div className="notebook-header">
+      <>
+        <div className="notebook-header">
         {editingName ? (
           <input
             type="text"
@@ -65,16 +74,19 @@ function NotebookHeader({ notebookId }) {
             className='notebook-header-change-name'
           />
         ) : (
-          <h1 onClick={handleNameChange}>{notebookInfo.name}</h1>
+          <h1 onClick={handleNameChange}>{noteBook.title}</h1>
         )}
         <div className="notebook-icons">
-          {/* <span className="icon">🌙</span> */}
-          <span className='user-icon'>
-            <i class="fa-regular fa-user"></i>
-            <UserProfile />
+          <span className='user-icon' onClick={handleToggleUserMenu}>
+            <i className="fa-regular fa-user"></i>
+              <div className={`user-profile-block ${isOpenUserMenu ? 'show' : ''}`} onClick={(event) => {event.stopPropagation()}} > 
+              <UserProfile setIsOpenUserDetail={setIsOpenUserDetail}/>
+            </div>
             </span>
         </div>
       </div>
+      <UserDetail isOpenUserDetail={isOpenUserDetail ? 'show' : ''} closeUserDetail={setIsOpenUserDetail} />
+      </>
     );
 }
 

@@ -150,6 +150,11 @@ input[type="checkbox"].custom-checkbox:checked + label:after {
 .notebook-header-untickall{
   display: none;
 }
+.text-change-note{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
 
 
 .text-note-input {
@@ -164,19 +169,18 @@ input[type="checkbox"].custom-checkbox:checked + label:after {
   width: 45%;
   height: 40%;
   z-index: 9999999;
-  animation: grow-in 0.2s ease-out forwards;
+  opacity: 0;
+  visibility: hidden;
+  /* transform: scale(0.8); */
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
 }
 
-@keyframes grow-in {
-  0% {
-    transform: translate(-50%, -50%) scale(0.5);
-    opacity: 0;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-  }
+.text-note-input.show{
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  visibility: visible;
 }
+
 .text-editor-main{
   height: 260px;
 }
@@ -286,7 +290,7 @@ input[type="checkbox"].custom-checkbox:checked + label:after {
 .user-profile{
   padding: 12px;
   border-radius: 20px;
-  z-index: 10;
+  z-index: 100;
   position: absolute;
   width: 400px;
   left: -400px;
@@ -341,4 +345,27 @@ input[type="checkbox"].custom-checkbox:checked + label:after {
 }
 .user-main{
   margin-top: 8px;
+}
+.user-profile-block {
+  opacity: 0;
+  visibility: hidden;
+  transform-origin: top right;
+  transform: scale(0);
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+}
+
+.user-profile-block.show {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+}
+.user-profile-username {
+  opacity: 0;
+  transform: translateX(100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.user-profile-username.show {
+  opacity: 1;
+  transform: translateX(0);
 }

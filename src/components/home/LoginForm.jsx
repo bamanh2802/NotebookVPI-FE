@@ -5,6 +5,7 @@ import axios from 'axios';
 import { msalInstance, initializeMsalInstance } from '../../config/msalConfig';
 import { InteractionType } from '@azure/msal-browser';
 import { loginForm } from '../../service/LoginForm';
+import { useDispatch } from 'react-redux';
 
 
 const LoginForm = () => {
@@ -15,10 +16,11 @@ const LoginForm = () => {
   const [session, setSession] = useState({})
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if(localStorage.getItem("session")) {
-      // navigate('/')
+      navigate('/')
     }
   }, [])
 
@@ -27,13 +29,14 @@ const LoginForm = () => {
   
     try {
       const data = await loginForm(username, password);
-      console.log(data)
+      console.log(data.data)
       setSession(data.data)
       setError("")
       if(data && data.status === 200) {
-        localStorage.setItem("session", JSON.stringify(data))
-        console.log(data)
-        // setUserId(data.user.user_id)
+        localStorage.setItem("session", JSON.stringify(data.data.data.session_id))
+        localStorage.setItem("username", data.data.username)
+        localStorage.setItem("role", data.data.role)
+        localStorage.setItem("userid", data.data.user_id)
         navigate('/')
       }
 
@@ -43,7 +46,6 @@ const LoginForm = () => {
       setError("Wrong Username or Password")
     }
   };
-  console.log(session)
 
   useEffect(() => {
     initializeMsalInstance();

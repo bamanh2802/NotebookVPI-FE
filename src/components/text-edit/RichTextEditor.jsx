@@ -1,15 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
 import '../text-edit/text-editor.css'
-import 'react-quill/dist/quill.snow.css'; // Import CSS cho React Quill
+import 'react-quill/dist/quill.snow.css'; 
+import { noteRenameById } from '../../service/notebookPage';
 
 const CHARACTER_LIMIT = 2000;
 
-function RichTextEditor({ noteId, name, content, setSelectedNoteId }) {
-  const [editorContent, setEditorContent] = useState(content);
-  const [editorName, setEditorName] = useState(name);
-  const [isNotActive, setIsNotActive] = useState(false); // New state variable
-  const [characterCount, setCharacterCount] = useState(content.length);
+function RichTextEditor({notebookId, noteId, name, content, setSelectedNoteId, isOpen }) {
+  const [editorContent, setEditorContent] = useState('');
+  const [editorName, setEditorName] = useState('');
+  const [isNotActive, setIsNotActive] = useState(false);
+  const [characterCount, setCharacterCount] = useState('');
+
+  useEffect(() => {
+    if(content) {
+      setEditorContent(content);
+      setCharacterCount(content.length)
+    }
+  },[content])
+  useEffect(() => {
+    setEditorName(name)
+  },[name])
 
   const handleChangeContent = (value) => {
     if (value.length <= CHARACTER_LIMIT) {
@@ -19,9 +30,13 @@ function RichTextEditor({ noteId, name, content, setSelectedNoteId }) {
     }
   };
 
-  const handleNameChange = (event) => {
+  const handleNameChange = async (event) => {
     setEditorName(event.target.value);
-    // Gọi api sửa tên
+    try {
+      const data = await noteRenameById(notebookId, noteId, event.target.value)
+    } catch (error) {
+      console.log('Rename Error')
+    }
   };
 
   const handleExitClick = () => {
@@ -30,7 +45,7 @@ function RichTextEditor({ noteId, name, content, setSelectedNoteId }) {
   };
 
   return (
-    <div className={`rich-text-editor text-note-input ${isNotActive ? 'not-active' : ''}`}>
+    <div className={`rich-text-editor text-note-input ${isOpen}`}>
       <div className='text-editor-header'>
         <div className='text-editor-header-content'>
           <input
