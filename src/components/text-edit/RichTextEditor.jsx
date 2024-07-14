@@ -6,7 +6,7 @@ import { noteRenameById } from '../../service/notebookPage';
 
 const CHARACTER_LIMIT = 2000;
 
-function RichTextEditor({notebookId, noteId, name, content, setSelectedNoteId, isOpen }) {
+const RichTextEditor = ({notebookId, noteId, name, content, setSelectedNoteId, isOpen }) => {
   const [editorContent, setEditorContent] = useState('');
   const [editorName, setEditorName] = useState('');
   const [isNotActive, setIsNotActive] = useState(false);
@@ -27,9 +27,11 @@ function RichTextEditor({notebookId, noteId, name, content, setSelectedNoteId, i
       setEditorContent(value);
       setCharacterCount(value.length);
       // Gọi api sửa content
+    } else {
+      // Nếu vượt quá giới hạn, chỉ cập nhật bộ đếm ký tự
+      setCharacterCount(value.length);
     }
   };
-
   const handleNameChange = async (event) => {
     setEditorName(event.target.value);
     try {
@@ -43,7 +45,6 @@ function RichTextEditor({notebookId, noteId, name, content, setSelectedNoteId, i
     setIsNotActive(!isNotActive); 
     setSelectedNoteId(null);
   };
-
   return (
     <div className={`rich-text-editor text-note-input ${isOpen}`}>
       <div className='text-editor-header'>
@@ -81,8 +82,13 @@ function RichTextEditor({notebookId, noteId, name, content, setSelectedNoteId, i
         ]}
       />
       <div className='character-count'>
-        {characterCount}/{CHARACTER_LIMIT} 
+        {characterCount}/{CHARACTER_LIMIT}
       </div>
+      {characterCount > CHARACTER_LIMIT && (
+        <div className='character-limit-warning'>
+          Bạn đã đạt đến giới hạn ký tự cho phép.
+        </div>
+      )}
     </div>
   );
 }

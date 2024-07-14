@@ -10,7 +10,7 @@ import { getUserById } from "../../service/userDetail";
 
 
 const UserDetail = ({isOpenUserDetail, closeUserDetail}) => {
-
+    const [toggleChangeLogin, setToggleChangeLogin] = useState(false)
     const [userInfo, setUserInfo] = useState()
 
     const userId = localStorage.getItem("userid")
@@ -19,6 +19,9 @@ const UserDetail = ({isOpenUserDetail, closeUserDetail}) => {
         closeUserDetail(false)
     }
 
+    const handleEdittingLogin = ()=> {
+        setToggleChangeLogin(!toggleChangeLogin)
+    }
 
     const handleGetUserById = async () => {
         try {
@@ -63,32 +66,76 @@ const UserDetail = ({isOpenUserDetail, closeUserDetail}) => {
                 <div className="user-detail-row">
                     <div className="user-detail-login">
                         <div className="user-detail-login-item">
-                            <span>Email</span>
-                            <span>{userInfo.email}</span>
+                            <div className="user-change-email">
+                                    <span>Email</span>
+                                    <span>{userInfo.email}</span>
+                                </div>
+                                {toggleChangeLogin && (
+                                    <>
+                                        <div className="user-change-email">
+                                            <span>New Email</span>
+                                            <input className="user-change-email-input" type="email" name="" id="" />
+                                        </div>
+                                        <div className="user-change-email-btn">
+                                            <button>Apply</button>
+                                        </div>
+                                    </>
+                                )}
+                            
                         </div>
                         <div className="user-detail-login-item">
-                            <span>Password</span>
-                            <span>{userInfo.password.split('').map(() => '*').join('')}</span>
+                            
+                            
+                            {!toggleChangeLogin ? (
+                                <>
+                                <span>Password</span>
+                                <span>{userInfo.password.split('').map(() => '*').join('')}</span> 
+                                </>
+                            ) : (
+                            <>
+                                <div className="user-password">
+                                <span>Old Password</span>
+                                <input type="password" name="" id="" />
+                                </div>
+                                <div className="user-password">
+                                    <span>New Password</span>
+                                    <input type="password" name="" id="" />
+                                </div>
+                                <div className="user-password">
+                                    <span>Confirm Password</span>
+                                    <input type="password" name="" id="" />
+                                </div>
+                                <div className="user-change-email-btn">
+                                    <button>Apply</button>
+                                </div>
+                            </>
+                            ) }
+
                         </div>
+                        
                     </div>
-                    <div className="user-detail-edit">
+                    <div className="user-detail-edit" onClick={handleEdittingLogin}>
                         <FontAwesomeIcon icon={faPen} size="xs" /> Edit
                         </div>
                 </div>
-                <div className="user-detail-row-container">
-                <div className="user-detail-row-static">
-                    <span className="user-detail-static">Notebooks:5 </span>
-                    <span className="user-detail-static">Notes: 10 </span>
-                </div>
-                <div className="user-detail-row-static">
-                    <span className="user-detail-static">Created at: {userInfo.created_at}</span>
-                    <span className="user-detail-static">Time Used: {userInfo.total_time_used} hour</span>
-                </div>
-                <div className="user-detail-row-static">
-                    <span className="user-detail-static">Storage Used: {userInfo.total_resource_used}/250Mb</span>
-                    <span className="user-detail-static">Token Chat Used: {userInfo.total_chat_token}</span>
-                </div>
-                </div>
+                
+                {!toggleChangeLogin && (
+                    <div className="user-detail-row-container">
+                        <div className="user-detail-row-static">
+                            <span className="user-detail-static">Notebooks:5 </span>
+                            <span className="user-detail-static">Notes: 10 </span>
+                        </div>
+                        <div className="user-detail-row-static">
+                            <span className="user-detail-static">Created at: {userInfo.created_at}</span>
+                            <span className="user-detail-static">Time Used: {userInfo.total_time_used} hour</span>
+                        </div>
+                        <div className="user-detail-row-static">
+                            <span className="user-detail-static">Storage Used: {userInfo.total_resource_used}/250Mb</span>
+                            <span className="user-detail-static">Token Chat Used: {userInfo.total_chat_token}</span>
+                        </div>
+                    </div>
+                )}
+
             </div>
         </div>
     </div>

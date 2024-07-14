@@ -79,6 +79,7 @@
     display: flex;
     padding: 20px;
     margin-left: 64px;
+    flex-direction: column;
     width: 80%;
 }
 .user-detail-login-item:first-child{
@@ -140,3 +141,69 @@
   .user-detail-close:hover {
     background-color: #3a3a3a;
   }
+  .user-change-email{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    align-items: center;
+  }
+  .user-change-email-input{
+    color: #ccc;
+    background: none;
+    border: none;
+    border-bottom: 1px solid #cccccc5b;
+    width: 50%;
+    padding: 8px 12px;
+    font-size: 16px;
+    border-radius: 4px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  
+  .user-change-email-input:hover,
+.user-change-email-input:focus-visible {
+  border-color: #007bff !important;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+.user-change-email-btn{
+  width: 30%;
+  margin-left: auto;
+}
+.user-change-email-btn > button {
+  background-color: #3a3a3a;
+
+}
+.user-change-hide{
+  opacity: 0;
+  visibility: hidden;
+  display: none;
+}
+.user-detail-login-item{
+  display: flex;
+}
+.user-password{
+  display: flex;
+}
+
+.user-password > input{
+  color: #ccc;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #cccccc5b;
+  width: 50%;
+  padding: 8px 12px;
+  font-size: 16px;
+  border-radius: 4px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  margin-bottom: 12px;
+}
+
+.user-password > input:hover,
+.user-password > input:focus-visible {
+  border-color: #007bff !important;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+
