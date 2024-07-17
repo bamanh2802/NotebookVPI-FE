@@ -22,9 +22,9 @@
     background-color: var(--navbar-base-color);
     display: flex;
     width: 70%;
-    max-width: 1300px;
+    max-width: 860px;
     border-radius: 40px;
-    padding: 32px;
+    padding: 18px;
     padding-top: 12px;
     flex-direction: column;
     color: #dad7d7;
@@ -86,8 +86,24 @@
     border-bottom: 1px solid #cccccc73;
 
 }
+.user-detail-password{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+.user-detail-password-change{
+  transition: all 0.3s ease;
+}
 .user-detail-login-item span {
     flex: 1;
+}
+.user-detail-password-change.hidden {
+  display: none;
+}
+
+.user-detail-password.hidden {
+  display: none;
 }
 .user-detail-info-main{
     display: flex;
@@ -122,14 +138,24 @@
     flex: 1;
     padding:  12px;
   }
-  .user-detail-edit{
-    padding: 8px 14px;
-    min-width: 80px;
-    cursor: pointer;
-    border: 1px solid #cccccc3f;
-    margin-right: 12px;
-    border-radius: 12px;
-  }
+  .user-detail-edit {
+  padding: 8px 14px;
+  min-width: 80px;
+  cursor: pointer;
+  border: 1px solid #cccccc3f;
+  margin-right: 12px;
+  border-radius: 12px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.user-detail-edit:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.user-detail-edit:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
   .user-detail-close {
     cursor: pointer;
     padding: 12px 15px;
@@ -141,12 +167,15 @@
   .user-detail-close:hover {
     background-color: #3a3a3a;
   }
-  .user-change-email{
+  .user-change-email, .user-change-name{
     width: 100%;
     display: flex;
     justify-content: space-between;
     padding: 12px 0;
     align-items: center;
+  }
+  .user-change-name{
+    padding: 6px 12px;
   }
   .user-change-email-input{
     color: #ccc;
@@ -167,11 +196,15 @@
   box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
   outline: none;
 }
-.user-change-email-btn{
+.user-change-email-btn,.user-change-name-btn{
   width: 30%;
   margin-left: auto;
 }
-.user-change-email-btn > button {
+.user-change-name-btn{
+  width: 50%;
+}
+.user-change-email-btn > button,
+.user-change-name-btn  >button {
   background-color: #3a3a3a;
 
 }

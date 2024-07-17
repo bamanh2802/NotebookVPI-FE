@@ -13,10 +13,9 @@ export async function loginForm(username, password) {
         },
         withCredentials: true
       });
-      // localStorage.setItem('authCookie', response.headers['set-cookie']);
-      return response; // Trả về response.data thay vì toàn bộ response
+      return response;
     } catch (error) {
       console.error('Error fetching notebooks:', error);
-      throw error; // Ném lại lỗi để xử lý ở trong hàm handleSubmit
+      throw error; 
     }
   }

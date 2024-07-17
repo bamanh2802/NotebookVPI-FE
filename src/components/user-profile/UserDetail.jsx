@@ -11,6 +11,7 @@ import { getUserById } from "../../service/userDetail";
 
 const UserDetail = ({isOpenUserDetail, closeUserDetail}) => {
     const [toggleChangeLogin, setToggleChangeLogin] = useState(false)
+    const [toggleChangeName, setToggleChangeName] = useState(false)
     const [userInfo, setUserInfo] = useState()
 
     const userId = localStorage.getItem("userid")
@@ -22,6 +23,10 @@ const UserDetail = ({isOpenUserDetail, closeUserDetail}) => {
     const handleEdittingLogin = ()=> {
         setToggleChangeLogin(!toggleChangeLogin)
     }
+    const handleChangeName = ()=> {
+        setToggleChangeName(!toggleChangeName)
+    }
+
 
     const handleGetUserById = async () => {
         try {
@@ -55,10 +60,26 @@ const UserDetail = ({isOpenUserDetail, closeUserDetail}) => {
                     <div className="user-detail-info">
                         <div className="user-detail-info-main">
                             <span className="user-detail-item">{userInfo.username}</span>
-                            <span className="user-detail-item">{userInfo.role}</span>
-                            <span className="user-detail-item">{userInfo.user_id}</span>
+                            
+                            
+                            {toggleChangeName ? (
+                                <>
+                                <div className="user-change-name">
+                                    <span>New User Name</span>
+                                    <input className="user-change-email-input" type="email" name="" id="" />
+                                </div>
+                                <div className="user-change-name-btn">
+                                    <button>Apply</button>
+                                </div>
+                                </>
+                            ) : (
+                                <>
+                                <span className="user-detail-item">{userInfo.role}</span>
+                                <span className="user-detail-item">{userInfo.user_id}</span>
+                                </>
+                            )}
                         </div>
-                        <div className="user-detail-edit">
+                        <div className="user-detail-edit" onClick={handleChangeName}>
                             <FontAwesomeIcon icon={faPen} size="xs" /> Edit
                         </div>
                     </div>
@@ -86,13 +107,11 @@ const UserDetail = ({isOpenUserDetail, closeUserDetail}) => {
                         <div className="user-detail-login-item">
                             
                             
-                            {!toggleChangeLogin ? (
-                                <>
+                            <div className={`user-detail-password ${toggleChangeLogin ? 'hidden' : ''}`}>
                                 <span>Password</span>
-                                <span>{userInfo.password.split('').map(() => '*').join('')}</span> 
-                                </>
-                            ) : (
-                            <>
+                                <span>*******</span>
+                            </div>
+                            <div className={`user-detail-password-change ${!toggleChangeLogin ? 'hidden' : ''}`}>
                                 <div className="user-password">
                                 <span>Old Password</span>
                                 <input type="password" name="" id="" />
@@ -108,8 +127,7 @@ const UserDetail = ({isOpenUserDetail, closeUserDetail}) => {
                                 <div className="user-change-email-btn">
                                     <button>Apply</button>
                                 </div>
-                            </>
-                            ) }
+                            </div>
 
                         </div>
                         
