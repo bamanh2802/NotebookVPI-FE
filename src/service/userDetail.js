@@ -1,6 +1,6 @@
 import axios from 'axios';
+import API_URL from './apiPath';
 
-const API_URL = 'http://127.0.0.1:8000';
 
 export async function getUserById(userId) {
     const response = await axios.get(`${API_URL}/get_user/${userId}`, 
