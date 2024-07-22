@@ -140,16 +140,16 @@ const UserDetail = ({isOpenUserDetail, closeUserDetail}) => {
                 {!toggleChangeLogin && (
                     <div className="user-detail-row-container">
                         <div className="user-detail-row-static">
-                            <span className="user-detail-static">Notebooks:5 </span>
-                            <span className="user-detail-static">Notes: 10 </span>
+                            <span className="user-detail-static">Notebooks <span>: 5</span> </span>
+                            <span className="user-detail-static">Notes   <span>: 10</span></span>
                         </div>
                         <div className="user-detail-row-static">
-                            <span className="user-detail-static">Created at: {userInfo.created_at}</span>
-                            <span className="user-detail-static">Time Used: {userInfo.total_time_used} hour</span>
+                            <span className="user-detail-static">Created at <span>: {userInfo.created_at}</span> </span>
+                            <span className="user-detail-static">Time Used: <span>{userInfo.total_time_used} hour </span></span>
                         </div>
                         <div className="user-detail-row-static">
-                            <span className="user-detail-static">Storage Used: {userInfo.total_resource_used}/250Mb</span>
-                            <span className="user-detail-static">Token Chat Used: {userInfo.total_chat_token}</span>
+                            <span className="user-detail-static">Storage Used<span>: {userInfo.total_resource_used}/250Mb </span></span>
+                            <span className="user-detail-static">Token Chat Used <span>: {userInfo.total_chat_token}</span></span>
                         </div>
                     </div>
                 )}

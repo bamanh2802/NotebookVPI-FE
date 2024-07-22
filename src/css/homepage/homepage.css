@@ -107,6 +107,10 @@
       padding: 10px;
       cursor: pointer;
     }
+    .notebook:hover{
+      transform: scale(1.04);
+      transition: ease-in .25s;
+    }
     .notebook-header-homepage{
       width: 100%;
       height: 40%;
