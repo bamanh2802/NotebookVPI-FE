@@ -20,3 +20,12 @@ export async function loginForm(username, password) {
       throw error; 
     }
   }
+
+export async function resetPassword(userEmail) {
+    const response = await axios.get(`${API_URL}/reset_password?email=${userEmail}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+  return response
+}
