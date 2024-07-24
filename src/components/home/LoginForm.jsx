@@ -15,6 +15,9 @@ const LoginForm = () => {
   const [session, setSession] = useState({})
   const [forgotPassword, setForgotPassWord] = useState(false)
   const [isSendPassword, setIsSendPassword] = useState(false)
+  const [isLoadingSendEmail, setIsLoadingSendEmail] = useState(false)
+  const [isLoadingResendEmail, setIsLoadingResendEmail] = useState(false)
+  const [countdown, setCountdown] = useState(0);
 
   const navigate = useNavigate();
 
@@ -30,13 +33,37 @@ const LoginForm = () => {
 
   const handleResendPassword = async (e) => {
     e.preventDefault();
+    setIsLoadingSendEmail(true)
     try {
       const data = await resetPassword(email)
+      if (data) {
+        setIsSendPassword(true)
+        setIsLoadingSendEmail(false)
+        setIsLoadingResendEmail(true)
+        setCountdown(15)
+      }
       console.log(data)
     } catch (e) {
       console.log(e)
     }
   }
+  // useEffect(() => {
+  //   if(isLoadingResendEmail) {
+  //     setTimeout(() => {
+  //       setIsLoadingResendEmail(false)
+  //     }, 15000)
+  //   }
+
+  // },[isLoadingResendEmail])
+  useEffect(() => {
+    let timer;
+    if (isLoadingResendEmail && countdown > 0) {
+      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+    } else if (countdown === 0) {
+      setIsLoadingResendEmail(false);
+    }
+    return () => clearTimeout(timer);
+  }, [isLoadingResendEmail, countdown]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -83,50 +110,51 @@ const LoginForm = () => {
   return (
     <div className='login-body'>
       <div className={`login-container ${forgotPassword ? 'disable' : ''}`}>
-        <form className="login-form" onSubmit={handleSubmit}>
+         <div className='logo-container'>
           <img
-            src="https://upload.wikimedia.org/wikipedia/vi/8/8b/Logo_Petrovietnam.svg"
-            alt="Petrovietnam Logo"
-            className="logo"
-          />
+              src="https://upload.wikimedia.org/wikipedia/vi/8/8b/Logo_Petrovietnam.svg"
+              alt="Petrovietnam Logo"
+              className="logo"
+            />
+         </div>
               <div className={`login-form-container ${forgotPassword ? 'disable' : ''}`}>
+                <form className="login-form" onSubmit={handleSubmit}>
 
-              <div className={`login-form-normal `}>
-                <h2>NotebookVPI Login</h2>
-                {error && <p className="error-message">{error}</p>}
-                <div className="input-group">
-                  <label htmlFor="username">Username</label>
-                  <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="input-group">
-                  <label htmlFor="password">Password</label>
-                  <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                </div>
-                <p onClick={handleTogglePassword} className='forgot-password-button'>Forgot Password?</p>
-                <button type="submit">Login</button>
-                <div className='line-split-login'></div>
-                <button className='button-login-microsoft' type="button" onClick={handleMicrosoftLogin}>
-                  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjR8068a50hnJwYx1pzj6iG5VsKAcFz4732w&s" alt="" />
-                  Sign in with Microsoft
-                </button>
-              </div>
-
-
-               <div className={`login-form-forgot ${forgotPassword ? 'disable' : ''}`}>
+                  <div className={`login-form-normal `}>
+                    <h2>NotebookVPI Login</h2>
+                    {error && <p className="error-message">{error}</p>}
+                    <div className="input-group">
+                      <label htmlFor="username">Username</label>
+                      <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="input-group">
+                      <label htmlFor="password">Password</label>
+                      <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <p onClick={handleTogglePassword} className='forgot-password-button'>Forgot Password?</p>
+                    <button type="submit">Login</button>
+                    <div className='line-split-login'></div>
+                    <button className='button-login-microsoft' type="button" onClick={handleMicrosoftLogin}>
+                      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjR8068a50hnJwYx1pzj6iG5VsKAcFz4732w&s" alt="" />
+                      Sign in with Microsoft
+                    </button>
+                  </div>
+                </form>
+               <form onSubmit={handleResendPassword} className={`login-form-forgot ${forgotPassword ? 'disable' : ''}`}>
                 <h2>Reset Password</h2>
                   <div>
                   
@@ -146,12 +174,25 @@ const LoginForm = () => {
                   )}
                   <div className="forgot-password-actions">
                     <span onClick={handleTogglePassword} className={`back-to-login ${isSendPassword ? 'success' : ''}`} >Back to Login</span>
-                    <span onClick={handleResendPassword} className={`send-password ${isSendPassword ? 'disable' : ''}`} type="submit" >Reset Password</span>
+                    <button className={`send-password ${isSendPassword ? 'disable' : ''} ${isLoadingSendEmail ? 'loading' : ''}`} type="submit" >
+                      
+                      {isLoadingSendEmail ? (
+                        <span>
+                        Sending.. &nbsp; <i class="fa-solid fa-circle-notch fa-spin"/></span>
+                      ) : (
+                        <span>
+                          Reset Password 
+                        </span>
+                      )}
+                      </button>
+                      
                 </div>
+                {isSendPassword ? (
+                          <span onClick={(() => (setIsSendPassword(false)))} className={`back-to-login back-send ${isLoadingResendEmail ? 'disable' : ''}`} >Resend Password ({countdown})</span>
+                      ) : (null)}
                   </div>
+              </form>
               </div>
-              </div>
-        </form>
       </div>
     </div>
   );

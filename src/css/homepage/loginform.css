@@ -112,10 +112,15 @@
     text-align: center; /* Center align the content */
   }
   
-  .login-form .logo {
-    width: 100px; /* Adjust the width as needed */
-    max-width: 100%; /* Ensure it doesn't exceed the container */
-    margin-bottom: 20px; /* Space between the image and the heading */
+  .logo {
+    width: 100px; 
+    max-width: 100%;
+    margin-bottom: 20px;
+  }
+  .logo-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
   
   .login-form h2 {
@@ -189,8 +194,20 @@
     border: solid 1px #ccc;
     width: 100%;
   }
-  .send-password{
-    cursor: no-drop;
+  .back-to-login.back-send{
+    border: solid 1px #ccc;
+    width: 340px;
+    display: block;
+  }
+  .back-to-login.disable{
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .send-password.loading{
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
   }
   .send-password.disable{
     display: none;
