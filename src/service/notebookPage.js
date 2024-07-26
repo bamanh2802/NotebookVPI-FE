@@ -17,7 +17,7 @@ export async function fetchNotebookById(notebookId) {
 
 export async function fetchSourceNotebook(notebookId) {
 
-const response = await axios.post(`${API_URL}/notebooks/${notebookId}/files`, {}, {
+const response = await axios.get(`${API_URL}/notebooks/${notebookId}/files`, {
     headers: {
     'Content-Type': 'application/json',
     },

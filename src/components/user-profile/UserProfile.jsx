@@ -19,6 +19,7 @@ const UserProfile = ({ setIsOpenUserDetail }) => {
       try {
         const data = await Logout();
         localStorage.removeItem("session")
+        localStorage.removeItem("session_manager")
         navigate('/login')
       } catch (error) {
         console.error('Error update notebooks:', error);

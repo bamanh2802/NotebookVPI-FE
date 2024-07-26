@@ -43,7 +43,7 @@ function HomePage() {
       setTimeout(() => {
         setIsDropdownOpen(false);
         setDropdownClass('');
-      }, 300); // Thời gian của animation
+      }, 300); 
     } else {
       setSelectedNotebookId(notebookId);
       setSelectedNotebookName(notebookName)
@@ -122,9 +122,11 @@ function HomePage() {
 
   useEffect(() => {
       fetchNotebooks();
-      setTimeout(() => {
-        setIsLoadingNotebook(true)
-      }, 1000)
+      if(notebooks) {
+        setTimeout(() => {
+          setIsLoadingNotebook(true)
+        }, 1000)
+      }
   }, []);
 
   const getDateOnly = (dateTimeString) => {
@@ -245,13 +247,13 @@ function HomePage() {
                                 className="notebook-option-item"
                                 onClick={() => handleOpenChangeMenu(notebook.notebook_id)}
                               >
-                                <i className="fa-solid fa-pen-to-square"></i>&nbsp;&nbsp;Edit
+                                <i className="fa-solid fa-pen-to-square"></i>&nbsp;&nbsp;Sửa
                               </div>
                               <div
                                 className="notebook-option-item"
                                 onClick={() => handleOpenDeleteMenu(notebook.notebook_id)}
                               >
-                                <i className="fa-solid fa-trash-can"></i>&nbsp;&nbsp;Delete
+                                <i className="fa-solid fa-trash-can"></i>&nbsp;&nbsp;Xóa Sổ tay
                               </div>
                             </div>
                           )}

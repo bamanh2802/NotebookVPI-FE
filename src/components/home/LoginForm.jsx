@@ -78,6 +78,11 @@ const LoginForm = () => {
         localStorage.setItem("username", data.data.username)
         localStorage.setItem("role", data.data.role)
         localStorage.setItem("userid", data.data.user_id)
+        localStorage.setItem('session_manager', JSON.stringify({
+          session_id: data.data.data.session_id,
+          end_time: data.data.data.end_time,
+          user_id: data.data.user_id
+        }));
         navigate('/')
       }
 

@@ -6,10 +6,12 @@ import LoginForm from './components/home/LoginForm';
 import { Provider } from 'react-redux';
 import store from './redux/Store';
 import ProtectedRoute from './components/home/PrivateRoute';
+import SessionManager from './components/home/SessionManager';
 
 function App() {
   return (
     <Provider store={store}>
+      <SessionManager />
       <Router>
         <Routes>
           <Route path="/login" element={<LoginForm />} />
