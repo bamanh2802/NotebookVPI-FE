@@ -3,21 +3,28 @@ import { createStore } from 'redux';
 // Định nghĩa reducer
 const initialState = {
   data: null,
+  allSourceByNotebook: [],
   isChatOpen: true,
   isTutorialOpen: false,
   isOpenSidebar: true,
   isOpenSource: false,
   notebooks: {},
+  isLoggedIn: false,
   successBotChat : null,
   userInfo: {
     userId: ''
   },
+  tempNote: null
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'UPDATE_DATA':
       return { ...state, data: action.payload };
+    case 'UPDATE_TEMP_NOTES':
+      return { ...state, tempNote: action.payload };
+    case 'UPDATE_FILES':
+      return { ...state, allSourceByNotebook: action.payload };
     case 'TOGGLE_CHAT':
       return { ...state, isChatOpen: !state.isChatOpen };
     case 'TOGGLE_TUTORIAL':
@@ -26,6 +33,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, isOpenSidebar: !state.isOpenSidebar };
     case 'TOGGLE_SOURCE':
       return { ...state, isOpenSource: !state.isOpenSource };
+    case 'LOGIN':
+      return { ...state, isLoggedIn: !state.isLoggedIn };
     case 'ADD_USER_MESSAGE':
       const { notebookIdUser, userMessage } = action.payload;
       const newUserMessage = { type: 'user', content: userMessage };

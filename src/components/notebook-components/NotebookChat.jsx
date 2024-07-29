@@ -70,18 +70,19 @@ function NotebookChat({ notebookId }) {
 
     useEffect(() => {
         if (isChatFullyOpened && lastMessageRef.current) {
-            lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => {
+                lastMessageRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 500)
         }
     }, [conversations, isChatFullyOpened]);
 
     
 
-    // Trigger the fully opened state after a delay (e.g., 300ms) to allow the chat to fully open
     useEffect(() => {
         if (shouldOpenChat) {
             const timer = setTimeout(() => {
                 setIsChatFullyOpened(true);
-            }, 300); // Adjust the delay as needed for your animation timing
+            }, 300); 
 
             return () => clearTimeout(timer);
         }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector, createStore } from 'react-redux';
 
 import '../../css/notebook/notebook.css'
@@ -7,6 +7,7 @@ import '../../css/notebook/notebook-item.css'
 import '../../css/notebook/notebook-tutorial.css'
 
 import NotebookTutorial from './NotebookTutorial';
+import { sendMessage } from '../../service/notebookPage';
 
 function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
   const [suggestQuestion, setSuggestQuestion] = useState([]);
@@ -17,8 +18,10 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
   const isTutorialOpen = useSelector((state) => state.isTutorialOpen);
   const botchat = useSelector((state) => state.successBotChat)
   const conversations = useSelector(state => state.notebooks[notebookId] || []);
-  const disableInput = countSource === 0;
+  const disableInput = countSource.length === 0;
+  const [selectedFiles, setSelectedFile] = useState([])
   const dispatch = useDispatch();
+
   
   const addUserMessage = (notebookId, userMessage) => (
     dispatch({
@@ -84,6 +87,10 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
     }
   }, [isTutorialOpen])
 
+  useEffect(() => {
+    setSelectedFile(countSource.map(item => item.file_id));
+  },[countSource])
+
 
 
 
@@ -120,17 +127,11 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
       toggleChat()
     }
     try {
-      const response = await fetch('http://localhost:3000/api/botchat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message: chatInput }),
-      });
-
-      const data = await response.json();
-      setNewBotMessage(data.reply)
-      successBotChat(conversations.length + 1, data.reply, notebookId)
+      const response = await sendMessage(notebookId, chatInput, selectedFiles);
+      console.log(response)
+      const botReply = response.data.msg.content;
+      setNewBotMessage(botReply)
+      successBotChat(conversations.length + 1, botReply, notebookId)
       
       
     } catch (error) {
@@ -140,7 +141,7 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
 
   const handleSubmit =(e) => {
     e.preventDefault();
-    if(chatInput) {
+    if(chatInput.trim()) {
       getMessageFromChatbot(chatInput)
     }
     
@@ -154,17 +155,17 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
     }
   }, [botchat])
 
-
   return (
     <>
-    <NotebookTutorial classOpen={classNotebookTutorial} onQuestionClick={handleQuestionClick}/>
-    <div className={`notebook-chat-block allow-suggest ${isTutorialOpen ? 'notebook-chat-block-hide-header' : ''}`}>
+    <NotebookTutorial notebookId={notebookId} classOpen={classNotebookTutorial} onQuestionClick={handleQuestionClick}/>
+    <div className={`notebook-chat-block allow-suggest ${isTutorialOpen ? 'notebook-chat-block-hide-header' : ''}`}
+    >
       {
         !isTutorialOpen ? (
           <div className={`notebook-chat-header ${selectedNotes.length > 0 ? 'tick-note-options' : ''}`}>
           {selectedNotes.length === 0 ? (
             suggestQuestion.map((suggest, index) => (
-              <div key={index} className={`notebook-chat-suggest ${countSource <= 0 ? 'notebook-chat-suggest-disabled' : ''}`} onClick={() => handleSubmitSuggest(suggest)}>
+              <div key={index} className={`notebook-chat-suggest ${countSource.length <= 0 ? 'notebook-chat-suggest-disabled' : ''}`} onClick={() => handleSubmitSuggest(suggest)}>
                 {suggest}
               </div>
             ))
@@ -217,7 +218,7 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
             <span>
               {selectedNotes.length > 0
                 ? `${selectedNotes.length} ghi chú`
-                : `${countSource} nguồn`}
+                : `${countSource.length} nguồn`}
             </span>
           </div>
           <div className="notebook-chat-input-text">

@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, CSSProperties } from 'react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 
+import HashLoader from "react-spinners/HashLoader";
 
 import RichTextEditor from '../text-edit/RichTextEditor';
 import NotebookChatBlock from '../chatbot/NotebookChatBlock';
@@ -12,8 +13,9 @@ import '../../css/notebook/notebook-chat.css';
 import '../../css/notebook/notebook-item.css';
 import { getNoteByNotebookId, createNewNote, deleteNoteByNotebookId } from '../../service/notebookPage';
 
+
 function NotebookMain({ notebookId }) {
-  const [countSource, setCountSource] = useState(0);
+  const [countSource, setCountSource] = useState([]);
   const [notes, setNotes] = useState([]);
   const [allNotesSelected, setAllNotesSelected] = useState(false);
   const [isActive, setIsActive] = useState(false);
@@ -22,11 +24,19 @@ function NotebookMain({ notebookId }) {
   const [selectedNoteContent, setSelectedNoteContent] = useState(null);
   const [isOpenDeleteMenu, setIsOpenDeleteMenu] = useState(false)
   const [isLoadingCreate, setIsLoadingCreate] = useState(false)
+  const [isLoadingGetNotes, setIsLoadingGetNotes] = useState(true)
 
 
   const dispatch = useDispatch();
   const data = useSelector((state) => state.data);
   const selectedNotes = notes.filter((note) => note.isChecked);
+  const newNoteTemp = useSelector((state) => state.tempNote)
+
+  useEffect(() => {
+    if(newNoteTemp && notebookId === newNoteTemp.notebookId && !isLoadingGetNotes) {
+      setNotes(prevNotes => [...prevNotes, newNoteTemp]);
+    }
+  },[newNoteTemp, isLoadingGetNotes])
   
 
   useEffect(() => {
@@ -34,20 +44,35 @@ function NotebookMain({ notebookId }) {
       setCountSource(data.countSource);
     }
   }, [data]);
-
-  useEffect(() => {
-    if(selectedNoteId === null) {
-      fetchNotes();
-    }
-  }, [selectedNoteId]);
+  // Quên mất lí do có cái này
+  // useEffect(() => {
+  //   if(selectedNoteId === null) {
+  //     fetchNotes();
+  //   }
+  // }, [selectedNoteId]);
 
   const fetchNotes = async () => {
     try {
       const data = await getNoteByNotebookId(notebookId)
       setNotes(data.notes)
+      if(newNoteTemp && notebookId === newNoteTemp.notebookId && !isLoadingGetNotes) {
+        setNotes(prevNotes => [...prevNotes, newNoteTemp]);
+      }
+      setIsLoadingGetNotes(false)
     } catch (error) {
       console.error('Error fetching notes:', error);
     }
+  }
+
+  const updateNoteById = async (noteId, name, content) => {
+    setNotes((prevNotes) => {
+      return prevNotes.map((note) => {
+        if (note.note_id === noteId) {
+          return { ...note, title: name, content: content };
+        }
+        return note;
+      });
+    });
   }
 
   useEffect(() => {
@@ -57,7 +82,7 @@ function NotebookMain({ notebookId }) {
   const handleCreateNote = async () => {
     setIsLoadingCreate(true)
     try {
-      const data = await createNewNote(notebookId)
+      const data = await createNewNote(notebookId, 'Untitled Note', 'Content')
       setIsLoadingCreate(false)
     } catch (error) {
       console.error('Error create note:', error);
@@ -115,6 +140,7 @@ const handleCloseDeleteMenu = () => {
     setSelectedNoteId(noteId);
     setSelectedNoteName(name);
     setSelectedNoteContent(content);
+    console.log(noteId, name, content)
     setIsActive(true)
   };
 
@@ -149,7 +175,7 @@ return (
     <div className="notebook-content-main">
       {notes.map((note) => (
         <div
-          className={`notebook-item ${note.isChecked ? 'ischecked' : ''}`}
+          className={`notebook-item ${note.isChecked ? 'ischecked' : ''} ${note.content === 'Đang tạo...' ? 'disable' : ''}`}
           key={note.note_id}
           onClick={(event) => {
             if (!event.target.closest('.ticknote')) {
@@ -157,19 +183,28 @@ return (
             }
           }}
         >
-          <div className={`ticknote ${!note.isChecked ? '' : 'active'}`}>
-            <input
-              type="checkbox"
-              id={`note${note.note_id}`}
-              className="custom-checkbox checkedbox"
-              checked={note.isChecked}
-              onChange={(event) => {
-                event.stopPropagation();
-                handleNoteCheck(note.note_id);
-              }}
+         {note.content === 'Đang tạo...' ? (
+          <div className='loading-note'>
+            <HashLoader
+              color="#0085ff"
+              size={30}
             />
-            <label htmlFor={`note${note.note_id}`} />
           </div>
+         ) : (
+           <div className={`ticknote ${!note.isChecked ? '' : 'active'}`}>
+           <input
+             type="checkbox"
+             id={`note${note.note_id}`}
+             className="custom-checkbox checkedbox"
+             checked={note.isChecked}
+             onChange={(event) => {
+               event.stopPropagation();
+               handleNoteCheck(note.note_id);
+             }}
+           />
+           <label htmlFor={`note${note.note_id}`} />
+         </div>
+         )}
           <div className="notebook-item-header">
             <div className="notebook-save-from">
               <i className="fa-regular fa-message" />
@@ -177,7 +212,7 @@ return (
             </div>
             <div className="notebook-item-name">{note.title}</div>
           </div>
-          <div className="notebook-item-content">{note.content}</div>
+          <div className="notebook-item-content" dangerouslySetInnerHTML={{ __html: note.content }} />
           <div className="notebook-item-footer" />
         </div>
       ))}
@@ -186,6 +221,7 @@ return (
     <NotebookChatBlock notebookId={notebookId} selectedNotes={selectedNotes} countSource={countSource} />
 
         <RichTextEditor
+        updateNote={updateNoteById}
         notebookId={notebookId}
         noteId={selectedNoteId}
         name={selectedNoteName}

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import NotebookSource  from './NotebookSource';
 import axios from 'axios';
 import { fetchSourceNotebook } from '../../service/notebookPage';
@@ -15,7 +14,7 @@ import '../../css/notebook/notebook-item.css'
 function NotebookSidebar({ notebookId }) {
     const [allSources, setAllSources] = useState([]);
     const [selectAll, setSelectAll] = useState(true); // Set selectAll to true by default
-    const [countSource, setCountSource] = useState(0);
+    const [countSource, setCountSource] = useState([]);
     const [sourceSelector, setSouceSelector] = useState()
     const [isOpenUploadFile, setIsOpenUploadFile] = useState(false);
     const [fileNames, setFileNames] = useState('');
@@ -43,11 +42,18 @@ function NotebookSidebar({ notebookId }) {
         notebookId: notebookId,
         countSource: countSource
     };
+    const listFilesNotebook = {
+        notebookId: notebookId,
+        countSource: allSources
+    }
 
     useEffect(() => {
         dispatch({ type: 'UPDATE_DATA', payload: data });
     }, [dispatch, data]);
+    useEffect(() => {
+        dispatch({ type: 'UPDATE_FILES', payload: listFilesNotebook });
 
+    })
     useEffect(() => {
         if(allSources.length === countSource){
         }
@@ -76,7 +82,7 @@ function NotebookSidebar({ notebookId }) {
             const dataSort = data.sort((a, b) => new Date(a.uploaded_at) - new Date(b.uploaded_at))
             setAllSources(dataSort.map(source => ({ ...source, isSelected: true }))); 
             setSourceListSelector(dataSort)
-            setCountSource(dataSort.length)
+            setCountSource(dataSort)
         } catch (error) {
             console.log('Get source Error: ', error)
         }
@@ -103,7 +109,7 @@ function NotebookSidebar({ notebookId }) {
       
           setAllSources(updatedSources);
           setSourceListSelector(updatedSources);
-          setCountSource(updatedSources.length);
+          setCountSource(updatedSources);
         } catch (error) {
           console.log('Get source Error: ', error);
         }
@@ -118,7 +124,7 @@ function NotebookSidebar({ notebookId }) {
     const handleSelectAll = () => {
         setSelectAll(!selectAll);
         setAllSources(prevSources => prevSources.map(source => ({ ...source, isSelected: !selectAll })));
-        setCountSource(selectAll ? 0 : allSources.length);
+        setCountSource(selectAll ? [] : allSources);
     };
 
     const handleSourceSelect = (sourceId) => {
@@ -130,7 +136,7 @@ function NotebookSidebar({ notebookId }) {
             ));
             
             const selectedSources = newSources.filter(source => source.isSelected);
-            setCountSource(selectedSources.length);
+            setCountSource(selectedSources);
             setSelectAll(selectedSources.length === newSources.length);
             setSourceListSelector(selectedSources)
             return newSources;
@@ -181,39 +187,12 @@ function NotebookSidebar({ notebookId }) {
     
         setIsLoading(false);
       };
-    //   const handleFileChanges = async (event) => {
-    //     const selectedFile = event.target.files;
-    //     setFileNames(selectedFile); 
-    //     setIsLoading(true);
-    //     setIsOpenUploadFile(false)
-    //         const formData = new FormData();
-    //         formData.append('file', selectedFile);
-        
-    //         try {
-    //             const response = await axios.post(`http://127.0.0.1:8000/notebooks/${notebookId}/files/upload`, formData, {
-    //               headers: {
-    //                 'Content-Type': 'multipart/form-data'
-    //               },
-    //             withCredentials: true
-    //             });
-          
-    //             if (response.status === 200) {
-    //                 fetchAllSourcesAgain()
-    //             } else {
-    //               alert('Failed to upload file');
-    //             }
-    //           } catch (error) {
-    //             console.error('Error uploading file:', error);
-    //             alert('Error uploading file');
-    //           } finally {
-    //             setIsLoading(false);  // Kết thúc trạng thái tải lên
-    //           }
-    //       };
+   
 
     return (
        <>
        {isOpenSource ? (
-            <NotebookSource source={sourceSelector}/>
+            <NotebookSource source={sourceSelector} notebookId={notebookId}/>
         ) : (
             <div className={`sidebar ${isOpenSidebar ? '' : 'sidebar-shortcut'}`}>
                 <div className={`sidebar-header ${isOpenSidebar ? '' : 'sidebar-shortcut'}`}>
@@ -245,7 +224,7 @@ function NotebookSidebar({ notebookId }) {
                 </div>
                 <div className={`scroll-source-area ${isOpenSidebar ? '' : 'sidebar-shortcut'}`}>
                     {allSources.map((source) => (
-                        <div className={`source-item ${isOpenSidebar ? '' : 'sidebar-shortcut'}`} key={source.sourceId}>
+                        <div onClick={() => {handleOpenSource(source)}} className={`source-item ${isOpenSidebar ? '' : 'sidebar-shortcut'}`} key={source.sourceId}>
                             <div className="source-item-option ">
                                 <i className="fa-solid fa-ellipsis-vertical source-icon-option" />
                                 {
@@ -273,8 +252,8 @@ function NotebookSidebar({ notebookId }) {
                                     </a>
                                 </div>
                             </div>
-                            <div className={`source-item-name ${isOpenSidebar ? '' : 'not-active'}`}  onClick={() => {handleOpenSource(source)}}>{source.file_name}</div>
-                            <div className={`source-item-checkbox ${isOpenSidebar ? '' : 'not-active'}`}>
+                            <div className={`source-item-name ${isOpenSidebar ? '' : 'not-active'}`}  >{source.file_name}</div>
+                            <div onClick={(e) => e.stopPropagation()} className={`source-item-checkbox ${isOpenSidebar ? '' : 'not-active'}`}>
                                 <input
                                     type="checkbox"
                                     id={source.file_id}

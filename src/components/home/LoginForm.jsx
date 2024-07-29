@@ -5,6 +5,7 @@ import axios from 'axios';
 import { msalInstance, initializeMsalInstance } from '../../config/msalConfig';
 import { InteractionType } from '@azure/msal-browser';
 import { loginForm, resetPassword } from '../../service/LoginForm';
+import logo from '../../img/logo.png'
 
 
 const LoginForm = () => {
@@ -47,14 +48,6 @@ const LoginForm = () => {
       console.log(e)
     }
   }
-  // useEffect(() => {
-  //   if(isLoadingResendEmail) {
-  //     setTimeout(() => {
-  //       setIsLoadingResendEmail(false)
-  //     }, 15000)
-  //   }
-
-  // },[isLoadingResendEmail])
   useEffect(() => {
     let timer;
     if (isLoadingResendEmail && countdown > 0) {
@@ -117,7 +110,7 @@ const LoginForm = () => {
       <div className={`login-container ${forgotPassword ? 'disable' : ''}`}>
          <div className='logo-container'>
           <img
-              src="https://upload.wikimedia.org/wikipedia/vi/8/8b/Logo_Petrovietnam.svg"
+              src={logo}
               alt="Petrovietnam Logo"
               className="logo"
             />

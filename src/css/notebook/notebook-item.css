@@ -40,6 +40,9 @@
     transition: border-color 0.3s ease;
     animation: fadeIn 0.5s ease-in-out;
 }
+.notebook-item.disable{
+    pointer-events: none;
+}
 
 @keyframes fadeIn {
     0% {
@@ -55,6 +58,11 @@
     right: 24px;
     top: 24px;
     display: none;
+}
+.loading-note{
+    position: absolute;
+    right: 12px;
+    top: 12px;
 }
 
 .notebook-item:hover .ticknote{
@@ -83,6 +91,8 @@
     font-size: 0.9rem;
     overflow: hidden;
     position: relative;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 .notebook-item-content::after{
     content: '';

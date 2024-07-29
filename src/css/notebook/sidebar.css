@@ -249,8 +249,15 @@
     top: 10px;
     cursor: pointer;
   }
+  .notebook-source-main{
+    width: 100%;
+  }
   .notebook-source-content{
     padding-top: 24px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: calc(100vh - 100px);
+    width: 100%;
   }
   .file-upload {
     position: fixed;

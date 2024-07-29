@@ -193,7 +193,7 @@ function HomePage() {
     <div>
       <div id="home-page" onClick={handleClickOutside}>
         <div className="header">
-          <div className="logo">NotebookVPI</div>
+          <div className="logo-name">NotebookVPI</div>
           <div className="icons">
             <div className="notebook-icons">
               <span className='user-icon' onClick={handleToggleUserMenu}>

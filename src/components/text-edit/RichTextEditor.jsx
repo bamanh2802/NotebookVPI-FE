@@ -1,50 +1,65 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import ReactQuill from 'react-quill';
-import '../text-edit/text-editor.css'
+import '../text-edit/text-editor.css';
 import 'react-quill/dist/quill.snow.css'; 
-import { noteRenameById } from '../../service/notebookPage';
+import { debounce } from 'lodash';
+import { noteRenameById, updateContentNote } from '../../service/notebookPage';
 
-const CHARACTER_LIMIT = 2000;
+const CHARACTER_LIMIT = 5500;
 
-const RichTextEditor = ({notebookId, noteId, name, content, setSelectedNoteId, isOpen }) => {
+const RichTextEditor = ({ updateNote, notebookId, noteId, name, content, setSelectedNoteId, isOpen }) => {
   const [editorContent, setEditorContent] = useState('');
   const [editorName, setEditorName] = useState('');
   const [isNotActive, setIsNotActive] = useState(false);
   const [characterCount, setCharacterCount] = useState('');
 
   useEffect(() => {
-    if(content) {
+    if (content) {
       setEditorContent(content);
-      setCharacterCount(content.length)
+      setCharacterCount(content.length);
     }
-  },[content])
-  useEffect(() => {
-    setEditorName(name)
-  },[name])
+  }, [content]);
 
-  const handleChangeContent = (value) => {
+  useEffect(() => {
+    setEditorName(name);
+    setEditorContent(content);
+  }, [name, content]);
+
+  const changeContent = async (value) => {
     if (value.length <= CHARACTER_LIMIT) {
-      setEditorContent(value);
+      setEditorContent(value.trim());
       setCharacterCount(value.length);
-      // Gọi api sửa content
+      debouncedHandleChangeContent(notebookId, noteId, value.trim());
+      updateNote(noteId, editorName, editorContent);
     } else {
-      // Nếu vượt quá giới hạn, chỉ cập nhật bộ đếm ký tự
       setCharacterCount(value.length);
     }
   };
-  const handleNameChange = async (event) => {
-    setEditorName(event.target.value);
+
+  const handleChangeContent = async (notebookId, noteId, content) => {
     try {
-      const data = await noteRenameById(notebookId, noteId, event.target.value)
+      const data = await updateContentNote(notebookId, noteId, content)
+    } catch (e) {
+      console.log(e)
+    }
+  };
+
+  const debouncedHandleChangeContent = useCallback(debounce(handleChangeContent, 1000), []);
+
+  const handleNameChange = async (event) => {
+    try {
+      const data = await noteRenameById(notebookId, noteId, event.target.value);
+      updateNote(noteId, editorName, editorContent);
     } catch (error) {
-      console.log('Rename Error')
+      console.log('Rename Error');
     }
   };
 
   const handleExitClick = () => {
-    setIsNotActive(!isNotActive); 
+    setIsNotActive(!isNotActive);
     setSelectedNoteId(null);
   };
+
   return (
     <div className={`rich-text-editor text-note-input ${isOpen}`}>
       <div className='text-editor-header'>
@@ -53,7 +68,8 @@ const RichTextEditor = ({notebookId, noteId, name, content, setSelectedNoteId, i
             type="text"
             className='note-header-name'
             value={editorName}
-            onChange={handleNameChange}
+            onChange={(e) => setEditorName(e.target.value)}
+            onBlur={handleNameChange}
           />
           <div className='note-header-type'>Ghi chú do con người viết</div>
         </div>
@@ -64,7 +80,7 @@ const RichTextEditor = ({notebookId, noteId, name, content, setSelectedNoteId, i
       <ReactQuill
         className='text-editor-main'
         value={editorContent}
-        onChange={handleChangeContent}
+        onChange={changeContent}
         placeholder=""
         modules={{
           toolbar: [

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 
+  
 const SessionManager = ({  }) => {
-  const [timeRemaining, setTimeRemaining] = useState(null);
-  const [sessionExpired, setSessionExpired] = useState(false);
   const [warning, setWarning] = useState(false);
+  const [openNoti, setOpenNoti] = useState(false);
   const sessionData = JSON.parse(localStorage.getItem('session_manager'))
 
   useEffect(() => {
@@ -16,43 +17,51 @@ const SessionManager = ({  }) => {
 
         if (remainingTime <= 0) {
           clearInterval(interval);
-          setSessionExpired(true);
-          // Xóa session_id
-          localStorage.removeItem('session')
+          setOpenNoti(true);
           const { session_id, ...rest } = sessionData;
-          console.log('Session ID removed:', rest);
-          // Thực hiện các hành động khác khi session hết hạn
         } else {
-          setTimeRemaining(remainingTime);
 
-          // Cảnh báo người dùng trước khi session hết hạn (ví dụ: 1 phút)
           if (remainingTime <= 60000 && !warning) {
             setWarning(true);
+            toast('The login session is about to expire!',
+              {
+                style: {
+                  borderRadius: '10px',
+                },
+              }
+            );
           }
         }
-      }, 1000);
+      }, 60000);
 
       return () => clearInterval(interval);
     }
   }, [sessionData, warning]);
 
-  const formatTime = (ms) => {
-    const minutes = Math.floor(ms / 60000);
-    const seconds = ((ms % 60000) / 1000).toFixed(0);
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-  };
+  const handleAcceptNoti = () => {
+    localStorage.removeItem('session')
+    localStorage.removeItem('session_manager')
+    setOpenNoti(false);
+    window.location.reload();
+  }
+
 
   return (
-    <div>
-      {sessionExpired ? (
-        <p>Session has expired. Please log in again.</p>
-      ) : (
-        <p>Time remaining: {timeRemaining !== null ? formatTime(timeRemaining) : 'Calculating...'}</p>
+    <>
+      {openNoti && (
+        <div className='session-check'>
+          <div className='session-container'>
+            <img src="https://cdn-icons-png.flaticon.com/512/6606/6606292.png" alt="" />
+
+            <h3>Session has expired</h3>
+            <p>Don't worry, just log in again to continue using</p>
+          <button  onClick={handleAcceptNoti}>Refresh</button>
+          </div>
+        </div>
       )}
-      {warning && !sessionExpired && (
-        <p style={{ color: 'red' }}>Your session is about to expire in less than a minute!</p>
-      )}
-    </div>
+      <Toaster position="top-right" />
+    </>
+    
   );
 };
 

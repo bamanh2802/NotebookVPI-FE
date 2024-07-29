@@ -28,23 +28,27 @@
     padding: 32px;
     display: flex;
     flex-direction: column;
+    height: 80%;
     justify-content: space-between;
     position: absolute;
     z-index: 1;
     border-radius: 32px 32px 0 0;
-    bottom: 100px; /* Ensure the initial position */
-    display: none;
+    bottom: 100px; 
+    display: block;
     font-size: 0.95rem;
+    transform: translateY(100%);
+    opacity: 0;
+    transition: transform 0.5s ease-out, opacity 0.5s ease-out;
 }
 
 .notebook-tutorial-opened {
-    display: block;
-    animation: slideUpFadeIn 0.5s ease-out forwards;
+    transform: translateY(0);
+    opacity: 1;
 }
 
-.notebook-tutorial-closed {
+/* .notebook-tutorial-closed {
     animation: slideDownFadeOut 0.5s ease-out forwards;
-}
+} */
   
 
 
@@ -87,7 +91,8 @@
   
   
   .notebook-tutorial-card:hover, .notebook-tutorial-question:hover {
-    background-color: #3c3c3c;
+    background-color: #4b505a;
+
   }
   
   .notebook-tutorial-footer{
