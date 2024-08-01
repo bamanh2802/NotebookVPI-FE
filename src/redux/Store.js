@@ -3,7 +3,7 @@ import { createStore } from 'redux';
 // Định nghĩa reducer
 const initialState = {
   data: null,
-  allSourceByNotebook: [],
+  allSourceByNotebook: {},
   isChatOpen: true,
   isTutorialOpen: false,
   isOpenSidebar: true,
@@ -14,7 +14,9 @@ const initialState = {
   userInfo: {
     userId: ''
   },
-  tempNote: null
+  tempNotes: [],
+  notebookSummary: {},
+  chunkId: []
 };
 
 const reducer = (state = initialState, action) => {
@@ -22,7 +24,24 @@ const reducer = (state = initialState, action) => {
     case 'UPDATE_DATA':
       return { ...state, data: action.payload };
     case 'UPDATE_TEMP_NOTES':
-      return { ...state, tempNote: action.payload };
+      return { ...state, tempNotes: [...state.tempNotes, action.payload] };
+    case 'ADD_CHUNK_ID':
+      return { ...state, chunkId: [...state.chunkId, action.payload] };
+    case 'REMOVE_TEMP_NOTES':
+      return {
+        ...state,
+        tempNotes: state.tempNotes.filter(
+          (note) => note.notebookId !== action.payload.notebookId
+        )
+      };
+    case 'UPDATE_NOTEBOOK_SUMMARY':
+      return {
+        ...state,
+        notebookSummary: {
+          ...state.notebookSummary,
+          [action.payload.notebookId]: action.payload.summary
+        }
+      };
     case 'UPDATE_FILES':
       return { ...state, allSourceByNotebook: action.payload };
     case 'TOGGLE_CHAT':
@@ -56,13 +75,13 @@ const reducer = (state = initialState, action) => {
         },
       };
     case 'UPDATE_BOT_MESSAGE':
-      const { notebookId, messageIndex, newContent } = action.payload;
+      const { notebookId, messageIndex, newContent, newChunkId } = action.payload;
       return {
         ...state,
         notebooks: {
           ...state.notebooks,
           [notebookId]: state.notebooks[notebookId].map((msg, index) =>
-            index === messageIndex ? { ...msg, content: newContent, loading: false } : msg
+            index === messageIndex ? { ...msg, content: newContent, loading: false, chunkId: newChunkId || msg.chunkId } : msg
           ),
         },
       };

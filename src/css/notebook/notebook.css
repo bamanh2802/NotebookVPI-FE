@@ -2,6 +2,7 @@
 *{
   box-sizing: border-box;
   font-size: (--base-font-size);
+  margin: 0;
 }
 body {
     background-color: #1a1a1a;
@@ -100,7 +101,7 @@ input[type="checkbox"].custom-checkbox:checked + label:after {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background: radial-gradient(circle, rgba(0, 0, 0, 0.336), transparent);
+    background: radial-gradient(circle at 10% 20%, rgb(0, 0, 0) 0%, rgb(64, 64, 64) 90.2%);
     border-radius: 10px;
   }
 

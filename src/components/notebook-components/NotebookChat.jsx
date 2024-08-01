@@ -74,6 +74,7 @@ function NotebookChat({ notebookId }) {
                 lastMessageRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }, 500)
         }
+
     }, [conversations, isChatFullyOpened]);
 
     
@@ -102,7 +103,7 @@ function NotebookChat({ notebookId }) {
                                     {message.user === 'User' ? (
                                         <div className="user-message-content">{message.message}</div>
                                     ) : (
-                                        <AssistantMessage message={message.assistant} />
+                                        <AssistantMessage onClickCloseChat={closeNotebookChat} notebookId={notebookId} message={message.assistant} />
                                     )}
                                 </div>
                             ))}
@@ -119,7 +120,7 @@ function NotebookChat({ notebookId }) {
 
                                     
                                 ) : (
-                                        <AssistantMessage message={message.content} isLoading={message.loading} />
+                                        <AssistantMessage onClickCloseChat={closeNotebookChat} notebookId={notebookId} message={message.content} isLoading={message.loading} />
                                     )
 
                                 }

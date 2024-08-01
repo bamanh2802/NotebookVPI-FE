@@ -196,6 +196,9 @@ function HomePage() {
           <div className="logo-name">NotebookVPI</div>
           <div className="icons">
             <div className="notebook-icons">
+              <span className='theme-icon'>
+              <i class="fa-regular fa-sun"></i>
+              </span>
               <span className='user-icon' onClick={handleToggleUserMenu}>
                 {/* <span className={`user-profile-username ${!isOpenUserMenu ? 'show' : ''}`}>{userName}</span> */}
                 <i className="fa-regular fa-user"></i>

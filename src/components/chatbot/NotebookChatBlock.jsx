@@ -12,8 +12,7 @@ import { sendMessage } from '../../service/notebookPage';
 function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
   const [suggestQuestion, setSuggestQuestion] = useState([]);
   const [chatInput, setChatInput] = useState('');
-  const [newBotMessage, setNewBotMessage] = useState()
-  const [classNotebookTutorial, setClassNotebookTutorial] = useState('notebook-tutorial-closed');
+  const [classNotebookTutorial, setClassNotebookTutorial] = useState(false);
   const isChatOpen = useSelector((state) => state.isChatOpen);
   const isTutorialOpen = useSelector((state) => state.isTutorialOpen);
   const botchat = useSelector((state) => state.successBotChat)
@@ -21,6 +20,7 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
   const disableInput = countSource.length === 0;
   const [selectedFiles, setSelectedFile] = useState([])
   const dispatch = useDispatch();
+  const [chunkId, setChunkId] = useState([])
 
   
   const addUserMessage = (notebookId, userMessage) => (
@@ -46,17 +46,19 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
       payload: { 
         notebookId: notebookId, 
         messageIndex: messageIndex,
-        newContent: newContent
+        newContent: newContent,
+        newChunkId: chunkId
       },
     })
   }
-  const successBotChat = (messageIndex, newContent, notebookId) => {
+  const successBotChat = (messageIndex, newContent, notebookId, chunkId) => {
     dispatch({
       type: 'SET_SUCCESS_BOT_CHAT',
       payload: {
         messageIndex,
         newContent,
         notebookId,
+        chunkId
       }
     })
   }
@@ -64,7 +66,7 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
   const toggleChat = () => {
     dispatch({ type: 'TOGGLE_CHAT' });
     if(isTutorialOpen){
-      setClassNotebookTutorial('notebook-tutorial-closed')
+      setClassNotebookTutorial(false)
       dispatch({ type: 'TOGGLE_TUTORIAL' });
     }
   };
@@ -76,14 +78,15 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
     }
   };
 
+
   useEffect(() => {
     if(isTutorialOpen) {
       if(!isChatOpen) {
         toggleChat()
       }
-      setClassNotebookTutorial('notebook-tutorial-opened')
+      setClassNotebookTutorial(true)
     } else {
-      setClassNotebookTutorial('notebook-tutorial-closed')
+      setClassNotebookTutorial(false)
     }
   }, [isTutorialOpen])
 
@@ -129,9 +132,16 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
     try {
       const response = await sendMessage(notebookId, chatInput, selectedFiles);
       console.log(response)
-      const botReply = response.data.msg.content;
-      setNewBotMessage(botReply)
-      successBotChat(conversations.length + 1, botReply, notebookId)
+      if(response.status === 200) {
+        const botReply = response.data.message;
+        const jsonString = response.data.context.replace(/'/g, '"');
+        const context = JSON.parse(jsonString);
+        dispatch({
+          type: 'ADD_CHUNK_ID',
+          payload: context
+        })
+        successBotChat(conversations.length + 1, botReply, notebookId, chunkId)
+      }
       
       
     } catch (error) {
@@ -157,7 +167,7 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
 
   return (
     <>
-    <NotebookTutorial notebookId={notebookId} classOpen={classNotebookTutorial} onQuestionClick={handleQuestionClick}/>
+    <NotebookTutorial notebookId={notebookId} closeTutorial={toggleTutorial} classOpen={classNotebookTutorial} onQuestionClick={handleQuestionClick}/>
     <div className={`notebook-chat-block allow-suggest ${isTutorialOpen ? 'notebook-chat-block-hide-header' : ''}`}
     >
       {

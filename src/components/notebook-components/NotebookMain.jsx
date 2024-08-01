@@ -13,7 +13,6 @@ import '../../css/notebook/notebook-chat.css';
 import '../../css/notebook/notebook-item.css';
 import { getNoteByNotebookId, createNewNote, deleteNoteByNotebookId } from '../../service/notebookPage';
 
-
 function NotebookMain({ notebookId }) {
   const [countSource, setCountSource] = useState([]);
   const [notes, setNotes] = useState([]);
@@ -24,19 +23,23 @@ function NotebookMain({ notebookId }) {
   const [selectedNoteContent, setSelectedNoteContent] = useState(null);
   const [isOpenDeleteMenu, setIsOpenDeleteMenu] = useState(false)
   const [isLoadingCreate, setIsLoadingCreate] = useState(false)
-  const [isLoadingGetNotes, setIsLoadingGetNotes] = useState(true)
 
 
   const dispatch = useDispatch();
   const data = useSelector((state) => state.data);
   const selectedNotes = notes.filter((note) => note.isChecked);
-  const newNoteTemp = useSelector((state) => state.tempNote)
+  const newNoteTemp = useSelector((state) => state.tempNotes)
 
-  useEffect(() => {
-    if(newNoteTemp && notebookId === newNoteTemp.notebookId && !isLoadingGetNotes) {
-      setNotes(prevNotes => [...prevNotes, newNoteTemp]);
-    }
-  },[newNoteTemp, isLoadingGetNotes])
+  // useEffect(() => {
+  //   console.log(newNoteTemp)
+  //   if (newNoteTemp) {
+  //     setNotes(prevNotes => [
+  //       ...newNoteTemp.filter(note => note.notebookId === notebookId),
+  //       ...prevNotes
+  //     ]);
+  //   }
+    
+  // },[newNoteTemp, isLoadingGetNotes])
   
 
   useEffect(() => {
@@ -44,27 +47,27 @@ function NotebookMain({ notebookId }) {
       setCountSource(data.countSource);
     }
   }, [data]);
-  // Quên mất lí do có cái này
-  // useEffect(() => {
-  //   if(selectedNoteId === null) {
-  //     fetchNotes();
-  //   }
-  // }, [selectedNoteId]);
+
+  
+
 
   const fetchNotes = async () => {
     try {
       const data = await getNoteByNotebookId(notebookId)
-      setNotes(data.notes)
-      if(newNoteTemp && notebookId === newNoteTemp.notebookId && !isLoadingGetNotes) {
-        setNotes(prevNotes => [...prevNotes, newNoteTemp]);
+      setNotes(data.notes.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)))
+      if (newNoteTemp) {
+        setNotes(prevNotes => [
+          ...newNoteTemp.filter(note => note.notebookId === notebookId),
+          ...prevNotes
+        ]);
       }
-      setIsLoadingGetNotes(false)
     } catch (error) {
       console.error('Error fetching notes:', error);
     }
   }
 
   const updateNoteById = async (noteId, name, content) => {
+    console.log(content)
     setNotes((prevNotes) => {
       return prevNotes.map((note) => {
         if (note.note_id === noteId) {
@@ -75,14 +78,15 @@ function NotebookMain({ notebookId }) {
     });
   }
 
+
   useEffect(() => {
     fetchNotes();
-  }, [notebookId]);
+  }, [notebookId, newNoteTemp]);
 
   const handleCreateNote = async () => {
     setIsLoadingCreate(true)
     try {
-      const data = await createNewNote(notebookId, 'Untitled Note', 'Content')
+      const data = await createNewNote(notebookId, 'Untitled Note', 'Content', '0')
       setIsLoadingCreate(false)
     } catch (error) {
       console.error('Error create note:', error);
@@ -132,6 +136,7 @@ const handleCloseDeleteMenu = () => {
   };
 
   const closeTextEditor = () => {
+    setIsActive(false)
     fetchNotes()
     setSelectedNoteId(null);
   };
@@ -140,7 +145,6 @@ const handleCloseDeleteMenu = () => {
     setSelectedNoteId(noteId);
     setSelectedNoteName(name);
     setSelectedNoteContent(content);
-    console.log(noteId, name, content)
     setIsActive(true)
   };
 
@@ -227,7 +231,8 @@ return (
         name={selectedNoteName}
         content={selectedNoteContent}
         setSelectedNoteId={setSelectedNoteId}
-        isOpen={selectedNoteId !== null ? 'show' : ''}
+        isOpen={isActive ? 'show' : ''}
+        setIsActive={() => (setIsActive(false))}
       />
       <div className={`background-shadow ${selectedNoteId ? 'show' : ''}`} onClick={closeTextEditor}></div>
       

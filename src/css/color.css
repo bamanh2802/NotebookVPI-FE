@@ -13,3 +13,17 @@
     --note-suggest-background: #3b3f47;
     
 }
+[data-theme="light"] {
+    --background-color: #f0f0f0;
+    --icon-color: #333;
+    --base-font-size: 16px;
+    --menu-font-color: #333;
+    --background-base-web: #ffffff;
+    --navbar-base-color: #e0e0e0;
+    --menu-hover-color: #d0d0d0;
+    --dropdown-option-hover: #c0c0c0;
+    --notebook-item-background: #f5f5f5;
+    --note-item-checked: #e0e0e0;
+    --note-editer-header: #e0e0e0;
+    --note-suggest-background: #d0d0d0;
+}

@@ -7,16 +7,15 @@ import { noteRenameById, updateContentNote } from '../../service/notebookPage';
 
 const CHARACTER_LIMIT = 5500;
 
-const RichTextEditor = ({ updateNote, notebookId, noteId, name, content, setSelectedNoteId, isOpen }) => {
+const RichTextEditor = ({ updateNote, notebookId, noteId, name, content, setSelectedNoteId, isOpen, setIsActive }) => {
   const [editorContent, setEditorContent] = useState('');
   const [editorName, setEditorName] = useState('');
   const [isNotActive, setIsNotActive] = useState(false);
   const [characterCount, setCharacterCount] = useState('');
-
   useEffect(() => {
     if (content) {
-      setEditorContent(content);
-      setCharacterCount(content.length);
+    setEditorContent(content);
+    setCharacterCount(content.length);
     }
   }, [content]);
 
@@ -30,7 +29,7 @@ const RichTextEditor = ({ updateNote, notebookId, noteId, name, content, setSele
       setEditorContent(value.trim());
       setCharacterCount(value.length);
       debouncedHandleChangeContent(notebookId, noteId, value.trim());
-      updateNote(noteId, editorName, editorContent);
+      debouncedUpdateNote(noteId, editorName, value.trim());
     } else {
       setCharacterCount(value.length);
     }
@@ -45,6 +44,7 @@ const RichTextEditor = ({ updateNote, notebookId, noteId, name, content, setSele
   };
 
   const debouncedHandleChangeContent = useCallback(debounce(handleChangeContent, 1000), []);
+  const debouncedUpdateNote = useCallback(debounce(updateNote, 1000), []);
 
   const handleNameChange = async (event) => {
     try {
@@ -56,6 +56,7 @@ const RichTextEditor = ({ updateNote, notebookId, noteId, name, content, setSele
   };
 
   const handleExitClick = () => {
+    setIsActive()
     setIsNotActive(!isNotActive);
     setSelectedNoteId(null);
   };

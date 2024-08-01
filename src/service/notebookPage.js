@@ -39,7 +39,8 @@ export async function getNoteByNotebookId(notebookId) {
   
     return response.data;
   }
-export async function createNewNote(notebookId, title, content) {
+export async function createNewNote(notebookId, title, content, ref) {
+    console.log(content)
       const response = await axios.post(`${API_URL}/notebooks/${notebookId}/notes/new?title=${title}&content=${content}`, {
       },
       {

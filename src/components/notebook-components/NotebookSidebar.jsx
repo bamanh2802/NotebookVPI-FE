@@ -27,7 +27,6 @@ function NotebookSidebar({ notebookId }) {
     const isOpenSidebar = useSelector((state) => state.isOpenSidebar);
     const isOpenSource = useSelector((state) => state.isOpenSource)
 
-    const fileInputRef = useRef(null);
 
     const handleOpenUploadFile = () => {
         setIsOpenUploadFile(true)
@@ -52,8 +51,7 @@ function NotebookSidebar({ notebookId }) {
     }, [dispatch, data]);
     useEffect(() => {
         dispatch({ type: 'UPDATE_FILES', payload: listFilesNotebook });
-
-    })
+    }, [allSources, dispatch])
     useEffect(() => {
         if(allSources.length === countSource){
         }
