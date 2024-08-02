@@ -120,3 +120,14 @@ export async function getContextById(notebookId, fileId) {
   return response
 
 }
+
+export async function deleteFileById(notebookId, fileId){
+  const response = await axios.post(`${API_URL}/notebooks/${notebookId}/files/${fileId}/delete`, {}, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Accept': 'application/json'
+    },
+    withCredentials: true
+  })
+  return response
+}

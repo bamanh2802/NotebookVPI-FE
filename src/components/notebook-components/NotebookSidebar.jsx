@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import NotebookSource  from './NotebookSource';
 import axios from 'axios';
-import { fetchSourceNotebook } from '../../service/notebookPage';
+import { fetchSourceNotebook, deleteFileById } from '../../service/notebookPage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 
@@ -87,6 +87,16 @@ function NotebookSidebar({ notebookId }) {
         
     }
 
+    const handleDeleteFile = async (source, event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        try {
+            const data = await deleteFileById(notebookId, source.file_id)
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     const fetchAllSourcesAgain = async () => {
         try {
           const data = await fetchSourceNotebook(notebookId);
@@ -112,6 +122,8 @@ function NotebookSidebar({ notebookId }) {
           console.log('Get source Error: ', error);
         }
       };
+
+      
     
 
     useEffect(() => {
@@ -242,7 +254,7 @@ function NotebookSidebar({ notebookId }) {
                                     })()
                                     }
                                 <div className={`source-drop-menu  ${isOpenSidebar ? '' : 'not-active'}`}>
-                                    <a href="" className="source-drop-item">
+                                    <a href="" className="source-drop-item"  onClick={(e) => handleDeleteFile(source, e)}>
                                         Xóa nguồn
                                     </a>
                                     <a href="" className="source-drop-item">

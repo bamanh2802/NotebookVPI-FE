@@ -245,6 +245,7 @@
   .forgot-password-button{
     color: #cccccca8;
     cursor: pointer;
+    margin: 10px 0 20px;
   }
   .forgot-password-button:hover{
     color: #ccc;

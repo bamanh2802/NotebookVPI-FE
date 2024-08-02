@@ -89,6 +89,8 @@ function HomePage() {
     try {
       const data = await fetchAllNotebooks();
       setNotebooks(data);
+      setIsLoadingNotebook(true)
+
       
     } catch (error) {
       console.error('Error fetching notebooks:', error);
@@ -122,11 +124,6 @@ function HomePage() {
 
   useEffect(() => {
       fetchNotebooks();
-      if(notebooks) {
-        setTimeout(() => {
-          setIsLoadingNotebook(true)
-        }, 1000)
-      }
   }, []);
 
   const getDateOnly = (dateTimeString) => {

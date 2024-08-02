@@ -46,21 +46,22 @@ function NotebookTutorial({ notebookId, closeTutorial, classOpen, onQuestionClic
   }, [allSourceByNotebook])
 
   const getSumary = async () => {
-    const allIdFiles = allSourceByNotebook.countSource.map(item =>(
-      item.file_id
-    ))
-    console.log(selectedFiles)
-    if(allIdFiles.length > 0) {
       setIsStarted(true)
-      // try {
-      //   const data = await sendMessage(notebookId, 'Tóm tắt dữ liệu trong các file', allIdFiles)
-      //   if(data.status === 200) {
-      //     setSumary(data.data.message)
-      //   }
-      // } catch (e) {
-      //   console.log(e)
-      // }
-    }
+
+    // const allIdFiles = allSourceByNotebook.countSource.map(item =>(
+    //   item.file_id
+    // ))
+    // if(allIdFiles.length > 0) {
+    //   setIsStarted(true)
+    //   // try {
+    //   //   const data = await sendMessage(notebookId, 'Tóm tắt dữ liệu trong các file', allIdFiles)
+    //   //   if(data.status === 200) {
+    //   //     setSumary(data.data.message)
+    //   //   }
+    //   // } catch (e) {
+    //   //   console.log(e)
+    //   // }
+    // }
   }
 
 
