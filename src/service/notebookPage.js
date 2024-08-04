@@ -40,17 +40,17 @@ export async function getNoteByNotebookId(notebookId) {
     return response.data;
   }
 export async function createNewNote(notebookId, title, content, ref) {
-    console.log(content)
-      const response = await axios.post(`${API_URL}/notebooks/${notebookId}/notes/new?title=${title}&content=${content}`, {
-      },
-      {
+    const response = await axios.post(`${API_URL}/notebooks/notes/new`, new URLSearchParams({
+        notebook_id: notebookId,
+        title: title,
+        content: content,
+        references: ref
+    }), {
         headers: {
-            'Content-Type': 'application/json',
-          },
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
         withCredentials: true
-      }
-    );
-      return response
+    });
   }
   
 export async function deleteNoteByNotebookId(notebookId, noteId) {
@@ -78,15 +78,16 @@ export async function noteRenameById(notebookId, noteId, newName){
 }
 
 export async function updateContentNote(notebookId, noteId, newContent){
-  const response = await axios.post(`${API_URL}/notebooks/${notebookId}/notes/${noteId}/update?new_content=${newContent}`, {
-  },
-  {
-    headers: {
-        'Content-Type': 'application/json',
+  const response = await axios.post(
+    `${API_URL}/notebooks/${notebookId}/notes/${noteId}/update`,
+    { new_content: newContent }, 
+    {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-    withCredentials: true
-  }
-);
+      withCredentials: true,
+    }
+  );
   return response
 }
 
@@ -122,12 +123,29 @@ export async function getContextById(notebookId, fileId) {
 }
 
 export async function deleteFileById(notebookId, fileId){
-  const response = await axios.post(`${API_URL}/notebooks/${notebookId}/files/${fileId}/delete`, {}, {
+  const data = qs.stringify({ file_ids: fileId }); 
+  const response = await axios.post(
+    `${API_URL}/notebooks/${notebookId}/files/${fileId}/delete`, 
+    data,
+    {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json'
+      },
+      withCredentials: true
+    }
+  );
+  return response
+}
+
+export async function renameFileNameById(notebookId, fileId, newName) {
+  const response = await axios.post(`${API_URL}/notebooks/${notebookId}/files/${fileId}/rename?new_title=${newName}`, {}, {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
       'Accept': 'application/json'
     },
     withCredentials: true
-  })
+  }
+  )
   return response
-}
+  }

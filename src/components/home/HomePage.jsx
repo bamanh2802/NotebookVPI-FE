@@ -90,7 +90,7 @@ function HomePage() {
       const data = await fetchAllNotebooks();
       setNotebooks(data);
       setIsLoadingNotebook(true)
-
+      console.log(data)
       
     } catch (error) {
       console.error('Error fetching notebooks:', error);
@@ -263,7 +263,7 @@ function HomePage() {
                       <div className="notebook-detail">
                         <span className="notebook-date">{getDateOnly(notebook.created_at)}</span>
                         <span>.</span>
-                        <span className="notebook-count-source">{notebook.sourceCount} nguồn</span>
+                        <span className="notebook-count-source">{notebook.files.length} nguồn</span>
                       </div>
                     </div>
                   ))}

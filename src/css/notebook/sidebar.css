@@ -113,6 +113,7 @@
   .source-item:hover{
     background-color: var(--menu-hover-color);
   }
+
   
   .source-drop-menu {
     display: none;
@@ -150,6 +151,17 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  .source-item-name > input {
+    background-color: var(--navbar-base-color);
+    color: rgba(255, 255, 255, 0.938);
+    font-size: 1rem;
+  }
+  .source-item:hover .source-item-name > input {
+    background-color: var(--menu-hover-color);
+  }
+
+
+
   .scroll-source-area{
     box-sizing: content-box;
     width: 100%;

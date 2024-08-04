@@ -67,7 +67,6 @@ function NotebookMain({ notebookId }) {
   }
 
   const updateNoteById = async (noteId, name, content) => {
-    console.log(content)
     setNotes((prevNotes) => {
       return prevNotes.map((note) => {
         if (note.note_id === noteId) {

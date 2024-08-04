@@ -135,11 +135,13 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
       if(response.status === 200) {
         const botReply = response.data.message;
         const jsonString = response.data.context.replace(/'/g, '"');
-        const context = JSON.parse(jsonString);
-        dispatch({
-          type: 'ADD_CHUNK_ID',
-          payload: context
-        })
+        const chunkIds = JSON.parse(jsonString);
+        chunkIds.map(chunkId => (
+          dispatch({
+            type: 'ADD_CHUNK_ID',
+            payload: chunkId
+          })
+        ))
         successBotChat(conversations.length + 1, botReply, notebookId, chunkId)
       }
       

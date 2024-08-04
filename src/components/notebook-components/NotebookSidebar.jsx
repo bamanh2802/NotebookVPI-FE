@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import NotebookSource  from './NotebookSource';
 import axios from 'axios';
-import { fetchSourceNotebook, deleteFileById } from '../../service/notebookPage';
+import { fetchSourceNotebook, deleteFileById, renameFileNameById } from '../../service/notebookPage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 
@@ -21,6 +21,9 @@ function NotebookSidebar({ notebookId }) {
     const [isLoading, setIsLoading] = useState(false);
     const [sourceListSelector, setSourceListSelector] = useState([])
     const [uploadStatus, setUploadStatus] = useState({});
+    const [isEdittingName, setIsEdittingName] = useState(false)
+    const [newFileName, setNewFileName] = useState('');
+    const [selectedSource, setSelectedSource] = useState()
 
 
     const dispatch = useDispatch();
@@ -90,12 +93,40 @@ function NotebookSidebar({ notebookId }) {
     const handleDeleteFile = async (source, event) => {
         event.preventDefault();
         event.stopPropagation();
+        console.log(source)
         try {
             const data = await deleteFileById(notebookId, source.file_id)
+            fetchAllSources()
         } catch (e) {
             console.log(e)
         }
     }
+
+    const handleChangeFileName = async (source, event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        setIsEdittingName(true)
+        setNewFileName(source.file_name)
+        setSelectedSource(source)
+    }
+
+      const handleRenameChange = (e) => {
+        setNewFileName(e.target.value);
+    };
+
+    const handleRenameBlur = async (e, source) => {
+        setIsEdittingName(false);
+        if (newFileName !== selectedSource.file_name) {
+            try {
+                const data = await renameFileNameById(notebookId, selectedSource.file_id, newFileName)
+                fetchAllSources()
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    };
+
+
 
     const fetchAllSourcesAgain = async () => {
         try {
@@ -257,12 +288,25 @@ function NotebookSidebar({ notebookId }) {
                                     <a href="" className="source-drop-item"  onClick={(e) => handleDeleteFile(source, e)}>
                                         Xóa nguồn
                                     </a>
-                                    <a href="" className="source-drop-item">
+                                    <a href="" className="source-drop-item" onClick={(e) => handleChangeFileName(source, e)}>
                                         Sửa tên nguồn
                                     </a>
                                 </div>
                             </div>
-                            <div className={`source-item-name ${isOpenSidebar ? '' : 'not-active'}`}  >{source.file_name}</div>
+                           <div className={`source-item-name ${isOpenSidebar ? '' : 'not-active'}`}>
+                                {isEdittingName ? (
+                                <input
+                                    type="text"
+                                    value={newFileName}
+                                    onChange={handleRenameChange}
+                                    onBlur={(e, source) => handleRenameBlur(e, source)}
+                                    autoFocus
+                                    onClick={(e) => (e.stopPropagation())}
+                                />
+                                ) : (
+                                source.file_name
+                                )}
+                            </div>
                             <div onClick={(e) => e.stopPropagation()} className={`source-item-checkbox ${isOpenSidebar ? '' : 'not-active'}`}>
                                 <input
                                     type="checkbox"
@@ -270,6 +314,7 @@ function NotebookSidebar({ notebookId }) {
                                     className="custom-checkbox"
                                     checked={source.isSelected}
                                     onChange={() => handleSourceSelect(source.file_id)}
+
                                 />
                                 <label htmlFor={source.file_id} />
                             </div>

@@ -1,0 +1,41 @@
+.references-button{
+    width: 20px;
+    height: 20px;
+    background-color: #484b54;
+    font-size: 0.7rem;
+    border-radius: 10px;
+    padding: 0px;
+}
+.references-panel {
+    position: fixed;
+    width: 300px;
+    max-height: 200px;
+    overflow: hidden;
+    background-color: var(--navbar-base-color);
+    padding: 20px;
+    font-size: 0.8rem;
+    z-index: 1000;
+    text-align: start;
+    visibility: hidden;
+    border-radius: 20px;
+    opacity: 0; /* Bắt đầu với độ mờ = 0 */
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;/* Thời gian và kiểu hiệu ứng chuyển tiếp */
+  }
+  .references-panel > div {
+    overflow: auto;
+    max-height: 160px;
+
+  }
+  
+  .references-button:hover .references-panel {
+    display: block; /* Hiển thị div */
+    visibility: visible;
+    opacity: 1; /* Độ mờ = 1 */
+    transition-delay: 0.2s; 
+  }
+  .references-panel:hover{
+    display: block; /* Hiển thị div */
+    visibility: visible;
+    opacity: 1; /* Độ mờ = 1 */
+    transition-delay: 0.2s;
+  }

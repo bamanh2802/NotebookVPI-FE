@@ -2,13 +2,10 @@ import axios from 'axios';
 
 import API_URL from './apiPath';
 
-
+axios.defaults.withCredentials = true;
 
 export async function fetchAllNotebooks() {
-  const sessionJSON = localStorage.getItem('session');
-  const session = JSON.parse(sessionJSON);
-
-
+  console.log(document.cookie)
   const response = await axios.get(`${API_URL}/notebooks`, {
     headers: {
       'Content-Type': 'application/json',
