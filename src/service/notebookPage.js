@@ -149,3 +149,13 @@ export async function renameFileNameById(notebookId, fileId, newName) {
   )
   return response
   }
+
+export async function uploadNewFile(notebookId, formData){
+  const response = await axios.post(`${API_URL}/notebooks/${notebookId}/files/upload`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      withCredentials: true
+    });
+  return response
+}

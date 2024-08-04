@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import NotebookSource  from './NotebookSource';
 import axios from 'axios';
-import { fetchSourceNotebook, deleteFileById, renameFileNameById } from '../../service/notebookPage';
+import { fetchSourceNotebook, deleteFileById, renameFileNameById, uploadNewFile } from '../../service/notebookPage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 
@@ -196,13 +196,7 @@ function NotebookSidebar({ notebookId }) {
           formData.append('file', file);
     
           try {
-            const response = await axios.post(`http://127.0.0.1:8000/notebooks/${notebookId}/files/upload`, formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              },
-              withCredentials: true
-            });
-    
+            const response = await uploadNewFile(notebookId, formData)
             if (response.status === 200) {
               setUploadStatus(prevStatus => ({
                 ...prevStatus,
