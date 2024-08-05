@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
+import { whoAmI } from '../../service/homePageApi';
 
   
 const SessionManager = ({  }) => {
@@ -31,12 +32,24 @@ const SessionManager = ({  }) => {
               }
             );
           }
+          whoAmICallback();
         }
-      }, 60000);
+      }, 30000);
 
       return () => clearInterval(interval);
     }
+
   }, [sessionData, warning]);
+
+
+  const whoAmICallback = async () => {
+    try {
+      const data = await whoAmI()
+      console.log(data)
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   const handleAcceptNoti = () => {
     localStorage.removeItem('session')

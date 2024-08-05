@@ -90,8 +90,6 @@ function HomePage() {
       const data = await fetchAllNotebooks();
       setNotebooks(data);
       setIsLoadingNotebook(true)
-      console.log(data)
-      
     } catch (error) {
       console.error('Error fetching notebooks:', error);
     }

@@ -15,8 +15,8 @@ const initialState = {
     userId: ''
   },
   tempNotes: [],
-  notebookSummary: {},
-  chunkId: []
+  chunkId: [],
+  summaries: {}
 };
 
 const reducer = (state = initialState, action) => {
@@ -34,13 +34,13 @@ const reducer = (state = initialState, action) => {
           (note) => note.notebookId !== action.payload.notebookId
         )
       };
-    case 'UPDATE_NOTEBOOK_SUMMARY':
+    case 'SET_SUMMARY':
       return {
         ...state,
-        notebookSummary: {
-          ...state.notebookSummary,
-          [action.payload.notebookId]: action.payload.summary
-        }
+        summaries: {
+          ...state.summaries,
+          [action.payload.notebookId]: action.payload.summary,
+        },
       };
     case 'UPDATE_FILES':
       return { ...state, allSourceByNotebook: action.payload };

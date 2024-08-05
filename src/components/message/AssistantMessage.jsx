@@ -134,7 +134,7 @@ const AssistantMessage = ({ onClickCloseChat, notebookId, message, isLoading }) 
   }
 
   const handleCopyMessage = () => {
-    navigator.clipboard.writeText(message).then(() => {
+    navigator.clipboard.writeText(formatMessage(normalString)).then(() => {
       setCopySuccess('Copied!');
       setTimeout(() => {
         setCopySuccess('');
@@ -171,7 +171,7 @@ const AssistantMessage = ({ onClickCloseChat, notebookId, message, isLoading }) 
           </div>
           <div className="to-user-message-footer" onClick={handleCopyMessage}>
             <div className="to-user-message-copy">
-            <img src={copyIcon} alt="Copy" style={{ width: '20px', height: '20px' }} />
+            <img src={copyIcon} alt="Copy" style={{ width: '20px', height: '20px', color:'#ccc' }} />
             </div>
             <div className="to-user-message-like">
               <i className="fa-regular fa-thumbs-up" />

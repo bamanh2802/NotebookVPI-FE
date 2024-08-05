@@ -23,7 +23,7 @@ function NotebookMain({ notebookId }) {
   const [selectedNoteContent, setSelectedNoteContent] = useState(null);
   const [isOpenDeleteMenu, setIsOpenDeleteMenu] = useState(false)
   const [isLoadingCreate, setIsLoadingCreate] = useState(false)
-
+  const [isChange, setIsChange] = useState(false)
 
   const dispatch = useDispatch();
   const data = useSelector((state) => state.data);
@@ -136,7 +136,9 @@ const handleCloseDeleteMenu = () => {
 
   const closeTextEditor = () => {
     setIsActive(false)
-    fetchNotes()
+    if(isChange) {
+      fetchNotes()
+    }
     setSelectedNoteId(null);
   };
 
@@ -224,6 +226,7 @@ return (
     <NotebookChatBlock notebookId={notebookId} selectedNotes={selectedNotes} countSource={countSource} />
 
         <RichTextEditor
+        isChange={setIsChange}
         updateNote={updateNoteById}
         notebookId={notebookId}
         noteId={selectedNoteId}

@@ -237,13 +237,16 @@
 .user-password{
   display: flex;
 }
+.user-password > label {
+  flex: 1;
+}
 
 .user-password > input{
   color: #ccc;
   background: none;
   border: none;
   border-bottom: 1px solid #cccccc5b;
-  width: 50%;
+  flex: 1;
   padding: 8px 12px;
   font-size: 16px;
   border-radius: 4px;
@@ -251,10 +254,58 @@
   margin-bottom: 12px;
 }
 
+
 .user-password > input:hover,
 .user-password > input:focus-visible {
   border-color: #007bff !important;
   box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
   outline: none;
 }
+.password-error{
+  border-color: #bd122f !important;
+  outline: none;
+  box-shadow: 0 0 8px rgba(255, 0, 55, 0.5);
+}
+.input-disable:hover{
+  background-color: #ccc !important;
+  cursor: default;
+}
+.user-detail-password-change .user-password {
+  margin-bottom: 16px;
+}
 
+.user-detail-password-change .user-password label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.user-detail-password-change .user-password input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.user-detail-password-change .user-password input.password-error {
+  border-color: red;
+}
+
+.user-detail-password-change .user-change-email-btn {
+  margin-top: 16px;
+}
+
+.user-detail-password-change .user-change-email-btn button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.user-detail-password-change .user-change-email-btn button.input-disable {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

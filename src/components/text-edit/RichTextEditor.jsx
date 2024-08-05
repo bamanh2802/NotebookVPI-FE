@@ -7,7 +7,7 @@ import { noteRenameById, updateContentNote } from '../../service/notebookPage';
 
 const CHARACTER_LIMIT = 5500;
 
-const RichTextEditor = ({ updateNote, notebookId, noteId, name, content, setSelectedNoteId, isOpen, setIsActive }) => {
+const RichTextEditor = ({ isChange, updateNote, notebookId, noteId, name, content, setSelectedNoteId, isOpen, setIsActive }) => {
   const [editorContent, setEditorContent] = useState('');
   const [editorName, setEditorName] = useState('');
   const [isNotActive, setIsNotActive] = useState(false);
@@ -38,6 +38,7 @@ const RichTextEditor = ({ updateNote, notebookId, noteId, name, content, setSele
   const handleChangeContent = async (notebookId, noteId, content) => {
     try {
       const data = await updateContentNote(notebookId, noteId, content)
+      isChange(false)
     } catch (e) {
       console.log(e)
     }
@@ -50,6 +51,7 @@ const RichTextEditor = ({ updateNote, notebookId, noteId, name, content, setSele
     try {
       const data = await noteRenameById(notebookId, noteId, event.target.value);
       updateNote(noteId, editorName, editorContent);
+      isChange(false)
     } catch (error) {
       console.log('Rename Error');
     }

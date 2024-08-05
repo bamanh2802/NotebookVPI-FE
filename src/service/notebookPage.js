@@ -44,13 +44,14 @@ export async function createNewNote(notebookId, title, content, ref) {
         notebook_id: notebookId,
         title: title,
         content: content,
-        references: ref
+        // references: ref
     }), {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
         withCredentials: true
     });
+    return response
   }
   
 export async function deleteNoteByNotebookId(notebookId, noteId) {

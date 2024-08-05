@@ -8,6 +8,8 @@ import '../../css/notebook/notebook-tutorial.css'
 import { createNewNote, sendMessage } from '../../service/notebookPage';
 
 import ContentLoader, { List } from 'react-content-loader'
+import { marked } from 'marked';
+
 
 
 function NotebookTutorial({ notebookId, closeTutorial, classOpen, onQuestionClick}) {
@@ -15,9 +17,11 @@ function NotebookTutorial({ notebookId, closeTutorial, classOpen, onQuestionClic
   const allSourceByNotebook = useSelector((state) => state.allSourceByNotebook);
   const [selectedFiles, setSelectedFiles] = useState([])
   const dispatch = useDispatch();
-  const [summary, setSumary] = useState()
+  const [summary, setSumary] = useState('')
   const [suggestQuestions, setSuggestQuestions] = useState([])
   const [isStarted, setIsStarted] = useState(false)
+  const stateSummary = useSelector(state => state.summaries[notebookId]);
+  
 
   useEffect(() => {
     if(Object.keys(allSourceByNotebook).length !== 0) {
@@ -38,30 +42,50 @@ function NotebookTutorial({ notebookId, closeTutorial, classOpen, onQuestionClic
   }, [allSourceByNotebook, data])
 
   useEffect(() => {
-    if(Object.keys(allSourceByNotebook).length !== 0) {
-      if (allSourceByNotebook.countSource.length > 0) {
-        getSumary()
+    if (classOpen) {
+      if(Object.keys(allSourceByNotebook).length !== 0) {
+        if (allSourceByNotebook.countSource.length > 0) {
+          if (!stateSummary) {
+            getSumary()
+          } else {
+            setSumary(stateSummary)
+            setIsStarted(true)
+          }
+        }
       }
     }
-  }, [allSourceByNotebook])
+  }, [classOpen])
+
+  const formatMessage = (message) => {
+    return message
+      .replace(/\\n/g, '') // Loại bỏ \n
+      .replace(/&quot;/g, '"'); // Thay thế &quot; bằng dấu ngoặc kép
+  };
 
   const getSumary = async () => {
+    const allIdFiles = allSourceByNotebook.countSource.map(item =>(
+      item.file_id
+    ))
+    if(allIdFiles.length > 0) {
       setIsStarted(true)
-
-    // const allIdFiles = allSourceByNotebook.countSource.map(item =>(
-    //   item.file_id
-    // ))
-    // if(allIdFiles.length > 0) {
-    //   setIsStarted(true)
-    //   // try {
-    //   //   const data = await sendMessage(notebookId, 'Tóm tắt dữ liệu trong các file', allIdFiles)
-    //   //   if(data.status === 200) {
-    //   //     setSumary(data.data.message)
-    //   //   }
-    //   // } catch (e) {
-    //   //   console.log(e)
-    //   // }
-    // }
+      try {
+        console.log('gọi')
+        const data = await sendMessage(notebookId, 'Tóm tắt dữ liệu trong các file', allIdFiles)
+        
+        if(data.status === 200) {
+          const htmlContent = JSON.stringify(marked(data.data.message));
+          const normalString = JSON.parse(htmlContent);
+          const totalSumary = removeSquareBrackets(normalString)
+          setSumary(totalSumary)
+          dispatch({
+            type: 'SET_SUMMARY',
+            payload: {notebookId, summary: totalSumary}
+          })
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    }
   }
 
 
@@ -71,14 +95,18 @@ function NotebookTutorial({ notebookId, closeTutorial, classOpen, onQuestionClic
       onQuestionClick(questionText);
     }
   }
+  function removeSquareBrackets(str) {
+    return str.replace(/\[.*?\]/g, '');
+  }
   
   const generateContentNote = async (message) => {
     try {
       const data = await sendMessage(notebookId, message, selectedFiles);
       console.log(data.data.message)
+      const htmlContent = JSON.stringify(marked(data.data.message));
+      const normalString = JSON.parse(htmlContent);
       if (data.status === 200) {
-        const newNote = await createNewNote(notebookId, 'Ghi chú mới', data.data.message, selectedFiles.length);
-        console.log(newNote)
+        const newNote = await createNewNote(notebookId, 'Ghi chú mới', removeSquareBrackets(normalString), selectedFiles.length);
         if(newNote.status === 200) {
           dispatch({
             type: 'REMOVE_TEMP_NOTES',
@@ -145,17 +173,15 @@ function NotebookTutorial({ notebookId, closeTutorial, classOpen, onQuestionClic
           <div className="notebook-tutorial-footer">
             <div className="notebook-tutorial-summary">
               <h2>Tóm tắt</h2>
-              <p>
                 {summary ? (
                   <div>
-                    {summary}
+                      <div dangerouslySetInnerHTML={{ __html: formatMessage(summary) }} />
                   </div>
                 ) : (
                 <List backgroundColor={'#333'}
                       width={600}
                       foregroundColor={'#999'}/>
                 )}
-              </p>
             </div>
             <div className="notebook-tutorial-section">
               <h2>Câu hỏi đề xuất</h2>

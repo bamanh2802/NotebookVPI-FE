@@ -182,6 +182,8 @@ input[type="checkbox"].custom-checkbox:checked + label:after {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
   visibility: visible;
+  min-height: 380px;
+  max-height: 400px;
 }
 
 .text-editor-main{
@@ -201,11 +203,13 @@ input[type="checkbox"].custom-checkbox:checked + label:after {
 
 .ql-toolbar.ql-snow {
   border: none !important;
+  max-height: 60px;
 }
 
 .text-editor-main .ql-editor {
   padding: 10px; 
-  min-height: 200px; 
+  min-height: 210px; 
+  max-height: 240px;
 }
 
 .text-editor-main .ql-toolbar {

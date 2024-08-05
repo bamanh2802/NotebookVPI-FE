@@ -76,6 +76,7 @@
     color: #ffffffa9;
     background-color: var(--menu-hover-color);
     line-height: 64px;
+    max-height: 64px;
     text-align: center;
     font-size: 0.8rem;
     border-top-right-radius: 0px;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { lazy, Suspense, useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector, createStore } from 'react-redux';
 
 import '../../css/notebook/notebook.css'
@@ -8,6 +8,8 @@ import '../../css/notebook/notebook-tutorial.css'
 
 import NotebookTutorial from './NotebookTutorial';
 import { sendMessage } from '../../service/notebookPage';
+
+
 
 function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
   const [suggestQuestion, setSuggestQuestion] = useState([]);

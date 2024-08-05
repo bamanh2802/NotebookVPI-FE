@@ -105,6 +105,10 @@
     width: 45%;
     padding: 24px;
   }
+  .notebook-tutorial-summary > div > div{
+    overflow: auto;
+    max-height: 380px;
+  }
   .notebook-tutorial-section{
     width: 55%;
     padding: 24px;
