@@ -18,11 +18,11 @@ const AssistantMessage = ({ onClickCloseChat, notebookId, message, isLoading }) 
   const normalString = JSON.parse(htmlContent);
   const [hoveredDataLog, setHoveredDataLog] = useState(null);
   const [copySuccess, setCopySuccess] = useState('');
+  const [selectedReferences, setSelectedReferences] = useState([])
 
   useEffect(() => {
-    console.log(message)
-    console.log(chunkId)
-  },[chunkId])
+  },[])
+
   const formatMessage = (message) => {
     // Từ điển để lưu trữ các giá trị đã gặp và số thứ tự tương ứng
     const valueCounterMap = {};
@@ -31,14 +31,24 @@ const AssistantMessage = ({ onClickCloseChat, notebookId, message, isLoading }) 
     // Mảng để lưu trữ các giá trị từ []
     const valueArray = [];
 
+    // Mảng để lưu trữ các từ điển chứa chunk_id và content
+    const chunkContentArray = [];
+
     // Hàm để lấy nội dung của chunkId và thêm xuống dòng sau mỗi dấu chấm
     const getContent = (id) => {
-        const chunk = chunkId.find(chunk => chunk.chunk_id === id);
+        const chunk = chunkContentArray.find(chunk => chunk.chunk_id === id);
         if (chunk) {
-            // Thay thế dấu chấm bằng dấu chấm cộng với xuống dòng
-            return chunk.content.replace(/\./g, '.\n');
+            return chunk.content;
         } else {
-            return 'Nội dung không tìm thấy';
+            const foundChunk = chunkId.find(chunk => chunk.chunk_id === id);
+            if (foundChunk) {
+                const content = foundChunk.content.replace(/\./g, '.\n');
+                // Thêm vào mảng chunkContentArray nếu chưa có
+                chunkContentArray.push({ chunk_id: id, content });
+                return content;
+            } else {
+                return 'Nội dung không tìm thấy';
+            }
         }
     };
 
@@ -65,7 +75,8 @@ const AssistantMessage = ({ onClickCloseChat, notebookId, message, isLoading }) 
             }
             const content = getContent(value);
             return `
-            <button class="references-button" data-log="${value}" >${valueCounterMap[value]}
+            <button class="references-button" data-log="${value}">
+                ${valueCounterMap[value]}
                 <div class="references-panel">
                     <div>
                     ${content}
@@ -79,7 +90,7 @@ const AssistantMessage = ({ onClickCloseChat, notebookId, message, isLoading }) 
     // Thay thế các giá trị trong chuỗi gốc bằng các button
     const formattedMessage = message.replace(regex, replacer);
 
-    return formattedMessage;
+    return [formattedMessage, chunkContentArray];
 };
 
 
@@ -121,7 +132,7 @@ const AssistantMessage = ({ onClickCloseChat, notebookId, message, isLoading }) 
     });
     onClickCloseChat()
     try {
-      const data = createNewNote(notebookId, 'Ghi chú được lưu', removeSquareBrackets(normalString), 0)
+      const data = createNewNote(notebookId, 'Ghi chú được lưu', removeSquareBrackets(normalString), formatMessage(normalString)[1])
       dispatch({
         type: 'REMOVE_TEMP_NOTES',
         payload: {
@@ -134,7 +145,7 @@ const AssistantMessage = ({ onClickCloseChat, notebookId, message, isLoading }) 
   }
 
   const handleCopyMessage = () => {
-    navigator.clipboard.writeText(formatMessage(normalString)).then(() => {
+    navigator.clipboard.writeText(formatMessage(normalString)[0]).then(() => {
       setCopySuccess('Copied!');
       setTimeout(() => {
         setCopySuccess('');
@@ -161,7 +172,7 @@ const AssistantMessage = ({ onClickCloseChat, notebookId, message, isLoading }) 
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
-            <div dangerouslySetInnerHTML={{ __html: formatMessage(normalString) }} />
+            <div dangerouslySetInnerHTML={{ __html: formatMessage(normalString)[0] }} />
           </div>
             {hoveredDataLog && <div className="tooltip">{hoveredDataLog}</div>}
           {/* <ReactMarkdown remarkPlugins={[remarkGfm]}>{message}</ReactMarkdown> */}

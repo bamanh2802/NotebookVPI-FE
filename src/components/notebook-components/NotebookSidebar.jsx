@@ -2,14 +2,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import NotebookSource  from './NotebookSource';
-import axios from 'axios';
 import { fetchSourceNotebook, deleteFileById, renameFileNameById, uploadNewFile } from '../../service/notebookPage';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSpinner } from '@fortawesome/free-solid-svg-icons'
+import Lottie from 'lottie-react';
 
 import '../../css/notebook/notebook.css'
 import '../../css/notebook/notebook-chat.css'
 import '../../css/notebook/notebook-item.css'
+import loadingAnimation from '../../svg/loading.json'
+import loadingUpload from '../../svg/upload.json'
+
 
 function NotebookSidebar({ notebookId }) {
     const [allSources, setAllSources] = useState([]);
@@ -17,18 +18,22 @@ function NotebookSidebar({ notebookId }) {
     const [countSource, setCountSource] = useState([]);
     const [sourceSelector, setSouceSelector] = useState()
     const [isOpenUploadFile, setIsOpenUploadFile] = useState(false);
-    const [fileNames, setFileNames] = useState('');
+    const [fileNames, setFileNames] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [sourceListSelector, setSourceListSelector] = useState([])
     const [uploadStatus, setUploadStatus] = useState({});
     const [isEdittingName, setIsEdittingName] = useState(false)
     const [newFileName, setNewFileName] = useState('');
     const [selectedSource, setSelectedSource] = useState()
+    const [isLoadingDelete, setIsLoadingDelete] = useState(false)
+    const [countSourceNewUp, setCountSourceNewUp] = useState(0)
+    const [loadingStates, setLoadingStates] = useState({});
 
 
     const dispatch = useDispatch();
     const isOpenSidebar = useSelector((state) => state.isOpenSidebar);
     const isOpenSource = useSelector((state) => state.isOpenSource)
+    const navigate = useNavigate()
 
 
     const handleOpenUploadFile = () => {
@@ -90,15 +95,23 @@ function NotebookSidebar({ notebookId }) {
         
     }
 
+    const handleBackToHomePage = () => {
+        navigate('/')
+    }
+
     const handleDeleteFile = async (source, event) => {
+        setIsLoadingDelete(true)
+        setLoadingStates((prev) => ({ ...prev, [source.file_id]: true }));
         event.preventDefault();
         event.stopPropagation();
-        console.log(source)
         try {
             const data = await deleteFileById(notebookId, source.file_id)
             fetchAllSources()
+            setIsLoadingDelete(false)
         } catch (e) {
+            setLoadingStates((prev) => ({ ...prev, [source.file_id]: false }));
             console.log(e)
+            alert('Something Went Wrong')
         }
     }
 
@@ -138,11 +151,13 @@ function NotebookSidebar({ notebookId }) {
       
           const dataSort = data.sort((a, b) => new Date(a.uploaded_at) - new Date(b.uploaded_at));
       
+          console.log(dataSort)
+          console.log(sourceListSelector)
           const updatedSources = dataSort.map(source => {
             const found = sourceListSelector.find(s => s.file_id === source.file_id);
             return {
               ...source,
-              isSelected: found ? found.isSelected : true, // Giữ trạng thái của các tệp đã có, các tệp mới sẽ được chọn mặc định
+              isSelected: !found ? found.isSelected : true, // Giữ trạng thái của các tệp đã có, các tệp mới sẽ được chọn mặc định
             };
           });
       
@@ -154,12 +169,15 @@ function NotebookSidebar({ notebookId }) {
         }
       };
 
+      const addTempSource = (tempSource) => {
+        setAllSources(prevSources => [...prevSources, tempSource]);
+      }
+
       
     
 
     useEffect(() => {
         fetchAllSources()
-        
     }, [notebookId]);
 
     const handleSelectAll = () => {
@@ -188,8 +206,10 @@ function NotebookSidebar({ notebookId }) {
     const handleFileChanges = async (event) => {
         const selectedFiles = Array.from(event.target.files);
         setFileNames(selectedFiles.map(file => file.name));
+        setCountSourceNewUp(selectedFiles.length)
         setIsLoading(true);
         setIsOpenUploadFile(false);
+        let fileRender = selectedFiles.map(file => file.name)
     
         for (const file of selectedFiles) {
           const formData = new FormData();
@@ -202,7 +222,15 @@ function NotebookSidebar({ notebookId }) {
                 ...prevStatus,
                 [file.name]: 'completed'
               }));
-              fetchAllSourcesAgain();
+              setFileNames(fileRender.filter(fileName => fileName !== response.data.file_name))
+              fileRender = fileRender.filter(fileName => fileName !== response.data.file_name)
+              addTempSource({
+                file_id: `tempid${response.data.file_name}`,
+                file_name: `${response.data.file_name}`,
+                isSelected: true,
+                notebook_id: notebookId,
+                uploaded_at: Date()
+              })
             } else {
               setUploadStatus(prevStatus => ({
                 ...prevStatus,
@@ -219,6 +247,8 @@ function NotebookSidebar({ notebookId }) {
             alert(`Error uploading file: ${file.name}`);
           }
         }
+          fetchAllSourcesAgain();
+
     
         setIsLoading(false);
       };
@@ -226,6 +256,17 @@ function NotebookSidebar({ notebookId }) {
 
     return (
        <>
+       <div id="overlay" className={`${isLoading ? 'enable' : ''}`}>
+            <Lottie
+                animationData={loadingAnimation}
+                loop
+                autoPlay
+                style={{
+                    width: 100,
+                    height: 100,
+                }}
+            />
+        </div>
        {isOpenSource ? (
             <NotebookSource source={sourceSelector} notebookId={notebookId}/>
         ) : (
@@ -234,7 +275,7 @@ function NotebookSidebar({ notebookId }) {
                     <span className="bar-sidebar" onClick={handleToggleSidebar}>
                         <i className="fa-solid fa-bars" />
                     </span>
-                    <div className={`sidebar-logo  ${isOpenSidebar ? '' : 'not-active'}`}>NotebookVPI </div>
+                    <div onClick={handleBackToHomePage} className={`sidebar-logo  ${isOpenSidebar ? '' : 'not-active'}`}>NotebookVPI </div>
                 </div>
                 <div className={`section-title  ${isOpenSidebar ? '' : 'not-active'}`}>
                     <span className="sidebar-icon-source">
@@ -302,30 +343,59 @@ function NotebookSidebar({ notebookId }) {
                                 )}
                             </div>
                             <div onClick={(e) => e.stopPropagation()} className={`source-item-checkbox ${isOpenSidebar ? '' : 'not-active'}`}>
-                                <input
+                               {loadingStates[source.file_id] ? (
+                                <Lottie
+                                animationData={loadingAnimation}
+                                loop
+                                autoPlay
+                                colorMap={{
+                                  "color3": "#0000FF"  // Thay màu xanh dương
+                                }}
+                                style={{
+                                  width: 24,
+                                  height: 24,
+                                }}
+                              />
+                               ) : (
+                                <>
+                                    <input
                                     type="checkbox"
                                     id={source.file_id}
                                     className="custom-checkbox"
                                     checked={source.isSelected}
                                     onChange={() => handleSourceSelect(source.file_id)}
 
-                                />
-                                <label htmlFor={source.file_id} />
+                                    />
+                                    <label htmlFor={source.file_id} />
+                                </>
+                               )}
                             </div>
                         </div>
                     ))}
-                    {isLoading && (
-                        <div className={`source-item ${isOpenSidebar ? '' : 'sidebar-shortcut'}`}>
-                        <div className="source-item-option ">
-                            <i class="fa-regular fa-file" style={{color: "#6699ff",}}></i>
-                            
+                    {isLoading && fileNames.map((fileName, index) => (
+                    <div key={index} className={`source-item ${isOpenSidebar ? '' : 'sidebar-shortcut'}`}>
+                        <div className="source-item-option">
+                            <i className="fa-regular fa-file" style={{ color: "#6699ff" }}></i>
                         </div>
-                        <div className={`source-item-name ${isOpenSidebar ? '' : 'not-active'}`}>{fileNames}</div>
+                        <div className={`source-item-name ${isOpenSidebar ? '' : 'not-active'}`}>
+                            {fileName}
+                        </div>
                         <div className={`source-item-checkbox ${isOpenSidebar ? '' : 'not-active'}`}>
-                        <FontAwesomeIcon icon={faSpinner} spin spinReverse style={{color: "#6699ff",}} />
+                            <Lottie
+                                animationData={loadingAnimation}
+                                loop
+                                autoPlay
+                                colorMap={{
+                                    "color3": "#0000FF" // Thay màu xanh dương
+                                }}
+                                style={{
+                                    width: 24,
+                                    height: 24,
+                                }}
+                            />
                         </div>
                     </div>
-                    )}
+                ))}
                 </div>
             </div>
             )}

@@ -11,6 +11,7 @@ import NotebookChatBlock from '../chatbot/NotebookChatBlock';
 import '../../css/notebook/notebook.css';
 import '../../css/notebook/notebook-chat.css';
 import '../../css/notebook/notebook-item.css';
+import NoteReferences from './NoteReferences';
 import { getNoteByNotebookId, createNewNote, deleteNoteByNotebookId } from '../../service/notebookPage';
 
 function NotebookMain({ notebookId }) {
@@ -55,6 +56,7 @@ function NotebookMain({ notebookId }) {
     try {
       const data = await getNoteByNotebookId(notebookId)
       setNotes(data.notes.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)))
+      console.log(data)
       if (newNoteTemp) {
         setNotes(prevNotes => [
           ...newNoteTemp.filter(note => note.notebookId === notebookId),
@@ -67,14 +69,26 @@ function NotebookMain({ notebookId }) {
   }
 
   const updateNoteById = async (noteId, name, content) => {
-    setNotes((prevNotes) => {
-      return prevNotes.map((note) => {
-        if (note.note_id === noteId) {
-          return { ...note, title: name, content: content };
-        }
-        return note;
+    if(name === '') {
+      setNotes((prevNotes) => {
+        return prevNotes.map((note) => {
+          if (note.note_id === noteId) {
+            return { ...note, title: selectedNoteName, content: content };
+          }
+          return note;
+        });
       });
-    });
+    } else {
+      setNotes((prevNotes) => {
+        return prevNotes.map((note) => {
+          if (note.note_id === noteId) {
+            return { ...note, title: name, content: content };
+          }
+          return note;
+        });
+      });
+
+    }
   }
 
 
@@ -85,7 +99,7 @@ function NotebookMain({ notebookId }) {
   const handleCreateNote = async () => {
     setIsLoadingCreate(true)
     try {
-      const data = await createNewNote(notebookId, 'Untitled Note', 'Content', '0')
+      const data = await createNewNote(notebookId, 'Untitled Note', 'Content', null)
       setIsLoadingCreate(false)
     } catch (error) {
       console.error('Error create note:', error);
@@ -136,7 +150,7 @@ const handleCloseDeleteMenu = () => {
 
   const closeTextEditor = () => {
     setIsActive(false)
-    if(isChange) {
+    if (isChange) {
       fetchNotes()
     }
     setSelectedNoteId(null);
@@ -148,6 +162,8 @@ const handleCloseDeleteMenu = () => {
     setSelectedNoteContent(content);
     setIsActive(true)
   };
+
+
 
 const anyNotesSelected = notes.some((note) => note.isChecked);
 const allNotesSelectedState = notes.length > 0 && notes.every((note) => note.isChecked);
@@ -163,7 +179,7 @@ return (
       </div>
       {anyNotesSelected && (
         <div className="notebook-header-delete-note active" onClick={() => (setIsOpenDeleteMenu(true))}>
-          <i className="fa-regular fa-note-sticky" /> Xóa ghi chú
+          <i class="fa-regular fa-trash-can"/> Xóa ghi chú
         </div>
       )}
       {!allNotesSelectedState && (
@@ -173,7 +189,7 @@ return (
       )}
       {allNotesSelectedState && (
         <div className="notebook-header-untickall active" onClick={handleSelectAll}>
-          <i className="fa-solid fa-xmark"></i> Bỏ chọn tất cả
+          <i className="fa-solid fa-xmark"/> Bỏ chọn tất cả
         </div>
       )}
     </div>
@@ -218,7 +234,9 @@ return (
             <div className="notebook-item-name">{note.title}</div>
           </div>
           <div className="notebook-item-content" dangerouslySetInnerHTML={{ __html: note.content }} />
-          <div className="notebook-item-footer" />
+          <div className="notebook-item-footer">
+              <NoteReferences data={note.references} />
+             </div>
         </div>
       ))}
     </div>

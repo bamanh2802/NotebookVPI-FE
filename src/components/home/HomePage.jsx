@@ -2,11 +2,11 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAllNotebooks, createNotebook, deleteNotebook, updateNotebook, Logout } from '../../service/homePageApi';
+import { fetchAllNotebooks, createNotebook, deleteNotebook, updateNotebook, Logout, whoAmI } from '../../service/homePageApi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import UserDetail from '../user-profile/UserDetail';
-
+import { Helmet } from 'react-helmet';
 
 import '../../css/homepage/homepage.css';
 import '../../css/color.css';
@@ -55,7 +55,19 @@ function HomePage() {
   const handleToggleUserMenu = () => {
     setIsOpenUserMenu(!isOpenUserMenu)
   }
-
+  const whoAmICallback = async () => {
+    try {
+      const data = await whoAmI()
+    } catch (e) {
+        localStorage.removeItem('session')
+        window.location.reload();
+    }
+  }
+//Hàm kiểm tra server
+  useEffect(() => {
+      fetchNotebooks();
+      whoAmICallback();
+  },[]) 
 
 
   const handleOpenDeleteMenu = (notebookId) => {
@@ -88,7 +100,7 @@ function HomePage() {
   const fetchNotebooks = async () => {
     try {
       const data = await fetchAllNotebooks();
-      setNotebooks(data);
+      setNotebooks(data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)));
       setIsLoadingNotebook(true)
     } catch (error) {
       console.error('Error fetching notebooks:', error);
@@ -120,9 +132,7 @@ function HomePage() {
   }
 
 
-  useEffect(() => {
-      fetchNotebooks();
-  }, []);
+ 
 
   const getDateOnly = (dateTimeString) => {
     const dateTimeObj = new Date(dateTimeString);
@@ -186,6 +196,9 @@ function HomePage() {
 
   return (
     <div>
+      <Helmet>
+        <title>NotebookVPI</title>
+      </Helmet>
       <div id="home-page" onClick={handleClickOutside}>
         <div className="header">
           <div className="logo-name">NotebookVPI</div>
@@ -195,7 +208,6 @@ function HomePage() {
               <i class="fa-regular fa-sun"></i>
               </span>
               <span className='user-icon' onClick={handleToggleUserMenu}>
-                {/* <span className={`user-profile-username ${!isOpenUserMenu ? 'show' : ''}`}>{userName}</span> */}
                 <i className="fa-regular fa-user"></i>
                   <div className={`user-profile-block ${isOpenUserMenu ? 'show' : ''}`} onClick={(event) => {event.stopPropagation()}} > 
                     <UserProfile setIsOpenUserDetail={setIsOpenUserDetail}/>
@@ -260,7 +272,7 @@ function HomePage() {
                       <span className="notebook-name-homepage">{notebook.title}</span>
                       <div className="notebook-detail">
                         <span className="notebook-date">{getDateOnly(notebook.created_at)}</span>
-                        <span>.</span>
+                        <span>&nbsp;.&nbsp;</span>
                         <span className="notebook-count-source">{notebook.files.length} nguồn</span>
                       </div>
                     </div>

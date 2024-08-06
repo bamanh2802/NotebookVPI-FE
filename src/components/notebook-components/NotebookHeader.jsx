@@ -7,6 +7,7 @@ import UserProfile from '../user-profile/UserProfile';
 import { updateNotebook } from '../../service/homePageApi';
 import { fetchNotebookById } from '../../service/notebookPage';
 import UserDetail from '../user-profile/UserDetail';
+import { Helmet } from 'react-helmet';
 
 function NotebookHeader({ notebookId }) {
   const [editingName, setEditingName] = useState(false);
@@ -14,6 +15,7 @@ function NotebookHeader({ notebookId }) {
   const [isOpenUserMenu, setIsOpenUserMenu] = useState(false);
   const [notebook, setNotebook] = useState({});
   const [isOpenUserDetail, setIsOpenUserDetail] = useState(false);
+  const [notebookName, setNotebookName] = useState('NotebookVPI')
 
   const handleToggleUserMenu = () => {
     setIsOpenUserMenu(!isOpenUserMenu);
@@ -24,6 +26,7 @@ function NotebookHeader({ notebookId }) {
       const data = await fetchNotebookById(notebookId);
       setNotebook(data);
       setNewName(data.title);
+      setNotebookName(data.title)
     } catch (error) {
       console.error('Error fetching notebook:', error);
     }
@@ -57,6 +60,9 @@ function NotebookHeader({ notebookId }) {
 
   return (
     <>
+      <Helmet>
+        <title>{notebookName}</title>
+      </Helmet>
       <div className="notebook-header">
         {editingName ? (
           <input
@@ -68,7 +74,11 @@ function NotebookHeader({ notebookId }) {
             className="notebook-header-change-name"
           />
         ) : (
-          <h1 onClick={handleNameChange}>{notebook.title}</h1>
+            <h1 onClick={handleNameChange}>{notebook.title}
+              &nbsp;&nbsp;
+              <i className="fa-solid fa-pen fa-2xs"/>
+            </h1>
+          
         )}
         <div className="notebook-icons">
           <span className="user-icon" onClick={handleToggleUserMenu}>

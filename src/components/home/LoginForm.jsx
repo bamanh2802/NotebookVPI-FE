@@ -4,9 +4,11 @@ import '../../css/homepage/loginform.css';
 import axios from 'axios';
 import { msalInstance, initializeMsalInstance } from '../../config/msalConfig';
 import { InteractionType } from '@azure/msal-browser';
-import { loginForm, resetPassword } from '../../service/LoginForm';
+import { loginForm, resetPassword, loginWithMicrosoft } from '../../service/LoginForm';
 import logo from '../../img/logo.png'
-
+import { Helmet } from 'react-helmet';
+import Lottie from 'lottie-react';
+import loadingAnimation from '../../svg/loading.json'
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');
@@ -19,6 +21,7 @@ const LoginForm = () => {
   const [isLoadingSendEmail, setIsLoadingSendEmail] = useState(false)
   const [isLoadingResendEmail, setIsLoadingResendEmail] = useState(false)
   const [countdown, setCountdown] = useState(0);
+  const [isLoadingLogin, setIsLoadingLogin] = useState(false)
 
   const navigate = useNavigate();
 
@@ -60,13 +63,14 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("")
+    setIsLoadingLogin(true)
   
     try {
       const data = await loginForm(username, password);
       setSession(data.data)
       setError("")
       if(data && data.status === 200) {
-        console.log(data)
         localStorage.setItem("session", JSON.stringify(data.data.data.session_id))
         localStorage.setItem("username", data.data.username)
         localStorage.setItem("role", data.data.role)
@@ -82,6 +86,7 @@ const LoginForm = () => {
     } catch (error) {
       console.error('Error logging in:', error);
       setError("Wrong Username or Password")
+      setIsLoadingLogin(false)
     }
   };
 
@@ -90,6 +95,7 @@ const LoginForm = () => {
   }, []);
 
   const handleMicrosoftLogin = async () => {
+    setIsLoadingLogin(true)
     try {
       const loginResponse = await msalInstance.loginPopup({
         scopes: ["user.read"],
@@ -97,17 +103,40 @@ const LoginForm = () => {
       });
 
       console.log('Microsoft login response:', loginResponse);
+      try {
+        const loginResponse2 = await loginWithMicrosoft(loginResponse.tenantId, loginResponse.account.username)
+        console.log(loginResponse2)
+        setIsLoadingLogin(false)
+        if(loginResponse2 && loginResponse2.status === 200) {
+          localStorage.setItem("session", JSON.stringify(loginResponse2.data.session_id))
+          localStorage.setItem("username", loginResponse2.data.username)
+          localStorage.setItem("role", loginResponse2.data.role)
+          localStorage.setItem("userid", loginResponse2.data.user_id)
+          localStorage.setItem('session_manager', JSON.stringify({
+            session_id: loginResponse2.data.session_id,
+            end_time: loginResponse2.data.session.end_time,
+            user_id: loginResponse2.data.user.user_id
+          }));
+          navigate('/')
+        }
+      } catch (e) {
+        console.log(e)
+      }
       // Handle successful login
       // You can send the loginResponse.accessToken to your backend if needed
     } catch (error) {
       console.error('Microsoft login error:', error);
       setError('Microsoft login failed');
+      setIsLoadingLogin(false)
     }
   };
 
   return (
     <div className='login-body'>
-      <div className={`login-container ${forgotPassword ? 'disable' : ''}`}>
+      <Helmet>
+        <title>NotebookVPI - Login</title>
+      </Helmet>
+      <div className={`${isLoadingLogin ? 'loading': ''} login-container ${forgotPassword ? 'disable' : ''}`}>
          <div className='logo-container'>
           <img
               src={logo}
@@ -144,7 +173,26 @@ const LoginForm = () => {
                       />
                     </div>
                     <p onClick={handleTogglePassword} className='forgot-password-button'>Forgot Password?</p>
-                    <button type="submit">Login</button>
+                    <button
+                       type="submit"
+                       disabled={isLoadingLogin}
+                       className={`login-button ${isLoadingLogin ? 'loading' : ''}`}
+                       >
+                        <p >
+                        {isLoadingLogin ? (<Lottie
+                          animationData={loadingAnimation}
+                          loop
+                          autoPlay
+                          style={{
+                            width: 18,
+                            height: 18,
+                          }}
+                        />) : (null)}
+                        &nbsp;
+                        Login
+                        </p>
+                        
+                       </button>
                     <div className='line-split-login'></div>
                     <button className='button-login-microsoft' type="button" onClick={handleMicrosoftLogin}>
                       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjR8068a50hnJwYx1pzj6iG5VsKAcFz4732w&s" alt="" />

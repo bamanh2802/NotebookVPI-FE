@@ -38,15 +38,20 @@ const NotebookSource = ({ source, notebookId }) => {
     };
 
     useEffect(() => {
-        getContentFile();
-    }, [source.file_id, notebookId]);
+        if(source) {
+            getContentFile();
+        }
+    }, [source, notebookId]);
 
     const handleCloseSource = () => {
         closeSource();
     };
 
     return (
-        <div className="notebook-source">
+       <>
+         {source && (
+            <>
+            <div className="notebook-source">
             <div className="notebook-source-close" onClick={handleCloseSource}>
                 <i className="fa-solid fa-xmark"></i>
             </div>
@@ -68,6 +73,9 @@ const NotebookSource = ({ source, notebookId }) => {
                 ) }
             </div>
         </div>
+        </>
+        )}
+       </>
     );
 };
 

@@ -69,7 +69,6 @@ function NotebookTutorial({ notebookId, closeTutorial, classOpen, onQuestionClic
     if(allIdFiles.length > 0) {
       setIsStarted(true)
       try {
-        console.log('gọi')
         const data = await sendMessage(notebookId, 'Tóm tắt dữ liệu trong các file', allIdFiles)
         
         if(data.status === 200) {
@@ -98,26 +97,34 @@ function NotebookTutorial({ notebookId, closeTutorial, classOpen, onQuestionClic
   function removeSquareBrackets(str) {
     return str.replace(/\[.*?\]/g, '');
   }
+
+  const removeTempNote = () => {
+    dispatch({
+      type: 'REMOVE_TEMP_NOTES',
+      payload: {
+        notebookId: notebookId
+      }
+    });
+  }
   
   const generateContentNote = async (message) => {
     try {
       const data = await sendMessage(notebookId, message, selectedFiles);
-      console.log(data.data.message)
       const htmlContent = JSON.stringify(marked(data.data.message));
       const normalString = JSON.parse(htmlContent);
       if (data.status === 200) {
-        const newNote = await createNewNote(notebookId, 'Ghi chú mới', removeSquareBrackets(normalString), selectedFiles.length);
-        if(newNote.status === 200) {
-          dispatch({
-            type: 'REMOVE_TEMP_NOTES',
-            payload: {
-              notebookId: notebookId
-            }
-          });
+        try {
+          const newNote = await createNewNote(notebookId, message, removeSquareBrackets(normalString), []);
+          if(newNote.status === 200) {
+            removeTempNote()
+          }
+        } catch (e) {
+          console.log(e)
         }
       }
     } catch (e) {
       console.log(e);
+      removeTempNote()
     }
   };
   
@@ -128,7 +135,8 @@ function NotebookTutorial({ notebookId, closeTutorial, classOpen, onQuestionClic
       title: 'Ghi chú mới',
       content: 'Đang tạo...',
       message: message,
-      isChecked: false
+      isChecked: false,
+      references: []
     };
     dispatch({
       type: 'UPDATE_TEMP_NOTES',
@@ -179,7 +187,6 @@ function NotebookTutorial({ notebookId, closeTutorial, classOpen, onQuestionClic
                   </div>
                 ) : (
                 <List backgroundColor={'#333'}
-                      width={600}
                       foregroundColor={'#999'}/>
                 )}
             </div>

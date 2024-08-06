@@ -16,24 +16,23 @@ const SessionManager = ({  }) => {
         const remainingTime = endTime - now;
         console.log(remainingTime)
 
-        if (remainingTime <= 0) {
-          clearInterval(interval);
-          setOpenNoti(true);
-          const { session_id, ...rest } = sessionData;
-        } else {
+        // if (remainingTime <= 0) {
+        //   clearInterval(interval);
+        //   setOpenNoti(true);
+        //   const { session_id, ...rest } = sessionData;
+        // } else {
 
-          if (remainingTime <= 60000 && !warning) {
-            setWarning(true);
-            toast('The login session is about to expire!',
-              {
-                style: {
-                  borderRadius: '10px',
-                },
-              }
-            );
-          }
-          whoAmICallback();
-        }
+        //   if (remainingTime <= 60000 && !warning) {
+        //     setWarning(true);
+        //     toast('The login session is about to expire!',
+        //       {
+        //         style: {
+        //           borderRadius: '10px',
+        //         },
+        //       }
+        //     );
+        //   }
+        // }
       }, 30000);
 
       return () => clearInterval(interval);

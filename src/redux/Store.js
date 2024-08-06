@@ -28,12 +28,21 @@ const reducer = (state = initialState, action) => {
     case 'ADD_CHUNK_ID':
       return { ...state, chunkId: [...state.chunkId, action.payload] };
     case 'REMOVE_TEMP_NOTES':
-      return {
-        ...state,
-        tempNotes: state.tempNotes.filter(
-          (note) => note.notebookId !== action.payload.notebookId
-        )
-      };
+      const indexToRemove = state.tempNotes.findIndex(
+        (note) => note.notebookId === action.payload.notebookId
+      );
+      
+      if (indexToRemove !== -1) {
+        return {
+          ...state,
+          tempNotes: [
+            ...state.tempNotes.slice(0, indexToRemove),
+            ...state.tempNotes.slice(indexToRemove + 1)
+          ]
+        };
+      } else {
+        return state;
+      }
     case 'SET_SUMMARY':
       return {
         ...state,

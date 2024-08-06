@@ -7,7 +7,7 @@ import '../../css/notebook/notebook-item.css'
 import '../../css/notebook/notebook-tutorial.css'
 
 import NotebookTutorial from './NotebookTutorial';
-import { sendMessage } from '../../service/notebookPage';
+import { sendMessage, saveChatHistory, getChatHistory } from '../../service/notebookPage';
 
 
 
@@ -112,6 +112,21 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
     fetchQuestion();
   }, [notebookId]);
 
+  const saveChat = async () => {
+    try {
+      const data = await saveChatHistory(notebookId)
+    } catch(e) {
+      console.log(e)
+    }
+  }
+  const getChat = async () => {
+    try {
+      const data = await getChatHistory(notebookId)
+      console.log(data)
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   const handleInputChange = (e) => {
     setChatInput(e.target.value);
@@ -134,7 +149,6 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
     try {
       const response = await sendMessage(notebookId, chatInput, selectedFiles);
       console.log(response)
-      if(response.status === 200) {
         const botReply = response.data.message;
         const jsonString = response.data.context.replace(/'/g, '"');
         const chunkIds = JSON.parse(jsonString);
@@ -145,11 +159,14 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
           })
         ))
         successBotChat(conversations.length + 1, botReply, notebookId, chunkId)
-      }
-      
+        // saveChat()
+        getChat()
       
     } catch (error) {
       console.error('Error submitting chat:', error);
+      const botReply = 'Something Went Wrong';
+      successBotChat(conversations.length + 1, botReply, notebookId, [])
+      // saveChat()
     }
   }
 

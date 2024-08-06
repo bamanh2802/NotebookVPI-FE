@@ -71,8 +71,16 @@
   }
   .login-container.disable::after{
     left: -90%;
-
   }
+  .loading::before, .loading::after {
+    left: -20%;
+    animation: rotate 2s linear infinite !important;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
   
   @-webkit-keyframes wawes {
     from {
@@ -274,4 +282,18 @@
   }
   .login-form-forgot h2 {
     margin: 36px 0;
+  }
+  .login-button > p{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-height: 38px;
+    transition: all 0.3s ease-in-out;
+  }
+  .login-button.loading {
+    pointer-events: none; 
+    opacity: 0.7; 
+  }
+  .login-button.loading:hover{
+    background-color: #131314 !important;
   }

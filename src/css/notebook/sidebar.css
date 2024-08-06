@@ -3,6 +3,7 @@
     font-size: 24px;
     text-align: center;
     margin-left: 20px;
+    cursor: pointer;
   }
   
   .sidebar-logo span {
@@ -335,4 +336,25 @@
   
   .file-upload-input {
     display: none;
+  }
+  #overlay {
+    opacity: 0;
+    visibility: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Màu nền mờ */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Đặt z-index cao để đảm bảo nằm trên tất cả các phần tử khác */
+    pointer-events: all; /* Cho phép tương tác với overlay */
+    transition: all 0.3s ease;
+    backdrop-filter: blur(1px);
+  }
+  #overlay.enable{
+    opacity: 0.7;
+    visibility: visible;
   }

@@ -40,11 +40,12 @@ export async function getNoteByNotebookId(notebookId) {
     return response.data;
   }
 export async function createNewNote(notebookId, title, content, ref) {
-    const response = await axios.post(`${API_URL}/notebooks/notes/new`, new URLSearchParams({
+  console.log(JSON.stringify(ref))
+    const response = await axios.post(`${API_URL}/notebooks/notes/new`, ({
         notebook_id: notebookId,
         title: title,
         content: content,
-        // references: ref
+        references: ref
     }), {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -158,5 +159,28 @@ export async function uploadNewFile(notebookId, formData){
       },
       withCredentials: true
     });
+  return response
+}
+
+export async function saveChatHistory(notebookId){
+  const response = await axios.post(`${API_URL}/messages/save`, {
+    notebook_id: notebookId
+  }, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'accept': 'application/json'
+    },
+    withCredentials: true
+  })
+  return response
+}
+
+export async function getChatHistory(notebookId){
+  const response = await axios.get(`${API_URL}/messages/get/${notebookId}`, {
+    headers: {
+      'accept': 'application/json'
+    },
+    withCredentials: true
+  })
   return response
 }

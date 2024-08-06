@@ -72,6 +72,7 @@
   color: #9cc9f3e0;
 }
 .notebook-chat-input-source{
+    overflow: hidden;
     width: 16%;
     color: #ffffffa9;
     background-color: var(--menu-hover-color);

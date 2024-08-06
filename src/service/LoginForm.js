@@ -22,10 +22,23 @@ export async function loginForm(username, password) {
   }
 
 export async function resetPassword(userEmail) {
-    const response = await axios.get(`${API_URL}/reset_password?email=${userEmail}`, {
+    const response = await axios.get(`$/reset_password?email=${userEmail}`, {
       headers: {
         'Content-Type': 'application/json',
       }
     })
+  return response
+}
+
+export async function loginWithMicrosoft(tenantId, email){
+  const response = await axios.post(`${API_URL}/login_with_microsoft`, {
+    tenant_id: tenantId,
+    email: email
+  }, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    withCredentials: true
+  })
   return response
 }

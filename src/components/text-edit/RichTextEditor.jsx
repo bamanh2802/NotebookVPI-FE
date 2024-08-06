@@ -13,7 +13,7 @@ const RichTextEditor = ({ isChange, updateNote, notebookId, noteId, name, conten
   const [isNotActive, setIsNotActive] = useState(false);
   const [characterCount, setCharacterCount] = useState('');
   useEffect(() => {
-    if (content) {
+    if (content && name) {
     setEditorContent(content);
     setCharacterCount(content.length);
     }
@@ -22,14 +22,18 @@ const RichTextEditor = ({ isChange, updateNote, notebookId, noteId, name, conten
   useEffect(() => {
     setEditorName(name);
     setEditorContent(content);
-  }, [name, content]);
+  }, [name, content, isOpen]);
 
   const changeContent = async (value) => {
     if (value.length <= CHARACTER_LIMIT) {
       setEditorContent(value.trim());
       setCharacterCount(value.length);
       debouncedHandleChangeContent(notebookId, noteId, value.trim());
-      debouncedUpdateNote(noteId, editorName, value.trim());
+      if (editorName !== '') {
+        debouncedUpdateNote(noteId, editorName, value.trim());
+      } else {
+        debouncedUpdateNote(noteId, name, value.trim());
+      }
     } else {
       setCharacterCount(value.length);
     }
@@ -48,12 +52,14 @@ const RichTextEditor = ({ isChange, updateNote, notebookId, noteId, name, conten
   const debouncedUpdateNote = useCallback(debounce(updateNote, 1000), []);
 
   const handleNameChange = async (event) => {
-    try {
-      const data = await noteRenameById(notebookId, noteId, event.target.value);
-      updateNote(noteId, editorName, editorContent);
-      isChange(false)
-    } catch (error) {
-      console.log('Rename Error');
+    if(event.target.value.trim() !== '') {
+      try {
+        const data = await noteRenameById(notebookId, noteId, event.target.value.trim());
+        updateNote(noteId, editorName, editorContent);
+        isChange(false)
+      } catch (error) {
+        console.log('Rename Error');
+      }
     }
   };
 

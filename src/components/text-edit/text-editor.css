@@ -6,3 +6,6 @@
     line-height: 40px;
     color: #ccc;
 }
+.ql-picker-options{
+    background-color: var(--note-editer-header) !important;
+}
