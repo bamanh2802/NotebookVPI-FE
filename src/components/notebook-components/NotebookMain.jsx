@@ -56,7 +56,6 @@ function NotebookMain({ notebookId }) {
     try {
       const data = await getNoteByNotebookId(notebookId)
       setNotes(data.notes.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)))
-      console.log(data)
       if (newNoteTemp) {
         setNotes(prevNotes => [
           ...newNoteTemp.filter(note => note.notebookId === notebookId),
@@ -69,16 +68,6 @@ function NotebookMain({ notebookId }) {
   }
 
   const updateNoteById = async (noteId, name, content) => {
-    if(name === '') {
-      setNotes((prevNotes) => {
-        return prevNotes.map((note) => {
-          if (note.note_id === noteId) {
-            return { ...note, title: selectedNoteName, content: content };
-          }
-          return note;
-        });
-      });
-    } else {
       setNotes((prevNotes) => {
         return prevNotes.map((note) => {
           if (note.note_id === noteId) {
@@ -87,8 +76,6 @@ function NotebookMain({ notebookId }) {
           return note;
         });
       });
-
-    }
   }
 
 
@@ -150,18 +137,24 @@ const handleCloseDeleteMenu = () => {
 
   const closeTextEditor = () => {
     setIsActive(false)
+    setSelectedNoteId(null);
+    setSelectedNoteName(null);
+    setSelectedNoteContent(null);
     if (isChange) {
       fetchNotes()
     }
-    setSelectedNoteId(null);
   };
 
   const handleNoteClick = (noteId, name, content) => {
     setSelectedNoteId(noteId);
     setSelectedNoteName(name);
     setSelectedNoteContent(content);
-    setIsActive(true)
   };
+  useEffect(() => {
+    if (selectedNoteId !== null && selectedNoteName !== null && selectedNoteContent !== null) {
+      setIsActive(true);
+    }
+  }, [selectedNoteId, selectedNoteName, selectedNoteContent]);
 
 
 

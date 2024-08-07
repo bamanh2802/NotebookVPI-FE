@@ -40,12 +40,12 @@ export async function getNoteByNotebookId(notebookId) {
     return response.data;
   }
 export async function createNewNote(notebookId, title, content, ref) {
-  console.log(JSON.stringify(ref))
+  const references = JSON.stringify(ref)
     const response = await axios.post(`${API_URL}/notebooks/notes/new`, ({
         notebook_id: notebookId,
         title: title,
         content: content,
-        references: ref
+        references: references
     }), {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',

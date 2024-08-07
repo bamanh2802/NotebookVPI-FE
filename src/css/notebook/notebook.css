@@ -76,7 +76,7 @@ input[type="checkbox"].custom-checkbox:checked + label:after {
   }
   .notebook-header h1 {
     font-size: 1.25rem;
-    font-weight: 300;
+    font-weight: 450;
   }
   .notebook-header-change-name{
     font-size: 1.25rem;

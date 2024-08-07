@@ -122,7 +122,6 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
   const getChat = async () => {
     try {
       const data = await getChatHistory(notebookId)
-      console.log(data)
     } catch (e) {
       console.log(e)
     }

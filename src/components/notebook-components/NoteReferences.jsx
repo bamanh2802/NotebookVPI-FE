@@ -4,11 +4,12 @@ import '../../css/notebook/references.css'
 const NoteReferences = ({ data }) => {
     const [countReferences, setCountReferences] = useState()
     const [isOpenReferences, setIsOpenReferences] = useState(false)
+    const [arrayData, setArrayData] = useState([])
 
     useEffect(() => {
-        console.log(data)
         if(data) {
-            setCountReferences(data.length + ' câu trích dẫn')
+            setCountReferences(JSON.parse(data).length + ' câu trích dẫn')
+            setArrayData(JSON.parse(data))
         }
     },[])
     const handleOpenReferences = (e) => {
@@ -17,17 +18,17 @@ const NoteReferences = ({ data }) => {
     }
     return (
         <div>
-            {data.length > 0 && (
+            {arrayData.length > 0 && (
                 <div className={`references-container ${isOpenReferences ? 'open': ''}`} onClick={handleOpenReferences}>
                 <div className="references-count">
                 {countReferences} &nbsp;&nbsp;
                 </div>
                 <div className="references-num">
-                {[...Array(data.length).keys()].map((index) => (
+                {[...Array(arrayData.length).keys()].map((index) => (
                 <span key={index}>
                     {index + 1}
                     <div className="ref-information">
-                        {data[index]}
+                        {arrayData[index].content}
                     </div>
                 </span>
                 ))}

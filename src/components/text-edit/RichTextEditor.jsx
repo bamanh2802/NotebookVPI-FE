@@ -8,12 +8,12 @@ import { noteRenameById, updateContentNote } from '../../service/notebookPage';
 const CHARACTER_LIMIT = 5500;
 
 const RichTextEditor = ({ isChange, updateNote, notebookId, noteId, name, content, setSelectedNoteId, isOpen, setIsActive }) => {
-  const [editorContent, setEditorContent] = useState('');
-  const [editorName, setEditorName] = useState('');
+  const [editorContent, setEditorContent] = useState(content);
+  const [editorName, setEditorName] = useState(name);
   const [isNotActive, setIsNotActive] = useState(false);
   const [characterCount, setCharacterCount] = useState('');
   useEffect(() => {
-    if (content && name) {
+    if (content) {
     setEditorContent(content);
     setCharacterCount(content.length);
     }
@@ -25,38 +25,37 @@ const RichTextEditor = ({ isChange, updateNote, notebookId, noteId, name, conten
   }, [name, content, isOpen]);
 
   const changeContent = async (value) => {
+  
     if (value.length <= CHARACTER_LIMIT) {
       setEditorContent(value.trim());
       setCharacterCount(value.length);
       debouncedHandleChangeContent(notebookId, noteId, value.trim());
-      if (editorName !== '') {
-        debouncedUpdateNote(noteId, editorName, value.trim());
-      } else {
-        debouncedUpdateNote(noteId, name, value.trim());
-      }
+      debouncedUpdateNote(noteId, editorName, value.trim());
     } else {
       setCharacterCount(value.length);
     }
   };
 
   const handleChangeContent = async (notebookId, noteId, content) => {
-    try {
-      const data = await updateContentNote(notebookId, noteId, content)
-      isChange(false)
-    } catch (e) {
-      console.log(e)
+    if(noteId){
+      try {
+        const data = await updateContentNote(notebookId, noteId, content)
+        isChange(true)
+      } catch (e) {
+        console.log(e)
+      }
     }
   };
 
   const debouncedHandleChangeContent = useCallback(debounce(handleChangeContent, 1000), []);
-  const debouncedUpdateNote = useCallback(debounce(updateNote, 1000), []);
+  const debouncedUpdateNote = useCallback(debounce(updateNote, 500), []);
 
   const handleNameChange = async (event) => {
     if(event.target.value.trim() !== '') {
       try {
         const data = await noteRenameById(notebookId, noteId, event.target.value.trim());
         updateNote(noteId, editorName, editorContent);
-        isChange(false)
+        isChange(true)
       } catch (error) {
         console.log('Rename Error');
       }

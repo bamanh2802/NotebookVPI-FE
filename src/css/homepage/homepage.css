@@ -67,6 +67,7 @@
       justify-content: center;
       height: calc(100vh - 75px);
       background-color: #131314;
+      overflow: auto;
     }
     .content{
       width: 85%;
