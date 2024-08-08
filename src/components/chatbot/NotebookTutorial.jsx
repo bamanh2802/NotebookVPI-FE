@@ -136,7 +136,7 @@ function NotebookTutorial({ notebookId, closeTutorial, classOpen, onQuestionClic
       content: 'Đang tạo...',
       message: message,
       isChecked: false,
-      references: []
+      references: '[]'
     };
     dispatch({
       type: 'UPDATE_TEMP_NOTES',
