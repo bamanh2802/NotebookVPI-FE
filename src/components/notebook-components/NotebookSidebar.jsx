@@ -61,9 +61,15 @@ function NotebookSidebar({ notebookId }) {
         dispatch({ type: 'UPDATE_FILES', payload: listFilesNotebook });
     }, [allSources, dispatch])
     useEffect(() => {
-        if(allSources.length === countSource){
+        if(allSources.length === countSource.length){
+            setSelectAll(true)
+        } else {
+            setSelectAll(false)
         }
-    }, [countSource])
+        if(countSource.length === 0) {
+            setSelectAll(false)
+        }
+    }, [countSource,    allSources])
 
 
     const handleToggleSidebar = () => {
@@ -106,7 +112,7 @@ function NotebookSidebar({ notebookId }) {
         event.stopPropagation();
         try {
             const data = await deleteFileById(notebookId, source.file_id)
-            fetchAllSources()
+            fetchAllSourcesAgain()
             setIsLoadingDelete(false)
         } catch (e) {
             setLoadingStates((prev) => ({ ...prev, [source.file_id]: false }));
@@ -118,9 +124,13 @@ function NotebookSidebar({ notebookId }) {
     const handleChangeFileName = async (source, event) => {
         event.preventDefault();
         event.stopPropagation();
-        setIsEdittingName(true)
-        setNewFileName(source.file_name)
-        setSelectedSource(source)
+
+        if (!isEdittingName || selectedSource.file_id !== source.file_id) {
+            const fileNameWithoutExt = source.file_name.replace(/\.pdf$/, '');
+            setIsEdittingName(true);
+            setNewFileName(fileNameWithoutExt);
+            setSelectedSource(source);
+        }
     }
 
       const handleRenameChange = (e) => {
@@ -129,10 +139,11 @@ function NotebookSidebar({ notebookId }) {
 
     const handleRenameBlur = async (e, source) => {
         setIsEdittingName(false);
+        const updatedFileName = `${newFileName}.pdf`;
         if (newFileName !== selectedSource.file_name) {
             try {
-                const data = await renameFileNameById(notebookId, selectedSource.file_id, newFileName)
-                fetchAllSources()
+                const data = await renameFileNameById(notebookId, selectedSource.file_id, updatedFileName)
+                fetchAllSourcesAgain()
             } catch (e) {
                 console.log(e)
             }
@@ -144,31 +155,40 @@ function NotebookSidebar({ notebookId }) {
     const fetchAllSourcesAgain = async () => {
         try {
           const data = await fetchSourceNotebook(notebookId);
+          console.log(data);
       
           if (data.length === 0) {
             setIsOpenUploadFile(true);
           }
       
           const dataSort = data.sort((a, b) => new Date(a.uploaded_at) - new Date(b.uploaded_at));
-      
-          console.log(dataSort)
-          console.log(sourceListSelector)
+          
+          // Cập nhật nguồn
           const updatedSources = dataSort.map(source => {
+            console.log(source);
             const found = sourceListSelector.find(s => s.file_id === source.file_id);
+            
+            // return {
+            //   ...source,
+            //   isSelected: found ? found.isSelected : true, // Giữ trạng thái của các tệp đã có, các tệp mới sẽ được chọn mặc định
+            // };
             return {
-              ...source,
-              isSelected: !found ? found.isSelected : true, // Giữ trạng thái của các tệp đã có, các tệp mới sẽ được chọn mặc định
-            };
+                ...source,
+                isSelected: found !== undefined, // true nếu file có trong sourceListSelector, ngược lại là false
+              };
           });
+          console.log(sourceListSelector)
+          const selectedSources = updatedSources.filter(source => source.isSelected);
       
+          console.log(updatedSources);
           setAllSources(updatedSources);
-          setSourceListSelector(updatedSources);
-          setCountSource(updatedSources);
+          setSourceListSelector(selectedSources);
+          setCountSource(selectedSources);
         } catch (error) {
           console.log('Get source Error: ', error);
         }
       };
-
+      
       const addTempSource = (tempSource) => {
         setAllSources(prevSources => [...prevSources, tempSource]);
       }
@@ -206,10 +226,11 @@ function NotebookSidebar({ notebookId }) {
     const handleFileChanges = async (event) => {
         const selectedFiles = Array.from(event.target.files);
         setFileNames(selectedFiles.map(file => file.name));
-        setCountSourceNewUp(selectedFiles.length)
+        setCountSourceNewUp(selectedFiles)
         setIsLoading(true);
         setIsOpenUploadFile(false);
         let fileRender = selectedFiles.map(file => file.name)
+        console.log(selectedFiles)
     
         for (const file of selectedFiles) {
           const formData = new FormData();
@@ -247,7 +268,7 @@ function NotebookSidebar({ notebookId }) {
             alert(`Error uploading file: ${file.name}`);
           }
         }
-          fetchAllSourcesAgain();
+        fetchAllSourcesAgain();
 
     
         setIsLoading(false);
@@ -329,7 +350,7 @@ function NotebookSidebar({ notebookId }) {
                                 </div>
                             </div>
                            <div className={`source-item-name ${isOpenSidebar ? '' : 'not-active'}`}>
-                                {isEdittingName ? (
+                                {isEdittingName && selectedSource.file_id === source.file_id ? (
                                 <input
                                     type="text"
                                     value={newFileName}

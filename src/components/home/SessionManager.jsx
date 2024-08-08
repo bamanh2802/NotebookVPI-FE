@@ -45,7 +45,6 @@ const SessionManager = ({  }) => {
   const whoAmICallback = async () => {
     try {
       const data = await whoAmI()
-      console.log(data)
     } catch (e) {
       console.log(e)
     }

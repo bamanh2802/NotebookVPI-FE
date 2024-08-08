@@ -4,7 +4,7 @@ const msalConfig = {
   auth: {
     clientId: 'b4d2901e-f89a-4445-ac67-79c95ac0dc17', // Thay thế bằng client ID của bạn
     authority: 'https://login.microsoftonline.com/fa31a4b9-8bae-42ac-9e7a-6553ded13bc1', // Thay thế bằng tenant ID của bạn (hoặc sử dụng 'common' cho đa tenant)
-    redirectUri: 'https://notebook-pvi-fe-git-master-bamanh2802s-projects.vercel.app/', // Thay thế bằng URL redirect của bạn
+    redirectUri: 'http://localhost:3000/', // Thay thế bằng URL redirect của bạn
   },
   cache: {
     cacheLocation: 'localStorage',

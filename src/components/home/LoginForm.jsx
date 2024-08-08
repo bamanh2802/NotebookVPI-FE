@@ -114,8 +114,8 @@ const LoginForm = () => {
           localStorage.setItem("userid", loginResponse2.data.user_id)
           localStorage.setItem('session_manager', JSON.stringify({
             session_id: loginResponse2.data.session_id,
-            end_time: loginResponse2.data.session.end_time,
-            user_id: loginResponse2.data.user.user_id
+            end_time: loginResponse2.data.data.end_time,
+            user_id: loginResponse2.data.data.user_id
           }));
           navigate('/')
         }

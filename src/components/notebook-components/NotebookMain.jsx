@@ -86,7 +86,7 @@ function NotebookMain({ notebookId }) {
   const handleCreateNote = async () => {
     setIsLoadingCreate(true)
     try {
-      const data = await createNewNote(notebookId, 'Untitled Note', 'Content', null)
+      const data = await createNewNote(notebookId, 'Untitled Note', 'Content', [])
       setIsLoadingCreate(false)
     } catch (error) {
       console.error('Error create note:', error);
