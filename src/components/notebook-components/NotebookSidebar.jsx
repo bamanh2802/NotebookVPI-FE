@@ -426,7 +426,7 @@ function NotebookSidebar({ notebookId }) {
                     <div className={`file-upload-container ${isOpenUploadFile ? 'show' : ''}`} onClick={(event) => {event.stopPropagation()}}>
                         <div className='file-upload-title'>Tải thư mục lên</div>
                         <label htmlFor="file-upload" className="file-upload-label">
-                            <i className="fa fa-cloud-upload" /> Choose a PDF File to ask for knowledge
+                            <i className="fa fa-cloud-upload" /> Lựa chọn thư mục pdf để tìm hiểu về nó
                         </label>
                         <input
                             type="file"

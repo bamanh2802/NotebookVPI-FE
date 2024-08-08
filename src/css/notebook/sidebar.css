@@ -316,6 +316,7 @@
   }
   
   .file-upload-label {
+    text-align: center;
     display: inline-block;
     background-color: var(--menu-hover-color);
     color: #fff;
