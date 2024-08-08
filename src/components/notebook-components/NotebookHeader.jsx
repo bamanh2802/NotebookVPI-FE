@@ -47,6 +47,7 @@ function NotebookHeader({ notebookId }) {
       try {
         // Update the local state first
         setNotebook({ ...notebook, title: newName });
+        setNotebookName(newName)
         // Call the API to update the name on the server
         await updateNotebook(notebookId, newName);
         setEditingName(false);
