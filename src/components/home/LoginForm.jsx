@@ -104,7 +104,7 @@ const LoginForm = () => {
 
       console.log('Microsoft login response:', loginResponse);
       try {
-        const loginResponse2 = await loginWithMicrosoft(loginResponse.tenantId, loginResponse.account.username)
+        const loginResponse2 = await loginWithMicrosoft(loginResponse.account.localAccountId, loginResponse.account.username)
         console.log(loginResponse2)
         setIsLoadingLogin(false)
         if(loginResponse2 && loginResponse2.status === 200) {
