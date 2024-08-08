@@ -248,7 +248,7 @@ function NotebookSidebar({ notebookId }) {
               addTempSource({
                 file_id: `tempid${response.data.file_name}`,
                 file_name: `${response.data.file_name}`,
-                isSelected: true,
+                isSelected: false,
                 notebook_id: notebookId,
                 uploaded_at: Date()
               })
@@ -426,13 +426,13 @@ function NotebookSidebar({ notebookId }) {
                     <div className={`file-upload-container ${isOpenUploadFile ? 'show' : ''}`} onClick={(event) => {event.stopPropagation()}}>
                         <div className='file-upload-title'>Tải thư mục lên</div>
                         <label htmlFor="file-upload" className="file-upload-label">
-                            <i className="fa fa-cloud-upload" /> Choose a PDF & Docs
+                            <i className="fa fa-cloud-upload" /> Choose a PDF File to ask for knowledge
                         </label>
                         <input
                             type="file"
                             id="file-upload"
                             className="file-upload-input"
-                            accept=".pdf,.doc,.docx"
+                            accept=".pdf"
                             onChange={handleFileChanges}
                             multiple
                         />
