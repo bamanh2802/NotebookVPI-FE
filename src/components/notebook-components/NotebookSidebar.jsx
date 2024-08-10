@@ -155,7 +155,6 @@ function NotebookSidebar({ notebookId }) {
     const fetchAllSourcesAgain = async () => {
         try {
           const data = await fetchSourceNotebook(notebookId);
-          console.log(data);
       
           if (data.length === 0) {
             setIsOpenUploadFile(true);
@@ -165,7 +164,6 @@ function NotebookSidebar({ notebookId }) {
           
           // Cập nhật nguồn
           const updatedSources = dataSort.map(source => {
-            console.log(source);
             const found = sourceListSelector.find(s => s.file_id === source.file_id);
             
             // return {
@@ -177,10 +175,8 @@ function NotebookSidebar({ notebookId }) {
                 isSelected: found !== undefined, // true nếu file có trong sourceListSelector, ngược lại là false
               };
           });
-          console.log(sourceListSelector)
           const selectedSources = updatedSources.filter(source => source.isSelected);
       
-          console.log(updatedSources);
           setAllSources(updatedSources);
           setSourceListSelector(selectedSources);
           setCountSource(selectedSources);
@@ -230,7 +226,6 @@ function NotebookSidebar({ notebookId }) {
         setIsLoading(true);
         setIsOpenUploadFile(false);
         let fileRender = selectedFiles.map(file => file.name)
-        console.log(selectedFiles)
     
         for (const file of selectedFiles) {
           const formData = new FormData();

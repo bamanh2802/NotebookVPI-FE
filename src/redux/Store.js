@@ -16,7 +16,13 @@ const initialState = {
   },
   tempNotes: [],
   chunkId: [],
-  summaries: {}
+  summaries: {},
+  references: {
+    fileId: null,
+    content: null,
+  },
+  isFeedbackMessage: false,
+  isNotify: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -27,6 +33,14 @@ const reducer = (state = initialState, action) => {
       return { ...state, tempNotes: [...state.tempNotes, action.payload] };
     case 'ADD_CHUNK_ID':
       return { ...state, chunkId: [...state.chunkId, action.payload] };
+    case 'FIND_REFERENCES':
+      return {
+        ...state,
+        references: {
+          fileId: action.payload.fileId,
+          content: action.payload.content,
+        },
+      };
     case 'REMOVE_TEMP_NOTES':
       const indexToRemove = state.tempNotes.findIndex(
         (note) => note.notebookId === action.payload.notebookId
@@ -55,6 +69,10 @@ const reducer = (state = initialState, action) => {
       return { ...state, allSourceByNotebook: action.payload };
     case 'TOGGLE_CHAT':
       return { ...state, isChatOpen: !state.isChatOpen };
+    case 'TOGGLE_NOTIFY':
+      return { ...state, isNotify: !state.isNotify };
+    case 'TOGGLE_FEEDBACK':
+      return { ...state, isFeedbackMessage: !state.isFeedbackMessage };
     case 'TOGGLE_TUTORIAL':
       return { ...state, isTutorialOpen: !state.isTutorialOpen };
     case 'TOGGLE_SIDEBAR':

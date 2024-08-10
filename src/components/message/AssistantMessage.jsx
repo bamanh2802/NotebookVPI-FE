@@ -3,7 +3,7 @@ import { useDispatch, useSelector, createStore } from 'react-redux';
 import '../../css/notebook/notebook-chat.css';
 import '../../css/notebook/notebook-item.css';
 import '../../css/notebook/notebook-feedback.css'
-import { createNewNote } from '../../service/notebookPage';
+import { createNewNote, sendFeedbackMessage } from '../../service/notebookPage';
 import copyIcon from '../../svg/copy.svg'
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -18,10 +18,10 @@ const AssistantMessage = ({ onClickCloseChat, notebookId, message, isLoading }) 
   const normalString = JSON.parse(htmlContent);
   const [hoveredDataLog, setHoveredDataLog] = useState(null);
   const [copySuccess, setCopySuccess] = useState('');
-  const [selectedReferences, setSelectedReferences] = useState([])
+  const isOpenSource = useSelector((state) => state.isOpenSource)
+  const isNotify = useSelector((state) => state.isNotify)
 
-  useEffect(() => {
-  },[])
+  
 
   const formatMessage = (message) => {
     // Từ điển để lưu trữ các giá trị đã gặp và số thứ tự tương ứng
@@ -52,14 +52,14 @@ const AssistantMessage = ({ onClickCloseChat, notebookId, message, isLoading }) 
         }
     };
 
-    // Tìm tất cả các phần tử [] và lưu trữ chúng vào mảng
+    // Tìm tất cả các phần tử [] và lưu trữ chúng vào mảng nếu nội dung dài hơn 4 ký tự
     const regex = /\[([^\]]+)\]/g;
     let match;
     while ((match = regex.exec(message)) !== null) {
         // Tách các giá trị bên trong dấu ngoặc vuông
         const values = match[1].split(',').map(v => v.trim());
         values.forEach(value => {
-            if (!valueArray.includes(value)) {
+            if (value.length > 4 && !valueArray.includes(value)) {
                 valueArray.push(value);
             }
         });
@@ -70,20 +70,24 @@ const AssistantMessage = ({ onClickCloseChat, notebookId, message, isLoading }) 
         // Tách các giá trị bên trong dấu ngoặc vuông
         const values = p1.split(',').map(v => v.trim());
         return values.map(value => {
-            if (!valueCounterMap[value]) {
-                valueCounterMap[value] = valueArray.indexOf(value) + 1;
-            }
-            const content = getContent(value);
-            return `
-            <button class="references-button" data-log="${value}">
-                ${valueCounterMap[value]}
-                <div class="references-panel">
-                    <div>
-                    ${content}
+            if (value.length > 4) {
+                if (!valueCounterMap[value]) {
+                    valueCounterMap[value] = valueArray.indexOf(value) + 1;
+                }
+                const content = getContent(value);
+                return `
+                <button class="references-button" data-log="${value}">
+                    ${valueCounterMap[value]}
+                    <div class="references-panel">
+                        <div>
+                        ${content}
+                        </div>
                     </div>
-                </div>
-            </button>
-            `;
+                </button>
+                `;
+            } else {
+                return match; // Trả về chuỗi gốc nếu nội dung ngắn hơn hoặc bằng 4 ký tự
+            }
         }).join(''); // Kết hợp các button vào cùng một chuỗi
     };
 
@@ -95,14 +99,40 @@ const AssistantMessage = ({ onClickCloseChat, notebookId, message, isLoading }) 
 
 
 
-  function removeSquareBrackets(str) {
-    return str.replace(/\[.*?\]/g, '');
+function removeSquareBrackets(str) {
+  return str.replace(/\[([^\]]+)\]/g, (match, content) => {
+      // Nếu độ dài nội dung lớn hơn 4 ký tự, xóa nội dung trong dấu ngoặc vuông
+      return content.length > 4 ? '' : match;
+  });
+}
+  function getFileIdFromChunkId(chunk_id) {
+    const chunk = chunkId.find(item => item.chunk_id === chunk_id);
+      if (chunk) {
+        return {
+          file_id: chunk.file_id,
+          content: chunk.content
+        };
+      } else {
+        return null;
+      }
   }
 
+  const findReferences = (chunk_id) => {
+    dispatch({
+      type: 'FIND_REFERENCES',
+      payload: {
+        fileId: getFileIdFromChunkId(chunk_id).file_id,
+        content: getFileIdFromChunkId(chunk_id).content
+      }
+    })
+    if(!isOpenSource) {
+      dispatch({ type: 'TOGGLE_SOURCE'})
+    }
+  }
 
   const handleButtonClick = (event) => {
     if (event.target.tagName === 'BUTTON' && event.target.classList.contains('references-button')) {
-      console.log(event.target.getAttribute('data-log'));
+      findReferences(event.target.getAttribute('data-log'))
     }
   };
 
@@ -142,6 +172,27 @@ const AssistantMessage = ({ onClickCloseChat, notebookId, message, isLoading }) 
     } catch (e) {
       console.log(e)
     } 
+  }
+
+  const handleOpenFeedback = () => {
+    dispatch({
+      type: 'TOGGLE_FEEDBACK'
+    })
+  }
+
+  const handleLikeMessage = async () => {
+    const userId = localStorage.getItem('userid')
+    const feedbackLike = 'Câu trả lời tốt'
+    try {
+      const data = sendFeedbackMessage(userId, notebookId, feedbackLike)
+      if (!isNotify) {
+        dispatch({
+          type: 'TOGGLE_NOTIFY'
+        })
+      }
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   const handleCopyMessage = () => {
@@ -184,10 +235,10 @@ const AssistantMessage = ({ onClickCloseChat, notebookId, message, isLoading }) 
             <div className="to-user-message-copy">
             <img src={copyIcon} alt="Copy" style={{ width: '20px', height: '20px', color:'#ccc' }} />
             </div>
-            <div className="to-user-message-like">
+            <div className="to-user-message-like" onClick={handleLikeMessage}>
               <i className="fa-regular fa-thumbs-up" />
             </div>
-            <div className="to-user-message-dislike">
+            <div className="to-user-message-dislike" onClick={handleOpenFeedback}>
               <i className="fa-regular fa-thumbs-down" />
             </div>
           </div>

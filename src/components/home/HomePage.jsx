@@ -13,6 +13,7 @@ import '../../css/color.css';
 import '../../css/homepage/loadingpage.css'
 
 import UserProfile from '../user-profile/UserProfile'
+import Feedback from './Feedback';
 
 function HomePage() {
   const [notebooks, setNotebooks] = useState([]);
@@ -25,6 +26,7 @@ function HomePage() {
   const [isOpenUserMenu, setIsOpenUserMenu] = useState(false);
   const [notebookCreateLoading, setNotebookCreateLoading] = useState(false)
   const [isOpenUserDetail, setIsOpenUserDetail] = useState(false)
+  const [isOpenFeedback, setIsOpenFeedback] = useState(false)
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -210,7 +212,7 @@ function HomePage() {
               <span className='user-icon' onClick={handleToggleUserMenu}>
                 <i className="fa-regular fa-user"></i>
                   <div className={`user-profile-block ${isOpenUserMenu ? 'show' : ''}`} onClick={(event) => {event.stopPropagation()}} > 
-                    <UserProfile setIsOpenUserDetail={setIsOpenUserDetail}/>
+                    <UserProfile setIsOpenUserDetail={setIsOpenUserDetail} setIsOpenFeedback={setIsOpenFeedback}/>
                   </div>
                 </span>
           </div>
@@ -360,6 +362,10 @@ function HomePage() {
           <UserDetail 
             isOpenUserDetail={isOpenUserDetail ? 'show': ''}
             closeUserDetail={setIsOpenUserDetail}
+          />
+          <Feedback 
+            isOpenFeedback={isOpenFeedback ? 'show': ''}
+            closeFeedback={setIsOpenFeedback}
           />
         </div>
     </div>

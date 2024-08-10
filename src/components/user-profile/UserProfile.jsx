@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 
-const UserProfile = ({ setIsOpenUserDetail }) => {
+const UserProfile = ({ setIsOpenUserDetail, setIsOpenFeedback }) => {
     const selectUserInfo = useSelector((state) => state.userInfo)
 
     const userName = localStorage.getItem("username")
@@ -13,6 +13,9 @@ const UserProfile = ({ setIsOpenUserDetail }) => {
 
     const handleOpenDetail = () => {
       setIsOpenUserDetail(true)
+    }
+    const handleOpenFeedback = () => {
+      setIsOpenFeedback(true)
     }
 
     const handleLogout = async () => {
@@ -41,7 +44,7 @@ const UserProfile = ({ setIsOpenUserDetail }) => {
             <div className="user-line"></div>
             <div className="user-main">
                 <div className="user-settings" onClick={handleOpenDetail}> <i className="fa-solid fa-gear"></i> Account Settings</div>
-                <div className="user-feedback"><i className="fa-solid fa-triangle-exclamation"></i>Feedback</div>
+                <div className="user-feedback" onClick={handleOpenFeedback}><i className="fa-solid fa-triangle-exclamation"></i>Feedback</div>
                 <div className="user-logout" onClick={handleLogout}><i className="fa-solid fa-right-from-bracket"></i>Logout</div>
             </div>
         </div>

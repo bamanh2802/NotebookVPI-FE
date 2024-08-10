@@ -6,6 +6,7 @@ import '../../css/notebook/notebook-chat.css';
 import '../../css/notebook/notebook-item.css';
 
 import AssistantMessage from '../message/AssistantMessage';
+import FeedbackMessage from '../message/FeedbackMessage';
 
 function NotebookChat({ notebookId }) {
     const isChatOpen = useSelector((state) => state.isChatOpen);
@@ -128,6 +129,7 @@ function NotebookChat({ notebookId }) {
                     ))}
                 </div>
             </div>
+
         </div>
     );
 }

@@ -184,3 +184,44 @@ export async function getChatHistory(notebookId){
   })
   return response
 }
+
+export async function getChunkIdByFileId(notebookId, fileId) {
+  const response = await axios.get(`${API_URL}/notebooks/${notebookId}/files/${fileId}/chunks`, {
+    headers: {
+      'accept': 'application/json'
+    },
+    withCredentials: true
+  })
+  return response
+}
+
+export async function sendFeedbackSystem(userId, content) {
+const response = await axios.post(`${API_URL}/create_system_feedback`, {
+    user_id: userId,
+    content: content
+  }, {
+    headers: {
+      'Content-Type': 'application/json',
+      'accept': 'application/json'
+    },
+    withCredentials: true
+
+  })
+    return response
+}
+
+export async function sendFeedbackMessage(userId, notebookId, content){
+  const response = await axios.post(`${API_URL}/create_message_feedback`, {
+    user_id: userId,
+    notebook_id: notebookId,
+    content: content
+  }, {
+    headers: {
+      'Content-Type': 'application/json',
+      'accept': 'application/json'
+    },
+    withCredentials: true
+
+  })
+    return response
+}

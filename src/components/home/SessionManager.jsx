@@ -33,7 +33,7 @@ const SessionManager = ({  }) => {
         //     );
         //   }
         // }
-          whoAmICallback();
+          // whoAmICallback();
       }, 30000);
 
       return () => clearInterval(interval);

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 
+import FeedbackMessage from '../message/FeedbackMessage';
 import HashLoader from "react-spinners/HashLoader";
 
 import RichTextEditor from '../text-edit/RichTextEditor';
@@ -30,18 +31,9 @@ function NotebookMain({ notebookId }) {
   const data = useSelector((state) => state.data);
   const selectedNotes = notes.filter((note) => note.isChecked);
   const newNoteTemp = useSelector((state) => state.tempNotes)
+  const isOpenFeedback = useSelector((state) => state.isFeedbackMessage)
+  const isNotify = useSelector((state) => state.isNotify)
 
-  // useEffect(() => {
-  //   console.log(newNoteTemp)
-  //   if (newNoteTemp) {
-  //     setNotes(prevNotes => [
-  //       ...newNoteTemp.filter(note => note.notebookId === notebookId),
-  //       ...prevNotes
-  //     ]);
-  //   }
-    
-  // },[newNoteTemp, isLoadingGetNotes])
-  
 
   useEffect(() => {
     if (data) {
@@ -49,7 +41,11 @@ function NotebookMain({ notebookId }) {
     }
   }, [data]);
 
-  
+  const closeNotify = () => {
+    dispatch({
+      type: 'TOGGLE_NOTIFY'
+      })
+  }
 
 
   const fetchNotes = async () => {
@@ -156,6 +152,12 @@ const handleCloseDeleteMenu = () => {
     }
   }, [selectedNoteId, selectedNoteName, selectedNoteContent]);
 
+  const handleCloseFeedback = () => {
+    dispatch({
+      type: 'TOGGLE_FEEDBACK'
+    })
+  }
+
 
 
 const anyNotesSelected = notes.some((note) => note.isChecked);
@@ -258,6 +260,13 @@ return (
         </div>
 
       </div>
+    </div>
+    <div onClick={handleCloseFeedback} className={`feedback-message-container ${isOpenFeedback ? 'show': ''}`}>
+        <FeedbackMessage notebookId={notebookId}/>
+    </div>
+
+    <div className={`feedback-success-toast ${isNotify ? 'show' : ''}`}>
+      Đã gửi ý kiến phản hồi thành công. <span onClick={closeNotify}>Đóng</span>
     </div>
   </div>
 );

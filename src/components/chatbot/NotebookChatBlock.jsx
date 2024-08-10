@@ -147,10 +147,9 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
     }
     try {
       const response = await sendMessage(notebookId, chatInput, selectedFiles);
+      const botReply = response.data.message;
       console.log(response)
-        const botReply = response.data.message;
-        const jsonString = response.data.context.replace(/'/g, '"');
-        const chunkIds = JSON.parse(jsonString);
+        const chunkIds = response.data.context
         chunkIds.map(chunkId => (
           dispatch({
             type: 'ADD_CHUNK_ID',
@@ -276,6 +275,7 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
         Notebook VPI - Version 1.
       </div>
     </div>
+    
   </>
 
   );
