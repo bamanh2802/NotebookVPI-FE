@@ -71,18 +71,53 @@
     display: block;
     transition: all .2s ease-in-out;
   }
+  .ref-information:hover {
+    display: block;
+    transition: all .2s ease-in-out;
+  }
+  
   .ref-information{
     overflow: auto;
     text-align: start;
     z-index: 1001;
     border-radius: 20px;
     position: fixed;
-    transform: translateX(-50%) translateY(20px);
+    transform: translateX(-50%) translateY(0);
     display: none;
     width: 420px;
     max-height: 420px;
     min-height: 210px;
-    background-color: var(--dropdown-option-hover);
+    background-color: #333435;
     overflow: auto;
     padding: 20px;
+  }
+
+  .references-container {
+    position: relative;
+  }
+
+  .ref-information {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+  }
+
+  .references-container span {
+    position: relative;
+  }
+
+  .references-container span:hover .ref-information {
+    animation: show 1s forwards; /* Hiện sau 1 giây hover */
+  }
+
+
+  @keyframes show {
+    0% {
+      opacity: 0;
+      visibility: hidden;
+    }
+    100% {
+      opacity: 1;
+      visibility: visible;
+    }
   }

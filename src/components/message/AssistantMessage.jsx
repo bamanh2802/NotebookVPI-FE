@@ -4,14 +4,11 @@ import '../../css/notebook/notebook-chat.css';
 import '../../css/notebook/notebook-item.css';
 import '../../css/notebook/notebook-feedback.css'
 import { createNewNote, sendFeedbackMessage } from '../../service/notebookPage';
-import copyIcon from '../../svg/copy.svg'
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import 'remixicon/fonts/remixicon.css';
 import { marked } from 'marked';
 import '../../css/notebook/references.css'
 
 const AssistantMessage = ({ onClickCloseChat, notebookId, message, isLoading }) => {
-  const [isOpenFeedback, setIsOpenFeedback] = useState(false)
   const chunkId = useSelector(state => state.chunkId)
   const dispatch = useDispatch()
   const htmlContent = JSON.stringify(marked(message));
@@ -26,12 +23,7 @@ const AssistantMessage = ({ onClickCloseChat, notebookId, message, isLoading }) 
   const formatMessage = (message) => {
     // Từ điển để lưu trữ các giá trị đã gặp và số thứ tự tương ứng
     const valueCounterMap = {};
-    let counter = 1;
-
-    // Mảng để lưu trữ các giá trị từ []
     const valueArray = [];
-
-    // Mảng để lưu trữ các từ điển chứa chunk_id và content
     const chunkContentArray = [];
 
     // Hàm để lấy nội dung của chunkId và thêm xuống dòng sau mỗi dấu chấm
@@ -43,7 +35,6 @@ const AssistantMessage = ({ onClickCloseChat, notebookId, message, isLoading }) 
             const foundChunk = chunkId.find(chunk => chunk.chunk_id === id);
             if (foundChunk) {
                 const content = foundChunk.content.replace(/\./g, '.\n');
-                // Thêm vào mảng chunkContentArray nếu chưa có
                 chunkContentArray.push({ chunk_id: id, content });
                 return content;
             } else {
@@ -56,7 +47,6 @@ const AssistantMessage = ({ onClickCloseChat, notebookId, message, isLoading }) 
     const regex = /\[([^\]]+)\]/g;
     let match;
     while ((match = regex.exec(message)) !== null) {
-        // Tách các giá trị bên trong dấu ngoặc vuông
         const values = match[1].split(',').map(v => v.trim());
         values.forEach(value => {
             if (value.length > 4 && !valueArray.includes(value)) {
@@ -67,7 +57,6 @@ const AssistantMessage = ({ onClickCloseChat, notebookId, message, isLoading }) 
 
     // Hàm thay thế cho regex.replace
     const replacer = (match, p1) => {
-        // Tách các giá trị bên trong dấu ngoặc vuông
         const values = p1.split(',').map(v => v.trim());
         return values.map(value => {
             if (value.length > 4) {
@@ -76,26 +65,30 @@ const AssistantMessage = ({ onClickCloseChat, notebookId, message, isLoading }) 
                 }
                 const content = getContent(value);
                 return `
-                <button class="references-button" data-log="${value}">
-                    ${valueCounterMap[value]}
-                    <div class="references-panel">
-                        <div>
-                        ${content}
+                    <button class="references-button" data-log="${value}">
+                        ${valueCounterMap[value]}
+                        <div class="references-panel">
+                            <div>${content}</div>
                         </div>
-                    </div>
-                </button>
+                    </button>
                 `;
             } else {
-                return match; // Trả về chuỗi gốc nếu nội dung ngắn hơn hoặc bằng 4 ký tự
+                return match;
             }
-        }).join(''); // Kết hợp các button vào cùng một chuỗi
+        }).join('');
     };
 
     // Thay thế các giá trị trong chuỗi gốc bằng các button
-    const formattedMessage = message.replace(regex, replacer);
+    let formattedMessage = message.replace(regex, replacer);
+
+    // Chuyển đổi các thẻ <code> và <pre> thành <p>
+    formattedMessage = formattedMessage.replace(/<\/?code>/g, '')
+                                       .replace(/<\/?pre>/g, '<p>')
+                                       .replace(/<\/p>\s*<p>/g, '</p><p>'); // Đảm bảo không có thẻ <p> liền nhau
 
     return [formattedMessage, chunkContentArray];
 };
+
 
 
 
@@ -110,7 +103,7 @@ function removeSquareBrackets(str) {
       if (chunk) {
         return {
           file_id: chunk.file_id,
-          content: chunk.content
+          chunk_id: chunk.chunk_id
         };
       } else {
         return null;
@@ -122,10 +115,11 @@ function removeSquareBrackets(str) {
       type: 'FIND_REFERENCES',
       payload: {
         fileId: getFileIdFromChunkId(chunk_id).file_id,
-        content: getFileIdFromChunkId(chunk_id).content
+        chunkId: getFileIdFromChunkId(chunk_id).chunk_id
       }
     })
     if(!isOpenSource) {
+      console.log(isOpenSource)
       dispatch({ type: 'TOGGLE_SOURCE'})
     }
   }
@@ -196,14 +190,22 @@ function removeSquareBrackets(str) {
   }
 
   const handleCopyMessage = () => {
-    navigator.clipboard.writeText(formatMessage(normalString)[0]).then(() => {
-      setCopySuccess('Copied!');
-      setTimeout(() => {
-        setCopySuccess('');
-      }, 2000);
-    }).catch((err) => {
-      console.error('Error copying text: ', err);
-    });
+    const textToCopy = removeSquareBrackets(normalString);
+  
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(textToCopy)
+        .then(() => {
+          setCopySuccess('Copied!');
+          setTimeout(() => {
+            setCopySuccess('');
+          }, 2000);
+        })
+        .catch((err) => {
+          console.error('Error copying text: ', err);
+        });
+    } else {
+      console.error('Clipboard API not supported');
+    }
   };
 
 
@@ -226,20 +228,19 @@ function removeSquareBrackets(str) {
             <div dangerouslySetInnerHTML={{ __html: formatMessage(normalString)[0] }} />
           </div>
             {hoveredDataLog && <div className="tooltip">{hoveredDataLog}</div>}
-          {/* <ReactMarkdown remarkPlugins={[remarkGfm]}>{message}</ReactMarkdown> */}
             <span className="pin-to-notebook" onClick={handleCreateNoteByMessage}>
-              <i className="fa-solid fa-thumbtack" />
+            <i class="ri-pushpin-2-line" style={{ fontSize: '16px' }}></i>
             </span>
           </div>
           <div className="to-user-message-footer" onClick={handleCopyMessage}>
             <div className="to-user-message-copy">
-            <img src={copyIcon} alt="Copy" style={{ width: '20px', height: '20px', color:'#ccc' }} />
+            <i class="ri-file-copy-line"></i>
             </div>
             <div className="to-user-message-like" onClick={handleLikeMessage}>
-              <i className="fa-regular fa-thumbs-up" />
+              <i class="ri-thumb-up-line"></i>
             </div>
             <div className="to-user-message-dislike" onClick={handleOpenFeedback}>
-              <i className="fa-regular fa-thumbs-down" />
+            <i class="ri-thumb-down-line"></i>
             </div>
           </div>
         </div>

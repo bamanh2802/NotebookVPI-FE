@@ -15,13 +15,13 @@ const LoginForm = () => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('')
   const [error, setError] = useState('');
-  const [session, setSession] = useState({})
   const [forgotPassword, setForgotPassWord] = useState(false)
   const [isSendPassword, setIsSendPassword] = useState(false)
   const [isLoadingSendEmail, setIsLoadingSendEmail] = useState(false)
   const [isLoadingResendEmail, setIsLoadingResendEmail] = useState(false)
   const [countdown, setCountdown] = useState(0);
   const [isLoadingLogin, setIsLoadingLogin] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -34,6 +34,9 @@ const LoginForm = () => {
   const handleTogglePassword = () => {
     setForgotPassWord(!forgotPassword)
   }
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleResendPassword = async (e) => {
     e.preventDefault();
@@ -68,7 +71,6 @@ const LoginForm = () => {
   
     try {
       const data = await loginForm(username, password);
-      setSession(data.data)
       setError("")
       if(data && data.status === 200) {
         localStorage.setItem("session", JSON.stringify(data.data.data.session_id))
@@ -161,7 +163,7 @@ const LoginForm = () => {
                         required
                       />
                     </div>
-                    <div className="input-group">
+                    {/* <div className="input-group">
                       <label htmlFor="password">Password</label>
                       <input
                         type="password"
@@ -171,6 +173,22 @@ const LoginForm = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                       />
+                    </div> */}
+                     <div className="input-group" style={{ position: 'relative' }}>
+                      <label htmlFor="password">Password</label>
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        id="password"
+                        name="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        style={{ paddingRight: '2.5rem' }} // Space for the icon
+                      />
+                      <i
+                        className={`show-password-input fa ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}
+                        onClick={togglePasswordVisibility}
+                      ></i>
                     </div>
                     <p onClick={handleTogglePassword} className='forgot-password-button'>Forgot Password?</p>
                     <button

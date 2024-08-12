@@ -281,10 +281,9 @@ function HomePage() {
                   ))}
                 </div>
               </div>
-
               
-                <div className={`notebook-delete-block ${isOpenDeleteMenu ? 'show' : ''}`} onClick={handleCloseDeleteMenu}>
-                <div className='notebook-delete' onClick={(event) => {event.stopPropagation()}}>
+                <div className={`notebook-delete-block ${isOpenDeleteMenu ? 'show' : ''}`} onMouseDown={handleCloseDeleteMenu}>
+                <div className='notebook-delete' onMouseDown={(event) => {event.stopPropagation()}}>
                   <div className='notebook-delete-name'>Xóa {selectedNotebookName}</div>
                   <div className='notebook-delete-footer'>
                     <button className='notebook-delete-cancel' onClick={handleCloseDeleteMenu}>Hủy</button>
@@ -293,13 +292,9 @@ function HomePage() {
 
                 </div>
               </div>
-
-
-
-
               
-                <div className={`notebook-change-block ${isOpenChangeMenu ? 'show' : ''}`} onClick={handleCloseChangeMenu}>
-                <div className='notebook-change' onClick={(event) => {event.stopPropagation()}}>
+                <div className={`notebook-change-block ${isOpenChangeMenu ? 'show' : ''}`} onMouseDown={handleCloseChangeMenu}>
+                <div className='notebook-change' onMouseDown={(event) => {event.stopPropagation()}}>
                   <div className='notebook-change-main'> 
                     <div className='notebook-avatar'> <img src="https://cdn-icons-png.flaticon.com/512/330/330705.png" alt="" /></div>
                     <div className='input-container'>

@@ -141,6 +141,7 @@
       position: relative;
       right: 5px;
       z-index: 5;
+      height: 40px;
 
     }
   
@@ -148,7 +149,7 @@
       content: "";
       position: absolute;
       left: 50%;
-      top: 18px;
+      top: 20px;
       transform: translate(-50%, -50%);
       width: 0;
       height: 0;
@@ -214,8 +215,7 @@
     .notebook-option-dropdown {
       padding: 8px 12px;
       width: 200px;
-      bottom: -48px;
-      left: 0;
+      transform: translateX(0);
       position: absolute;
       background-color: var(--dropdown-option-hover);
       border-radius: 12px;
@@ -437,4 +437,11 @@
 }
 .session-container > button{
   width: 50%;
+}
+.show-password-input{
+  position: absolute;
+  right: 0.5rem;
+  bottom: 12px;
+  transform: translateX(-50%);
+  cursor: pointer;
 }

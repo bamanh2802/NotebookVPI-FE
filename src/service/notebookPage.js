@@ -1,7 +1,7 @@
 import axios from 'axios';
 import qs from 'qs';
 
-import API_URL from './apiPath';
+import API_URL from '../config/apiPath';
 
 
 export async function fetchNotebookById(notebookId) {

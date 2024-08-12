@@ -5,6 +5,7 @@ import '../../css/notebook/notebook.css'
 import '../../css/notebook/notebook-chat.css'
 import '../../css/notebook/notebook-item.css'
 import '../../css/notebook/notebook-tutorial.css'
+import 'remixicon/fonts/remixicon.css';
 
 import NotebookTutorial from './NotebookTutorial';
 import { sendMessage, saveChatHistory, getChatHistory } from '../../service/notebookPage';
@@ -239,7 +240,13 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
 
       <div className="notebook-chat-main">
         <div className="notebook-chat-open" onClick={toggleChat}>
-          <i className="fa-regular fa-comments" />
+
+        {isChatOpen ? (
+        <i class="ri-question-answer-line" style={{ fontSize: '19px' }}></i>
+        ) : (
+          <i className="ri-question-answer-fill" style={{ fontSize: '19px' }}></i>
+        )}
+        &nbsp;
           Xem cuộc trò chuyện
         </div>
         <div className="notebook-chat-main-input">

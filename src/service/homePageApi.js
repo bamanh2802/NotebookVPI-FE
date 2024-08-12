@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import API_URL from './apiPath';
+import API_URL from '../config/apiPath';
 
 axios.defaults.withCredentials = true;
 

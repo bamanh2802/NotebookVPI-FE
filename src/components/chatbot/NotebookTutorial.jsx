@@ -18,10 +18,11 @@ function NotebookTutorial({ notebookId, closeTutorial, classOpen, onQuestionClic
   const [selectedFiles, setSelectedFiles] = useState([])
   const dispatch = useDispatch();
   const [summary, setSumary] = useState('')
-  const [suggestQuestions, setSuggestQuestions] = useState([])
+  const [suggestQuestions, setSuggestQuestions] = useState([
+  ])
   const [isStarted, setIsStarted] = useState(false)
   const stateSummary = useSelector(state => state.summaries[notebookId]);
-  
+  const isOpenUploadFile = useSelector((state) => state.isOpenUploadFile)
 
   useEffect(() => {
     if(Object.keys(allSourceByNotebook).length !== 0) {
@@ -55,6 +56,12 @@ function NotebookTutorial({ notebookId, closeTutorial, classOpen, onQuestionClic
       }
     }
   }, [classOpen])
+
+  const handleOpenUploadFile = () => {
+    dispatch({
+      type: 'TOGGLE_UPLOAD'
+    })
+  }
 
   const formatMessage = (message) => {
     return message
@@ -212,7 +219,8 @@ function NotebookTutorial({ notebookId, closeTutorial, classOpen, onQuestionClic
               </>
             ) : (
               <>
-                <div>
+                <div className='tutorial-upload' onClick={handleOpenUploadFile}> 
+                  <i class="ri-upload-line"></i>
                   Thêm nguồn để bắt đầu
                 </div>
               </>

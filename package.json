@@ -38,6 +38,7 @@
     "redux": "^5.0.1",
     "remark-gfm": "^4.0.0",
     "remarkable-react": "^1.4.3",
+    "remixicon": "^4.3.0",
     "reselect": "^5.1.1",
     "vntk": "^1.4.4",
     "web-vitals": "^2.1.4"

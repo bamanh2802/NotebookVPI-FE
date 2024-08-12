@@ -27,24 +27,30 @@ const handleSubmit = async (event) => {
     const userId = localStorage.getItem('userid')
     const optionsString = selectedOptions.join(', ');
     const feedbackString = `Tùy chọn đã chọn: ${optionsString}\nÝ kiến khác: ${otherFeedback}`;
-    try{
-        const data = await sendFeedbackMessage(userId, notebookId, feedbackString)
-        console.log(data)
-        dispatch({
-            type: 'TOGGLE_FEEDBACK'
-          })
-        if(!isNotify) {
-        dispatch({
-            type: 'TOGGLE_NOTIFY'
-            })
-        }
-    } catch (e) {
-        console.log(e)
-        dispatch({
-            type: 'TOGGLE_FEEDBACK'
-          })
-    }
-    console.log('Feedback String:', feedbackString);
+    if (optionsString.trim() !== '' || otherFeedback.trim() !== '') {
+  
+      try {
+          const data = await sendFeedbackMessage(userId, notebookId, feedbackString);
+  
+          dispatch({
+              type: 'TOGGLE_FEEDBACK'
+          });
+          setOtherFeedback('')
+          setSelectedOptions([])
+  
+          if (!isNotify) {
+              dispatch({
+                  type: 'TOGGLE_NOTIFY'
+              });
+          }
+      } catch (e) {
+          console.log(e);
+  
+          dispatch({
+              type: 'TOGGLE_FEEDBACK'
+          });
+      }
+  }
 };
   
     return (

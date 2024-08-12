@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-import API_URL from './apiPath';
+import API_URL from '../config/apiPath';
+
 
 
 export async function loginForm(username, password) {
@@ -22,7 +23,7 @@ export async function loginForm(username, password) {
   }
 
 export async function resetPassword(userEmail) {
-    const response = await axios.get(`$/reset_password?email=${userEmail}`, {
+    const response = await axios.get(`${API_URL}/reset_password?email=${userEmail}`, {
       headers: {
         'Content-Type': 'application/json',
       }

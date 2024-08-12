@@ -19,10 +19,11 @@ const initialState = {
   summaries: {},
   references: {
     fileId: null,
-    content: null,
+    chunkId: null,
   },
   isFeedbackMessage: false,
-  isNotify: false
+  isNotify: false,
+  openUploadFile: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -38,7 +39,7 @@ const reducer = (state = initialState, action) => {
         ...state,
         references: {
           fileId: action.payload.fileId,
-          content: action.payload.content,
+          chunkId: action.payload.chunkId,
         },
       };
     case 'REMOVE_TEMP_NOTES':
@@ -69,6 +70,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, allSourceByNotebook: action.payload };
     case 'TOGGLE_CHAT':
       return { ...state, isChatOpen: !state.isChatOpen };
+    case 'TOGGLE_UPLOAD':
+      return { ...state, openUploadFile: !state.openUploadFile };
     case 'TOGGLE_NOTIFY':
       return { ...state, isNotify: !state.isNotify };
     case 'TOGGLE_FEEDBACK':

@@ -8,6 +8,7 @@ import { updateNotebook } from '../../service/homePageApi';
 import { fetchNotebookById } from '../../service/notebookPage';
 import UserDetail from '../user-profile/UserDetail';
 import { Helmet } from 'react-helmet';
+import Feedback from '../home/Feedback';
 
 function NotebookHeader({ notebookId }) {
   const [editingName, setEditingName] = useState(false);
@@ -16,9 +17,12 @@ function NotebookHeader({ notebookId }) {
   const [notebook, setNotebook] = useState({});
   const [isOpenUserDetail, setIsOpenUserDetail] = useState(false);
   const [notebookName, setNotebookName] = useState('NotebookVPI')
+  const [isOpenFeedback, setIsOpenFeedback] = useState(false)
+
 
   const handleToggleUserMenu = () => {
-    setIsOpenUserMenu(!isOpenUserMenu);
+    // setIsOpenUserMenu(!isOpenUserMenu);
+    setIsOpenFeedback(!isOpenFeedback)
   };
 
   const fetchNotebookData = async () => {
@@ -82,15 +86,15 @@ function NotebookHeader({ notebookId }) {
           
         )}
         <div className="notebook-icons">
-          <span className="user-icon" onClick={handleToggleUserMenu}>
-            <i className="fa-regular fa-user"></i>
+          <span className="user-icon feedback-icon" onClick={handleToggleUserMenu}>
+            <i class="fa-regular fa-message"></i> Feedback
             <div
               className={`user-profile-block ${isOpenUserMenu ? 'show' : ''}`}
               onClick={(event) => {
                 event.stopPropagation();
               }}
             >
-              <UserProfile setIsOpenUserDetail={setIsOpenUserDetail} />
+              <UserProfile setIsOpenUserDetail={setIsOpenUserDetail} setIsOpenFeedback={setIsOpenFeedback}/>
             </div>
           </span>
         </div>
@@ -99,6 +103,10 @@ function NotebookHeader({ notebookId }) {
         isOpenUserDetail={isOpenUserDetail ? 'show' : ''}
         closeUserDetail={setIsOpenUserDetail}
       />
+      <Feedback 
+            isOpenFeedback={isOpenFeedback ? 'show': ''}
+            closeFeedback={setIsOpenFeedback}
+          />
     </>
   );
 }

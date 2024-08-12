@@ -241,7 +241,9 @@
   flex: 1;
 }
 
-.user-password > input{
+.password-input-container > input{
+  display: flex;
+  justify-content: center;
   color: #ccc;
   background: none;
   border: none;
@@ -251,7 +253,6 @@
   font-size: 16px;
   border-radius: 4px;
   transition: border-color 0.3s, box-shadow 0.3s;
-  margin-bottom: 12px;
 }
 
 
@@ -308,4 +309,21 @@
 .user-detail-password-change .user-change-email-btn button.input-disable {
   background-color: #ccc;
   cursor: not-allowed;
+}
+.password-input-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+
+}
+
+.password-input-container > svg {
+  width: 20px;
+}
+
+.password-toggle-icon {
+  margin-left: -30px; /* Adjust as needed to position the icon */
+  cursor: pointer;
+  color: #999; /* Adjust color as needed */
 }

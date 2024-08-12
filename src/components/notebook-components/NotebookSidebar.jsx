@@ -9,14 +9,13 @@ import '../../css/notebook/notebook.css'
 import '../../css/notebook/notebook-chat.css'
 import '../../css/notebook/notebook-item.css'
 import loadingAnimation from '../../svg/loading.json'
-import loadingUpload from '../../svg/upload.json'
 
 
 function NotebookSidebar({ notebookId }) {
     const [allSources, setAllSources] = useState([]);
     const [selectAll, setSelectAll] = useState(true); // Set selectAll to true by default
     const [countSource, setCountSource] = useState([]);
-    const [sourceSelector, setSouceSelector] = useState()
+    const [sourceSelector, setSouceSelector] = useState({})
     const [isOpenUploadFile, setIsOpenUploadFile] = useState(false);
     const [fileNames, setFileNames] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -25,8 +24,6 @@ function NotebookSidebar({ notebookId }) {
     const [isEdittingName, setIsEdittingName] = useState(false)
     const [newFileName, setNewFileName] = useState('');
     const [selectedSource, setSelectedSource] = useState()
-    const [isLoadingDelete, setIsLoadingDelete] = useState(false)
-    const [countSourceNewUp, setCountSourceNewUp] = useState(0)
     const [loadingStates, setLoadingStates] = useState({});
 
 
@@ -34,6 +31,8 @@ function NotebookSidebar({ notebookId }) {
     const isOpenSidebar = useSelector((state) => state.isOpenSidebar);
     const isOpenSource = useSelector((state) => state.isOpenSource)
     const navigate = useNavigate()
+  const isOpenUploadFileScreen = useSelector((state) => state.openUploadFile)
+
 
 
     const handleOpenUploadFile = () => {
@@ -41,8 +40,30 @@ function NotebookSidebar({ notebookId }) {
     };
     const handleCloseUploadFile = () => {
         setIsOpenUploadFile(false)
-
+        if(isOpenUploadFileScreen) {
+            dispatch({
+                type: 'TOGGLE_UPLOAD'
+              })
+        }
     }
+    useEffect(() => {
+        if(!isOpenSource) {
+          dispatch({
+            type: 'FIND_REFERENCES',
+            payload: {
+              fileId: null,
+              content: null
+            }
+          });
+        }
+      }, [isOpenSource])
+
+    useEffect(() => {
+        console.log(isOpenUploadFileScreen)
+        if(isOpenUploadFileScreen) {
+            setIsOpenUploadFile(true)
+        }
+    }, [isOpenUploadFileScreen])
 
 
     const data = { 
@@ -106,14 +127,12 @@ function NotebookSidebar({ notebookId }) {
     }
 
     const handleDeleteFile = async (source, event) => {
-        setIsLoadingDelete(true)
         setLoadingStates((prev) => ({ ...prev, [source.file_id]: true }));
         event.preventDefault();
         event.stopPropagation();
         try {
             const data = await deleteFileById(notebookId, source.file_id)
             fetchAllSourcesAgain()
-            setIsLoadingDelete(false)
         } catch (e) {
             setLoadingStates((prev) => ({ ...prev, [source.file_id]: false }));
             console.log(e)
@@ -222,7 +241,6 @@ function NotebookSidebar({ notebookId }) {
     const handleFileChanges = async (event) => {
         const selectedFiles = Array.from(event.target.files);
         setFileNames(selectedFiles.map(file => file.name));
-        setCountSourceNewUp(selectedFiles)
         setIsLoading(true);
         setIsOpenUploadFile(false);
         let fileRender = selectedFiles.map(file => file.name)

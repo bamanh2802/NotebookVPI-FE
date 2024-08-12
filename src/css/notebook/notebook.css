@@ -294,6 +294,19 @@ input[type="checkbox"].custom-checkbox:checked + label:after {
 .user-icon{
   position: relative;
 }
+.feedback-icon{
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  color: #ccc;
+  transition: all .2s ease-in;
+  min-width: 94px;
+}
+.feedback-icon:hover {
+  background-color: var(--notebook-item-background);
+  color: #ffffff;
+
+}
 .user-profile{
   padding: 12px;
   border-radius: 20px;

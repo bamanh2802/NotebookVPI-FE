@@ -7,18 +7,21 @@ import '../../css/notebook/user-detail.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { getUserById } from "../../service/userDetail";
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const UserDetail = ({ isOpenUserDetail, closeUserDetail }) => {
     const [toggleChangeLogin, setToggleChangeLogin] = useState(false);
     const [toggleChangeName, setToggleChangeName] = useState(false);
     const [userInfo, setUserInfo] = useState();
     const [newUserName, setNewUserName] = useState('');
-    const [newUserPassword, setNewUserPassword] = useState('');
     const [newUserEmail, setNewUserEmail] = useState('');
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
+    const [showOldPassword, setShowOldPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const userId = localStorage.getItem("userid");
 
@@ -39,6 +42,7 @@ const UserDetail = ({ isOpenUserDetail, closeUserDetail }) => {
             try {
                 await changeUserName(newUserName);
                 setNewUserName('');
+                handleChangeName()
             } catch (e) {
                 console.log(e);
             }
@@ -50,13 +54,14 @@ const UserDetail = ({ isOpenUserDetail, closeUserDetail }) => {
             try {
                 await changeUserEmail(newUserEmail);
                 setNewUserEmail('');
+                setToggleChangeLogin(false)
             } catch (e) {
                 console.log(e);
             }
         }
     };
 
-    const validatePassword = () => {
+    const validatePassword = (errorPassword) => {
         let error = '';
         if (oldPassword === newPassword) {
             error = 'Mật khẩu mới không được giống mật khẩu cũ.';
@@ -64,6 +69,8 @@ const UserDetail = ({ isOpenUserDetail, closeUserDetail }) => {
             error = 'Mật khẩu mới và xác nhận mật khẩu không khớp.';
         } else if (newPassword.length < 6) {
             error = "Password must be at least 6 characters long"
+        } else if(errorPassword !== '') {
+            error = errorPassword
         }
         setPasswordError(error);
         return !error;
@@ -82,6 +89,7 @@ const UserDetail = ({ isOpenUserDetail, closeUserDetail }) => {
                 setToggleChangeLogin(false);
             } catch (error) {
                 console.error('Error updating user password:', error);
+                validatePassword('Mật khẩu không chính xác')
             }
         }
     };
@@ -187,47 +195,68 @@ const UserDetail = ({ isOpenUserDetail, closeUserDetail }) => {
                                             className={`user-detail-password-change ${!toggleChangeLogin ? 'hidden' : ''}`}
                                             onSubmit={handleApplyChangePassword}
                                         >
-                                            <div className="user-password">
+                                              <div className="user-password">
                                                 <label htmlFor="old-password">Old Password</label>
-                                                <input
-                                                    type="password"
-                                                    id="old-password"
-                                                    className={`${passwordError ? 'password-error' : ''}`}
-                                                    name="oldPassword"
-                                                    value={oldPassword}
-                                                    onChange={(e) => {
-                                                        setPasswordError('')
-                                                        setOldPassword(e.target.value)
-                                                    }}
-                                                />
+                                                <div className="password-input-container">
+                                                    <input
+                                                        type={showOldPassword ? 'text' : 'password'}
+                                                        id="old-password"
+                                                        className={`${passwordError ? 'password-error' : ''}`}
+                                                        name="oldPassword"
+                                                        value={oldPassword}
+                                                        onChange={(e) => {
+                                                            setPasswordError('');
+                                                            setOldPassword(e.target.value);
+                                                        }}
+                                                    />
+                                                    <FontAwesomeIcon
+                                                        icon={showOldPassword ? faEyeSlash : faEye}
+                                                        onClick={() => setShowOldPassword(prev => !prev)}
+                                                        className="password-toggle-icon"
+                                                    />
+                                                </div>
                                             </div>
                                             <div className="user-password">
                                                 <label htmlFor="new-password">New Password</label>
-                                                <input
-                                                    type="password"
-                                                    id="new-password"
-                                                    className={`${passwordError ? 'password-error' : ''}`}
-                                                    name="newPassword"
-                                                    value={newPassword}
-                                                    onChange={(e) => {
-                                                        setPasswordError('')
-                                                        setNewPassword(e.target.value);
-                                                    }}
-                                                />
+                                                <div className="password-input-container">
+                                                    <input
+                                                        type={showNewPassword ? 'text' : 'password'}
+                                                        id="new-password"
+                                                        className={`${passwordError ? 'password-error' : ''}`}
+                                                        name="newPassword"
+                                                        value={newPassword}
+                                                        onChange={(e) => {
+                                                            setPasswordError('');
+                                                            setNewPassword(e.target.value);
+                                                        }}
+                                                    />
+                                                    <FontAwesomeIcon
+                                                        icon={showNewPassword ? faEyeSlash : faEye}
+                                                        onClick={() => setShowNewPassword(prev => !prev)}
+                                                        className="password-toggle-icon"
+                                                    />
+                                                </div>
                                             </div>
                                             <div className="user-password">
                                                 <label htmlFor="confirm-password">Confirm Password</label>
-                                                <input
-                                                    type="password"
-                                                    id="confirm-password"
-                                                    className={`${passwordError ? 'password-error' : ''}`}
-                                                    name="confirmPassword"
-                                                    value={confirmPassword}
-                                                    onChange={(e) => {
-                                                        setPasswordError('')
-                                                        setConfirmPassword(e.target.value);
-                                                    }}
-                                                />
+                                                <div className="password-input-container">
+                                                    <input
+                                                        type={showConfirmPassword ? 'text' : 'password'}
+                                                        id="confirm-password"
+                                                        className={`${passwordError ? 'password-error' : ''}`}
+                                                        name="confirmPassword"
+                                                        value={confirmPassword}
+                                                        onChange={(e) => {
+                                                            setPasswordError('');
+                                                            setConfirmPassword(e.target.value);
+                                                        }}
+                                                    />
+                                                    <FontAwesomeIcon
+                                                        icon={showConfirmPassword ? faEyeSlash : faEye}
+                                                        onClick={() => setShowConfirmPassword(prev => !prev)}
+                                                        className="password-toggle-icon"
+                                                    />
+                                                </div>
                                             </div>
                                             {passwordError && <div className="password-error-message">{passwordError}</div>}
                                             <div className="user-change-email-btn">
