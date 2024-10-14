@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Logout } from "../../service/homePageApi";
+import { deleteSession } from "../../service/LoginForm";
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -28,6 +29,17 @@ const UserProfile = ({ setIsOpenUserDetail, setIsOpenFeedback }) => {
         console.error('Error update notebooks:', error);
       }
     }
+
+    const handleDeleteSession = async () => {
+      try {
+        const data = await deleteSession();
+        localStorage.removeItem("session")
+        localStorage.removeItem("session_manager")
+        navigate('/login')
+      } catch (error) {
+        console.error('Error update notebooks:', error);
+      }
+    }
     
     return (
         <div className="user-profile">
@@ -45,7 +57,7 @@ const UserProfile = ({ setIsOpenUserDetail, setIsOpenFeedback }) => {
             <div className="user-main">
                 <div className="user-settings" onClick={handleOpenDetail}> <i className="fa-solid fa-gear"></i> Account Settings</div>
                 <div className="user-feedback" onClick={handleOpenFeedback}><i className="fa-solid fa-triangle-exclamation"></i>Feedback</div>
-                <div className="user-logout" onClick={handleLogout}><i className="fa-solid fa-right-from-bracket"></i>Logout</div>
+                <div className="user-logout" onClick={handleDeleteSession}><i className="fa-solid fa-right-from-bracket"></i>Logout</div>
             </div>
         </div>
     )

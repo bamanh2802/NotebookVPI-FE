@@ -38,26 +38,12 @@ function NotebookChat({ notebookId }) {
     useEffect(() => {
         if(conversations.length != 0 && conversations.length % 2 == 1) {
             setIsBotLoadingMessage(true)
-            // console.log('true')
         } else {
             setIsBotLoadingMessage(false)
         }
-        // console.log(conversations)
     }, [conversations.length])
 
-    useEffect(() => {
-        const fetchChatHistory = async () => {
-            try {
-                const response = await fetch(`http://localhost:3000/notebook/${notebookId}/chathistory`);
-                const data = await response.json();
-                setChatHistory(data);
-            } catch (error) {
-                console.error('Error fetching chat history:', error);
-            }
-        };
-
-        fetchChatHistory();
-    }, [notebookId]);
+  
 
     function closeNotebookChat() {
         setIsStatusChat(!isStatusChat);

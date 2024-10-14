@@ -1,7 +1,6 @@
 import React, { useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../css/homepage/loginform.css';
-import axios from 'axios';
 import { msalInstance, initializeMsalInstance } from '../../config/msalConfig';
 import { InteractionType } from '@azure/msal-browser';
 import { loginForm, resetPassword, loginWithMicrosoft } from '../../service/LoginForm';

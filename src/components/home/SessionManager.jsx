@@ -14,7 +14,7 @@ const SessionManager = ({  }) => {
       const interval = setInterval(() => {
         const now = new Date();
         const remainingTime = endTime - now;
-        console.log(remainingTime)
+        // console.log(remainingTime)
 
         // if (remainingTime <= 0) {
         //   clearInterval(interval);
@@ -33,7 +33,7 @@ const SessionManager = ({  }) => {
         //     );
         //   }
         // }
-          // whoAmICallback();
+        whoAmICallback();
       }, 30000);
 
       return () => clearInterval(interval);

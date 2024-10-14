@@ -302,8 +302,9 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    background-color: var(--navbar-base-color);
+    background-color: #202124;
     padding: 20px;
+    color: #e2e2e2;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
@@ -318,13 +319,15 @@
   .file-upload-label {
     text-align: center;
     display: inline-block;
-    background-color: var(--menu-hover-color);
-    color: #fff;
+    background-color: none;
+    color: #e2e2e2;
     padding: 10px 20px;
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s ease;
+    width: 100%;
+    border: 1px dashed #cccccc8e;
   }
   
   .file-upload-label i {
@@ -332,7 +335,7 @@
   }
   
   .file-upload-label:hover {
-    background-color: #0056b3;
+    /* background-color: #0056b3; */
   }
   
   .file-upload-input {

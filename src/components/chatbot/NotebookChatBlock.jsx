@@ -99,20 +99,6 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
 
 
 
-
-  useEffect(() => {
-    async function fetchQuestion() {
-      try {
-        const response = await fetch(`http://localhost:3000/get-all-info-by-id/${notebookId}`);
-        const data = await response.json();
-        setSuggestQuestion(data.suggestions);
-      } catch (error) {
-        console.error('Error fetching notebooks:', error);
-      }
-    }
-    fetchQuestion();
-  }, [notebookId]);
-
   const saveChat = async () => {
     try {
       const data = await saveChatHistory(notebookId)
@@ -242,12 +228,19 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
         <div className="notebook-chat-open" onClick={toggleChat}>
 
         {isChatOpen ? (
+        <>
         <i class="ri-question-answer-line" style={{ fontSize: '19px' }}></i>
-        ) : (
-          <i className="ri-question-answer-fill" style={{ fontSize: '19px' }}></i>
-        )}
         &nbsp;
           Xem cuộc trò chuyện
+        </>
+        ) : (
+         <>
+          <i className="ri-question-answer-fill" style={{ fontSize: '19px' }}></i>
+          &nbsp;
+          Đóng cuộc trò chuyện
+         </>
+        )}
+        
         </div>
         <div className="notebook-chat-main-input">
           <div className="notebook-chat-input-source">
@@ -274,7 +267,7 @@ function NotebookChatBlock({ notebookId, selectedNotes, countSource }) {
           </div>
         </div>
         <div className="notebook-chat-tutorial" onClick={toggleTutorial}>
-          <i className="fa-regular fa-star" />
+        <i class="ri-sparkling-2-line"></i>
           Hướng dẫn về sổ tay
         </div>
       </div>

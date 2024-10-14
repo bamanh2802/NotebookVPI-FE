@@ -188,6 +188,7 @@ function NotebookTutorial({ notebookId, closeTutorial, classOpen, onQuestionClic
           <div className="notebook-tutorial-footer">
             <div className="notebook-tutorial-summary">
               <h2>Tóm tắt</h2>
+              
                 {summary ? (
                   <div>
                       <div dangerouslySetInnerHTML={{ __html: formatMessage(summary) }} />

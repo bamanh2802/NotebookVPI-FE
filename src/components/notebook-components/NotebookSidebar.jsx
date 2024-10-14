@@ -59,7 +59,6 @@ function NotebookSidebar({ notebookId }) {
       }, [isOpenSource])
 
     useEffect(() => {
-        console.log(isOpenUploadFileScreen)
         if(isOpenUploadFileScreen) {
             setIsOpenUploadFile(true)
         }
@@ -439,7 +438,7 @@ function NotebookSidebar({ notebookId }) {
                     <div className={`file-upload-container ${isOpenUploadFile ? 'show' : ''}`} onClick={(event) => {event.stopPropagation()}}>
                         <div className='file-upload-title'>Tải thư mục lên</div>
                         <label htmlFor="file-upload" className="file-upload-label">
-                            <i className="fa fa-cloud-upload" /> Lựa chọn thư mục pdf để tìm hiểu về nó
+                        <i class="ri-upload-line"></i> Upload your PDF
                         </label>
                         <input
                             type="file"

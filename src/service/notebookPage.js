@@ -38,7 +38,7 @@ export async function getNoteByNotebookId(notebookId) {
     });
   
     return response.data;
-  }
+}
 export async function createNewNote(notebookId, title, content, ref) {
   const references = JSON.stringify(ref)
     const response = await axios.post(`${API_URL}/notebooks/notes/new`, ({
@@ -124,11 +124,12 @@ export async function getContextById(notebookId, fileId) {
 
 }
 
-export async function deleteFileById(notebookId, fileId){
-  const data = qs.stringify({ file_ids: fileId }); 
+export async function deleteFileById(notebookId, fileId) {
+  const data = qs.stringify({ file_ids: fileId });
+
   const response = await axios.post(
-    `${API_URL}/notebooks/${notebookId}/files/${fileId}/delete`, 
-    data,
+    `${API_URL}/notebooks/${notebookId}/files/${fileId}/delete`,
+    data, 
     {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -137,7 +138,8 @@ export async function deleteFileById(notebookId, fileId){
       withCredentials: true
     }
   );
-  return response
+
+  return response;
 }
 
 export async function renameFileNameById(notebookId, fileId, newName) {

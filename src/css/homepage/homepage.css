@@ -33,7 +33,7 @@
     
     .logo-name {
       color: #cccccc;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
     }
     
     .logo-name span {
@@ -65,8 +65,8 @@
       padding: 48px 16px 16px;
       width: 100%;
       justify-content: center;
-      height: calc(100vh - 75px);
-      background-color: #131314;
+      height: calc(100vh - 70px);
+      background-color: #1f1f1f;
       overflow: auto;
     }
     .content{
@@ -108,10 +108,11 @@
       border-radius: 30px;
       padding: 10px;
       cursor: pointer;
+      border: 1px solid #cccccc21;
     }
     .notebook:hover{
-      transform: scale(1.04);
-      transition: ease-in .25s;
+      transform: scale(1.01);
+      transition: ease-in .1s;
     }
     .notebook-header-homepage{
       width: 100%;
@@ -197,7 +198,7 @@
       padding: 20px 0;
     }
     .notebook.new {
-      background-color: var(--background-base-web);
+      background-color: #1f1f1f;
       border: #cccccc3f solid 1px;
     }
     
@@ -428,6 +429,10 @@
   align-items: center;
   flex-direction: column;
   background-color: var(--background-base-web);
+}
+
+.session-container > p {
+  margin: 20px;
 }
 
 .session-container > img{

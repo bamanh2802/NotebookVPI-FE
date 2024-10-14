@@ -105,6 +105,7 @@ const UserDetail = ({ isOpenUserDetail, closeUserDetail }) => {
     const handleGetUserById = async () => {
         try {
             const data = await getUserById(userId);
+            console.log(data)
             setUserInfo(data.data.user);
         } catch (error) {
             console.log('Error get user: ', error);
@@ -113,7 +114,7 @@ const UserDetail = ({ isOpenUserDetail, closeUserDetail }) => {
 
     useEffect(() => {
         handleGetUserById();
-    }, [userId]);
+    }, []);
 
     return (
         <>
@@ -284,7 +285,10 @@ const UserDetail = ({ isOpenUserDetail, closeUserDetail }) => {
                                     </div>
                                     <div className="user-detail-row-static">
                                         <span className="user-detail-static">Created at <span>: {userInfo.created_at}</span> </span>
-                                        <span className="user-detail-static">Time Used: <span>{userInfo.total_time_used} hour </span></span>
+                                        <span className="user-detail-static">
+                                        Time Used: <span>{(userInfo.total_time_used / (1000 * 60 * 60)).toFixed(2)} hours</span>
+                                        </span>
+
                                     </div>
                                     <div className="user-detail-row-static">
                                         <span className="user-detail-static">Storage Used<span>: {userInfo.total_resource_used}/250Mb </span></span>

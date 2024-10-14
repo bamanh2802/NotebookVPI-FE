@@ -9,6 +9,7 @@
     height: 12px;
     position: relative;
     margin: 32px 0 0 0;
+    margin-top: 200px;
     zoom: 1.5;
   }
   .book .inner {
@@ -713,8 +714,9 @@
   }
   .loading-page{
     width: 100%;
-    height: calc(100vh - 400px);
+    background-color: #1f1f1f;
+    height: calc(100vh - 70px);
     display: flex;
     justify-content: center;
-    align-items: center;
+    /* align-items: center; */
   }

@@ -16,7 +16,6 @@
     "devextreme": "^24.1.4",
     "devextreme-react": "^24.1.4",
     "dompurify": "^3.1.6",
-    "fuse.js": "^7.0.0",
     "lottie-react": "^2.4.0",
     "marked": "^13.0.3",
     "node-vntokenizer": "^0.0.2",
@@ -40,7 +39,6 @@
     "remarkable-react": "^1.4.3",
     "remixicon": "^4.3.0",
     "reselect": "^5.1.1",
-    "vntk": "^1.4.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

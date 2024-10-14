@@ -77,12 +77,12 @@
 .notebook-chat-input-source{
     overflow: hidden;
     width: 16%;
-    color: #ffffffa9;
+    color: #ffffff77;
     background-color: var(--menu-hover-color);
     line-height: 64px;
     max-height: 64px;
     text-align: center;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
     border-top-left-radius: 32px;
@@ -112,7 +112,7 @@
 .notebook-chat-input {
     flex: 1;
     height: 64px;
-    background-color: var(--background-base-web); /* Màu nền của ô input */
+    background-color:#131314; /* Màu nền của ô input */
     color: #ffffff; /* Màu chữ trong ô input */
     border: none;
     font-size: 16px;
@@ -121,7 +121,7 @@
 .notebook-chat-form-button{
     height: 64px;
     width: 64px;
-    background-color: var(--background-base-web); /* Màu nền của ô input */
+    background-color: #131314; /* Màu nền của ô input */
     border-top-right-radius: 32px;
     border-bottom-right-radius: 32px;
     border-top-left-radius: 0;
@@ -130,6 +130,10 @@
 
 .notebook-chat-input::placeholder {
     color: #aaaaaa; /* Màu chữ của placeholder */
+}
+
+.notebook-chat-form-button:hover{
+  background-color: #131314; /* Màu nền của nút khi hover */
 }
 
 .notebook-chat-form-button {
@@ -142,9 +146,8 @@
 }
 
 .notebook-chat-form > button > i {
-    width: 48px;
-    line-height: 48px;
-    background-color: #7aa0e7; /* Màu nền của nút khi hover */
+    padding: 16px 17px;
+    background-color: #abc8fa; /* Màu nền của nút khi hover */
     border-radius: 24px;
 }
 

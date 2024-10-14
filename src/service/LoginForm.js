@@ -2,8 +2,6 @@ import axios from 'axios';
 
 import API_URL from '../config/apiPath';
 
-
-
 export async function loginForm(username, password) {
     try {
       const response = await axios.post(`${API_URL}/login`, new URLSearchParams({
@@ -42,4 +40,15 @@ export async function loginWithMicrosoft(tenantId, email){
     withCredentials: true
   })
   return response
+}
+
+export async function deleteSession () {
+  const response = await axios.post(`${API_URL}/delete_session`, {}, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    withCredentials: true
+  })
+  return response
+
 }
